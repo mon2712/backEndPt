@@ -10,6 +10,4 @@ public class prueba {
 		
 		dataDB.getUsernames();
 	}
-
-	
 }

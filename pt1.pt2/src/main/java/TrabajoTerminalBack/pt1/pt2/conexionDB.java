@@ -25,7 +25,7 @@ public class conexionDB implements Serializable{
 
         try {
             // DriverManager: The basic service for managing a set of JDBC drivers.
-            conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/db_pt2?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", "root", "dBoy6Ap");
+            conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/db_pt2?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", "root", "vfcnmm2201");
             if (conn != null) {
                 System.out.println("Connection Successful! Enjoy. Now it's time to push data");
             } else {
