@@ -5,10 +5,10 @@ public class prueba {
 	public static void main(String[] args) {
 		
 		conexionDB dataDB = new conexionDB();
+		Personal personal = new Personal();
 		
-		dataDB.makeJDBCConnection();
-		
-		dataDB.getUsernames();
+		personal.iniciarSesion("mon", "mon");
+
 	}
 
 	
