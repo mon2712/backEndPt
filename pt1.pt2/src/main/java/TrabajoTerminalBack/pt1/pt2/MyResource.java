@@ -17,9 +17,12 @@ public class MyResource {
      *
      * @return String that will be returned as a text/plain response.
      */
+	
+	Personal personal = new Personal();
+	
     @GET
-    @Produces(MediaType.TEXT_PLAIN)
-    public String getIt() {
-        return "Holiii Monchis";
+    @Produces(MediaType.APPLICATION_JSON)
+    public String getLoginInfo() {
+        return personal.iniciarSesion("mon", "mon");
     }
 }
