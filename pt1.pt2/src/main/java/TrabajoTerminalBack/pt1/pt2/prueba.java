@@ -10,6 +10,4 @@ public class prueba {
 		personal.iniciarSesion("mon", "mon");
 
 	}
-
-	
 }
