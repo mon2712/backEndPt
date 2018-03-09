@@ -1,9 +1,15 @@
 package TrabajoTerminalBack.pt1.pt2;
 
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.HeaderParam;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 /**
  * Root resource (exposed at "myresource" path)
@@ -22,7 +28,20 @@ public class MyResource {
 	
     @GET
     @Produces(MediaType.APPLICATION_JSON)
+    @Path("/inicioSesion")
     public String getLoginInfo() {
-        return personal.iniciarSesion("mon", "mon");
+        return personal.iniciarSesion("vane", "vanessita");
     }
+    
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/post")
+	public String getLoginSession(@QueryParam("user") String user, @QueryParam("pass") String pass) {
+    		Personal personal = new Personal();
+    		System.out.println("hola"+user+pass);
+    		return personal.iniciarSesion(user,pass);
+	}
+    
+
 }
