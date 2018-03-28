@@ -9,7 +9,7 @@ public class pruebafecha {
 		BaseDatos dataDB = new BaseDatos();
 		Centro centro= new Centro();
 		
-		String Students=centro.getStudents();
+		String Students=centro.getStudents(" ");
 		System.out.print(Students);
 	}
 
