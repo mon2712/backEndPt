@@ -25,12 +25,11 @@ import TrabajoTerminalBack.pt1.pt2.conexionDB;
 public class Centro {
 	
 	static PreparedStatement prepareStat = null;
-    private static Connection conn = conexionDB.conectarBD();
+    private static Connection conn = BaseDatos.conectarBD();
     int idCentro=0;
 	
 	public static String getStudents(String filter) {
 		StringWriter swriter = new StringWriter();
-		System.out.println(filter);;
         try {
         	int totalR = 0, totalC=0, n=0;
         	String getQueryStatement = "CALL jsonStudentsAtCenter('"+filter+"')";
