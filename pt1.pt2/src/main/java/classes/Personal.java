@@ -36,18 +36,28 @@ public class Personal {
     		    id = cStmt.getInt(5);
 
     		    System.out.println("usuario: "+type + " " + name + " " + id);
-    		    
-    		    
-    	        try (JsonGenerator gen = Json.createGenerator(swriter)) {
-    	            gen.writeStartObject();
-    	            gen.writeStartObject("infoLogin");
-    	            gen.write("name", name);
-    	            gen.write("type", type);
-    	            gen.write("id", id);
-    	            gen.writeEnd();
-    	            gen.writeEnd();
-    	        }
-
+    		    if(id == 0) {
+    		    		System.out.println("error en inicio de sesion");
+    		    		try (JsonGenerator gen = Json.createGenerator(swriter)) {
+    	    	            gen.writeStartObject();
+    	    	            gen.writeStartObject("infoLogin");
+    	    	            gen.write("code", 0);
+    	    	            gen.write("type", "Usuario o contraseña incorrecta");
+    	    	            gen.writeEnd();
+    	    	            gen.writeEnd();
+    	    	        }
+    		    }else {
+	    	        try (JsonGenerator gen = Json.createGenerator(swriter)) {
+	    	            gen.writeStartObject();
+	    	            gen.writeStartObject("infoLogin");
+	    	            gen.write("code", 1);
+	    	            gen.write("name", name);
+	    	            gen.write("type", type);
+	    	            gen.write("id", id);
+	    	            gen.writeEnd();
+	    	            gen.writeEnd();
+	    	        }
+    		    }
     	        
     		} catch (SQLException e) {
     			e.printStackTrace();
