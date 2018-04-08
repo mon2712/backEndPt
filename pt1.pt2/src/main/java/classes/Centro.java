@@ -26,7 +26,7 @@ public class Centro {
 	
 	static PreparedStatement prepareStat = null;
     private static Connection conn = BaseDatos.conectarBD();
-    int idCentro=0;
+    
 	
 	public static String getStudents(String filter) {
 		StringWriter swriter = new StringWriter();
