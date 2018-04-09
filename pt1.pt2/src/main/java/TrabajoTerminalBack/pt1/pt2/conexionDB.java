@@ -112,7 +112,8 @@ public class conexionDB implements Serializable{
 
             // Execute the Query, and get a java ResultSet
             ResultSet rs = prepareStat.executeQuery();
-
+            
+           
             List<String> users=new ArrayList<>();
             while (rs.next()) {
                 users.add(rs.getString("usuario"));
