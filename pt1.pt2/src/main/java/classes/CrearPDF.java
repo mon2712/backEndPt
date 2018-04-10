@@ -54,18 +54,15 @@ public class CrearPDF {
 
 	    BaseTable table = new BaseTable(yPosition, yStartNewPage, bottomMargin, tableWidth, margin, document, page, true, drawContent);
 	    
-	    //PDImageXObject pdImage = PDImageXObject.createFromFile("./MyQRCode.png",document);
-	    //contents.drawImage(pdImage, 50, 350);
 
 	    Image image = new Image(ImageIO.read(new File("./MyQRCode.png")));
-		 // imagine we have pretty big logo and we want scale that a little bit
 		 float imageWidth = 70;
 		 image = image.scaleByWidth(imageWidth);
 	    
 	    Row<PDPage> headerRow = table.createRow(15f);
 	    
 	    Cell<PDPage> cell = headerRow.createCell(100, "Gafetes Alumnos");
-	    table.addHeaderRow(headerRow);
+	    //table.addHeaderRow(headerRow);
 	    
 	    LineStyle thinline = new LineStyle(Color.WHITE, 0.75f);
 
@@ -74,7 +71,7 @@ public class CrearPDF {
 	    
 	    
 	    cell = row.createImageCell(25 , image);
-	    cell.setBorderStyle(thinline);
+	    //cell.setBorderStyle(thinline);
 	    cell = row.createCell(25, "Montserrat Mendoza Romero", HorizontalAlignment.CENTER, VerticalAlignment.MIDDLE);
 	    cell = row.createCell(50, "Tareas", HorizontalAlignment.CENTER, VerticalAlignment.MIDDLE);
 	    
