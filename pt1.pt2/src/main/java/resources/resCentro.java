@@ -37,4 +37,13 @@ public class resCentro {
     		
 	}
     
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/getStatusOfCenter")
+	public String getEstatusOfCenter() {
+    		Centro center = new Centro();
+    		String Students=center.getEstatusCentro();
+    		return Students;
+	}
+    
 }

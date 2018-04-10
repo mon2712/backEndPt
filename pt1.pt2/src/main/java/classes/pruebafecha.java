@@ -16,9 +16,13 @@ public class pruebafecha {
 		String Alumnos=alumno.obtenerFichaAlumno(3);
 		System.out.println(Alumnos);*/
 		
-		Alumno alumno = new Alumno();
+		/*Alumno alumno = new Alumno();
 		String alumnitos=alumno.getAlumnos("je");
-		System.out.println(alumnitos);
+		System.out.println(alumnitos);*/
+		
+		Centro centro = new Centro();
+		String alumnitos=centro.getEstatusCentro();
+		System.out.println("Visito funcion"+alumnitos);
 		
 	}
 
