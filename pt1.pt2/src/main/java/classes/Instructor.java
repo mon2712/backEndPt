@@ -1,0 +1,113 @@
+package classes;
+
+import java.awt.Color;
+import java.io.File;
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.imageio.ImageIO;
+
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.apache.pdfbox.pdmodel.font.PDFont;
+import org.apache.pdfbox.pdmodel.font.PDType1Font;
+
+import com.google.zxing.WriterException;
+
+import be.quodlibet.boxable.BaseTable;
+import be.quodlibet.boxable.Cell;
+import be.quodlibet.boxable.HorizontalAlignment;
+import be.quodlibet.boxable.Row;
+import be.quodlibet.boxable.VerticalAlignment;
+import be.quodlibet.boxable.image.Image;
+import be.quodlibet.boxable.line.LineStyle;
+
+public class Instructor {
+	static PreparedStatement prepareStat = null;
+    private static Connection conn = BaseDatos.conectarBD();
+    
+    public static void obtenerGafetesAlumnos() throws WriterException, IOException{
+    	try {
+            String getQueryStatement = "SELECT * FROM alumno WHERE estatus='N';";
+
+            prepareStat = conn.prepareStatement(getQueryStatement);
+
+            // Execute the Query, and get a java ResultSet
+            ResultSet rs = prepareStat.executeQuery();
+            CrearQr crearqr = new CrearQr();
+            
+            //Creación de documento
+            PDDocument document = new PDDocument();
+	    		PDPage page = new PDPage();
+	    		document.addPage( page );
+	    		
+	    		PDPageContentStream contentStream = new PDPageContentStream(document, page);
+	    		PDFont font = PDType1Font.HELVETICA;
+	    		
+	    		//Insertar título
+	    		contentStream.beginText();
+	    		contentStream.setFont( font, 12 );
+	    		contentStream.moveTextPositionByAmount(100, 700);
+	    		contentStream.drawString( "Gafetes de alumnos" );
+	    		contentStream.endText();
+    		
+	    		//Dummy Table
+	    	    float margin = 50;
+	    	    // starting y position is whole page height subtracted by top and bottom margin
+	    	    float yStartNewPage = page.getMediaBox().getHeight() - (2 * margin);
+	    	    // we want table across whole page width (subtracted by left and right margin ofcourse)
+	    	    float tableWidth = page.getMediaBox().getWidth() - (2 * margin);
+
+	    	    boolean drawContent = true;
+	    	    float yStart = yStartNewPage;
+	    	    float bottomMargin = 70;
+	    	    // y position is your coordinate of top left corner of the table
+	    	    float yPosition = 650;
+
+	    	    BaseTable table = new BaseTable(yPosition, yStartNewPage, bottomMargin, tableWidth, margin, document, page, true, drawContent);
+	    	    float imageWidth = 80; //Para ajustar la imagen
+	    	    
+	    	    Row<PDPage> headerRow = table.createRow(15f);
+	    	    
+	    	    Cell<PDPage> cell = headerRow.createCell(50, "Gafetes Alumnos");
+	    	    table.addHeaderRow(headerRow);
+	    	    LineStyle thinline = new LineStyle(Color.WHITE, 0.75f);
+            
+            while (rs.next()) {
+            		System.out.println(rs.getInt(1)+ " "+rs.getString(2));
+            		
+            		crearqr.generateQRCodeImage(rs.getString(1),rs.getString(2)); //mandamos a crear el qr con el id
+            		
+            		String filePath="./"+rs.getString(1)+".png";
+            		Image image = new Image(ImageIO.read(new File(filePath)));
+            		image = image.scaleByWidth(imageWidth);
+            		
+            		Row<PDPage> row = table.createRow(12);
+            	    
+            	    
+            	    cell = row.createImageCell(10 , image);
+            	    cell.setRightBorderStyle(thinline);
+            	    cell = row.createCell(15, rs.getString(3) + " " + rs.getString(2), HorizontalAlignment.CENTER, VerticalAlignment.MIDDLE);
+            	    cell = row.createCell(25, "Tareas", HorizontalAlignment.CENTER, VerticalAlignment.MIDDLE);
+            		
+            }
+
+            table.draw();
+            contentStream.close();
+
+	    		// Save the results and ensure that the document is properly closed:
+	    		document.save( "./GafetesAlumnos.pdf");
+	    		document.close();
+           
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+    }
+}
