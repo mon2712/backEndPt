@@ -19,7 +19,7 @@ public class pruebafecha {
 		/*Alumno alumno = new Alumno();
 		String Alumnos=alumno.obtenerFichaAlumno(3);
 		System.out.println(Alumnos);*/
-		
+
 		//Alumno alumno = new Alumno();
 		/*String alumnitos=alumno.getAlumnos("je");
 		System.out.println(alumnitos);*/
@@ -27,8 +27,7 @@ public class pruebafecha {
 		//alumno.getAlumnosNuevos();
 		
 		Instructor instructor = new Instructor();
-		instructor.obtenerGafetesAlumnos();
-		
+		instructor.obtenerGafetesAlumnos();		
 	}
 
 }
