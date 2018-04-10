@@ -1,4 +1,5 @@
 package classes;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -158,28 +159,38 @@ public class Alumno {
 		return fechaNac;
 	}
 	public void setFechaNac(java.util.Date fechaNac) {
-		//System.out.println("Asi le llega la fecha al alumno: "+fechaNac);
 		SimpleDateFormat formatF = new SimpleDateFormat("yyyy-MM-dd");
 		this.fechaNac = formatF.format(fechaNac);	
-		//System.out.print("Así formatea la fecha el alumno: " + this.fechaNac);
 	}
 	public String getFecIngreso() {
 		return fecIngreso;
 	}
 	public void setFecIngreso(java.util.Date fecIngreso) {
-		//System.out.println("Asi le llega la fecha al alumno: "+fecIngreso);
 		SimpleDateFormat formatF = new SimpleDateFormat("yyyy-MM-dd");
 		this.fecIngreso = formatF.format(fecIngreso);
-		//System.out.print("Así formatea la fecha el alumno: " +this.fecIngreso);
 	}
 	public String getUltimaAusencia() {
 		return ultimaAusencia;
 	}
 	public void setUltimaAusencia(String  ultimaAusencia) {
-		//SimpleDateFormat formatF = new SimpleDateFormat("yyyy-MM");
-		this.ultimaAusencia = ultimaAusencia;
-		
-		
+		System.out.println("Ultima ausencia"+ultimaAusencia);
+		if(ultimaAusencia == null || ultimaAusencia.equals("")) {
+			this.ultimaAusencia=ultimaAusencia;
+		}	
+		else {
+			SimpleDateFormat formatoDelTexto = new SimpleDateFormat("MM/yyyy");
+			Date fecha = null;
+			try {
+				fecha = formatoDelTexto.parse(ultimaAusencia);
+			} catch (ParseException ex) {
+				ex.printStackTrace();
+			}
+			SimpleDateFormat formatF = new SimpleDateFormat("yyyy-MM-dd");
+			this.ultimaAusencia = formatF.format(fecha);
+			
+			System.out.println("holi "+this.ultimaAusencia);
+			
+		}
 	}
 
 

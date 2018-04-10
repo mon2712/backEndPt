@@ -49,6 +49,7 @@ public class FileReport {
 		//get total number of rows
 		numRows=sheet.getLastRowNum()+2;
 		System.out.println("Numero de rows: " +  numRows);
+		
 		Alumno alumn= new Alumno();
 		SimpleDateFormat formatter = new SimpleDateFormat("MM/yyyy");
 		

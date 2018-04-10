@@ -31,7 +31,7 @@ public class Centro {
 	public static String getStudents(String filter) {
 		StringWriter swriter = new StringWriter();
         try {
-        	int totalR = 0, totalC=0, n=0;
+        	int totalR=0, totalC=0, n=0;
         	String getQueryStatement = "CALL jsonStudentsAtCenter('"+filter+"')";
         	
             prepareStat = conn.prepareStatement(getQueryStatement);
@@ -44,17 +44,21 @@ public class Centro {
             
             totalC=rs.getMetaData().getColumnCount();
             String general[][] = new String[totalR+1][totalC+1];
-            do{
+            for(n=1;n<totalR+1;n++){
             	for(int x=1;x<totalC+1;x++){
-             	     general[n][x]=rs.getString(x);
+            		general[n][x]=rs.getString(x);
+            		if(x==5 && general[n][x]==null) {
+            			general[n][x]="00:00:00 ";
+            		}else {
+            			general[n][x]=rs.getString(x);
+            		}
             	}
-                n++;
-            }while(rs.next());
+            }
             
             try (JsonGenerator gen = Json.createGenerator(swriter)) {
             	gen.writeStartObject();
 	            gen.writeStartArray("studentsInCenter");
-	            for (int x=0;x<totalR;x++) {
+	            for (int x=+1;x<totalR+1;x++) {
 	                gen.writeStartObject();
 	                gen.write("name", general[x][1]+ " " + general[x][2]);
 	                gen.write("idStudent", general[x][3] );
