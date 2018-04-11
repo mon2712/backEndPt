@@ -11,11 +11,11 @@ public class pruebafecha {
 	public static void main(String[] args) throws WriterException, IOException {
 		
 		BaseDatos dataDB = new BaseDatos();
-		//Centro centro= new Centro();
+		Centro centro= new Centro();
 		
 
-		//String Students=centro.getStudents(" ");
-		//System.out.print(Students);
+		String Students=centro.getStudents(" ");
+		System.out.print(Students);
 
 		//String Students=centro.getStudents("JOSE");
 		//System.out.print(Students);
