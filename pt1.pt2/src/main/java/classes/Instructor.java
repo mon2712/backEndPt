@@ -163,26 +163,32 @@ public class Instructor {
 		table.addHeaderRow(headerRow);
 		LineStyle thinline = new LineStyle(Color.WHITE, 0.75f);
 		
-		for (int i = 0; i < selectedPeople.length(); i++) {
-					
-			JSONObject person = selectedPeople.getJSONObject(i);
-			
-			String id=person.getString("idAssistant");
-			String nombre = person.getString("name");
-			
-			crearqr.generateQRCodeImage(id+"A", nombre);
-					
-			String filePath="/"+id+"A.png";
-			Image image = new Image(ImageIO.read(new File(System.getProperty("user.home")+"/Documents/qrImages"+filePath)));
-			image = image.scaleByWidth(imageWidth);
+		if(selectedPeople.length() == 0) {
+			System.out.println("No llego nada");
+		}else {
+		
+			for (int i = 0; i < selectedPeople.length(); i++) {
 						
-			Row<PDPage> row = table.createRow(12);
-					    
-					    
-			cell = row.createImageCell(10 , image);
-			cell.setRightBorderStyle(thinline);
-			cell = row.createCell(15, nombre, HorizontalAlignment.CENTER, VerticalAlignment.MIDDLE);
-			cell = row.createCell(25, "Asistente", HorizontalAlignment.CENTER, VerticalAlignment.MIDDLE);
+				JSONObject person = selectedPeople.getJSONObject(i);
+				if(person.has("idStudent")) {
+					String id=person.getString("idAssistant");
+					String nombre = person.getString("name");
+					
+					crearqr.generateQRCodeImage(id+"A", nombre);
+							
+					String filePath="/"+id+"A.png";
+					Image image = new Image(ImageIO.read(new File(System.getProperty("user.home")+"/Documents/qrImages"+filePath)));
+					image = image.scaleByWidth(imageWidth);
+								
+					Row<PDPage> row = table.createRow(12);
+							    
+							    
+					cell = row.createImageCell(10 , image);
+					cell.setRightBorderStyle(thinline);
+					cell = row.createCell(15, nombre, HorizontalAlignment.CENTER, VerticalAlignment.MIDDLE);
+					cell = row.createCell(25, "Asistente", HorizontalAlignment.CENTER, VerticalAlignment.MIDDLE);
+				}
+			}
 		}
 	
 		table.draw();
@@ -238,26 +244,32 @@ public class Instructor {
 		table.addHeaderRow(headerRow);
 		LineStyle thinline = new LineStyle(Color.WHITE, 0.75f);
 		
-		for (int i = 0; i < selectedPeople.length(); i++) {
-					
-			JSONObject person = selectedPeople.getJSONObject(i);
-			
-			String id=person.getString("idStudent");
-			String nombre = person.getString("name");
-			
-			crearqr.generateQRCodeImage(id+"S", nombre);
-					
-			String filePath="/"+id+"S.png";
-			Image image = new Image(ImageIO.read(new File(System.getProperty("user.home")+"/Documents/qrImages"+filePath)));
-			image = image.scaleByWidth(imageWidth);
+		if(selectedPeople.length() == 0) {
+			System.out.println("No llego nada");
+		}else {
+			for (int i = 0; i < selectedPeople.length(); i++) {
 						
-			Row<PDPage> row = table.createRow(12);
-					    
-					    
-			cell = row.createImageCell(10 , image);
-    	    		cell.setRightBorderStyle(thinline);
-    	    		cell = row.createCell(15, nombre, HorizontalAlignment.CENTER, VerticalAlignment.MIDDLE);
-    	    		cell = row.createCell(25, "Tareas <br />" + nombre, HorizontalAlignment.CENTER, VerticalAlignment.MIDDLE);
+				JSONObject person = selectedPeople.getJSONObject(i);
+				if(person.has("idStudent")) {
+					String id=person.getString("idStudent");
+					String nombre = person.getString("name");
+					
+					crearqr.generateQRCodeImage(id+"S", nombre);
+							
+					String filePath="/"+id+"S.png";
+					Image image = new Image(ImageIO.read(new File(System.getProperty("user.home")+"/Documents/qrImages"+filePath)));
+					image = image.scaleByWidth(imageWidth);
+								
+					Row<PDPage> row = table.createRow(12);
+							    
+							    
+					cell = row.createImageCell(10 , image);
+		    	    		cell.setRightBorderStyle(thinline);
+		    	    		cell = row.createCell(15, nombre, HorizontalAlignment.CENTER, VerticalAlignment.MIDDLE);
+		    	    		cell = row.createCell(25, "Tareas <br />" + nombre, HorizontalAlignment.CENTER, VerticalAlignment.MIDDLE);
+				}
+	
+			}
 		}
 	
 		table.draw();

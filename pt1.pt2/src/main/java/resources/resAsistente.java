@@ -25,7 +25,7 @@ public class resAsistente {
 	@GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/getAllAssistants")
-	public String getLoginSession() {
+	public String getAllAssistants() {
     		return asistente.getAsistentes();
 	}
             
