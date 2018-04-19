@@ -1,5 +1,7 @@
 package resources;
 
+import java.io.IOException;
+
 import javax.json.JsonObject;
 import javax.ws.rs.Consumes;
 
@@ -12,6 +14,8 @@ import javax.ws.rs.core.MediaType;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+
+import com.google.zxing.WriterException;
 
 import classes.Alumno;
 import classes.Asistente;
@@ -28,5 +32,14 @@ public class resAsistente {
 	public String getAllAssistants() {
     		return asistente.getAsistentes();
 	}
+	
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/getAssistantInfo")
+	public String getAssistantInfoP(String array) throws WriterException, IOException {
+    		System.out.println("array"+ array);
+    		return asistente.getAsistenteInfo(array);
+    }
             
 }

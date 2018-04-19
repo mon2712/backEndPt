@@ -170,7 +170,7 @@ public class Instructor {
 			for (int i = 0; i < selectedPeople.length(); i++) {
 						
 				JSONObject person = selectedPeople.getJSONObject(i);
-				if(person.has("idStudent")) {
+				if(person.has("idAssistant")) {
 					String id=person.getString("idAssistant");
 					String nombre = person.getString("name");
 					
