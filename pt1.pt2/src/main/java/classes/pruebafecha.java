@@ -10,12 +10,14 @@ import com.google.zxing.WriterException;
 public class pruebafecha {
 	public static void main(String[] args) throws WriterException, IOException {
 		
-		BaseDatos dataDB = new BaseDatos();
-		Centro centro= new Centro();
+		//BaseDatos dataDB = new BaseDatos();
+		//Centro centro= new Centro();
 		
+		//String students=centro.getEstatusCentro();
+		//System.out.println(students);
 
-		String Students=centro.getStudents(" ");
-		System.out.print(Students);
+		//String Students=centro.getStudents(" ");
+		//System.out.print(Students);
 
 		//String Students=centro.getStudents("JOSE");
 		//System.out.print(Students);
@@ -32,6 +34,11 @@ public class pruebafecha {
 		
 		Instructor instructor = new Instructor();
 		instructor.obtenerGafetesAlumnos();	
+		
+		/*Asistente asistente = new Asistente();
+		String asistentes = asistente.getAsistentes();
+		System.out.println(asistentes);*/
+		
 	}
 
 }
