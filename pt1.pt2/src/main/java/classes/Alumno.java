@@ -186,7 +186,6 @@ public class Alumno {
 		return ultimaAusencia;
 	}
 	public void setUltimaAusencia(String  ultimaAusencia) {
-		System.out.println("Ultima ausencia"+ultimaAusencia);
 		if(ultimaAusencia == null || ultimaAusencia.equals("")) {
 			this.ultimaAusencia=ultimaAusencia;
 		}	
@@ -200,8 +199,6 @@ public class Alumno {
 			}
 			SimpleDateFormat formatF = new SimpleDateFormat("yyyy-MM-dd");
 			this.ultimaAusencia = formatF.format(fecha);
-			
-			System.out.println("holi "+this.ultimaAusencia);
 			
 		}
 	}
