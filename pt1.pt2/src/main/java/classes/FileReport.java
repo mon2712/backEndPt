@@ -48,7 +48,6 @@ public class FileReport {
 		
 		//get total number of rows
 		numRows=sheet.getLastRowNum()+2;
-		System.out.println("Numero de rows: " +  numRows);
 		
 		Alumno alumn= new Alumno();
 		SimpleDateFormat formatter = new SimpleDateFormat("MM/yyyy");
@@ -60,7 +59,6 @@ public class FileReport {
 		String value[];
 		
 		for(Row row: sheet) {
-			//System.out.println("Num row: " + numRow);
 			numRow++;
 			numCol=0;
 			for(Cell cell: row) {
@@ -70,82 +68,55 @@ public class FileReport {
 				if (row.getRowNum() == 0) {
 					String[] colNames= new String[numCols];
 					colNames[numCol]=cell.getStringCellValue();
-					//System.out.print(colNames[numCol] + "\t\t"); 
 				}
 				else {
 					
 					switch(numCol) {
 					case 1:
 						alumn.setIdAlumno(cell.getStringCellValue());
-						
-						//System.out.print(alumn.getIdAlumno() + "\t\t");
 						break;
 					case 2:
 						String cp = convertirUpLow(cell.getStringCellValue());
-						alumn.setApellidoPaterno(cp);
-						
-						//System.out.print(alumn.getApellidoPaterno() + "\t\t");
+						alumn.setApellidoPaterno(cp);//System.out.print(alumn.getApellidoPaterno() + "\t\t");
 						break;
 					case 3:
 						String cp2 = convertirUpLow(cell.getStringCellValue());
 						alumn.setNombre(cp2);
-						
-						//System.out.print(alumn.getNombre() + "\t\t");
 						break;
 					case 4:
 						alumn.setFechaNac(cell.getDateCellValue());
-						
-						//System.out.print(alumn.getFechaNac() + "\t\t");
 						break;
 					case 5:
 						alumn.setGrado(cell.getStringCellValue());
-						
-						//System.out.print(alumn.getGrado() + "\t\t");
 						break;
 					case 6:
 						alumn.setTel(cell.getStringCellValue());
-						
-						//System.out.print(alumn.getTel() + "\t\t");
 						break;						
 					case 7:
-						//alumn= new Alumno();
 						String cp3 = convertirUpLow(cell.getStringCellValue());
 						alumn.setNombreMadre(cp3);
-						
 						//System.out.print(alumn.getNombreMadre() + "\t\t");
 						break;
 					case 8:
 						String cp4 = convertirUpLow(cell.getStringCellValue());
-						alumn.setApellidoMadre(cp4);
-						
-						//System.out.print(alumn.getFecIngreso() + "\t\t");
+						alumn.setApellidoMadre(cp4);//System.out.print(alumn.getFecIngreso() + "\t\t");
 						break;
 					case 9:
-						alumn.setEmailMadre(cell.getStringCellValue());
-						
-						//System.out.print(alumn.getEmailMadre() + "\t\t");
+						alumn.setEmailMadre(cell.getStringCellValue());//System.out.print(alumn.getEmailMadre() + "\t\t");
 						break;
 					case 10:
 						alumn.setCelMadre(cell.getStringCellValue());
-						
-						//System.out.print(alumn.getCelMadre() + "\t\t");
 						break;
 					case 11:
 						String cp5 = convertirUpLow(cell.getStringCellValue());
 						alumn.setTutorNombre(cp5);
-						
-						//System.out.print(alumn.getTutorNombre() + "\t\t");
 						break;
 					case 18:
 						alumn.setTelTutor(cell.getStringCellValue());
-						
-						//System.out.print(alumn.getTelTutor() + "\t\t");
 						break;
 					case 20:
 						alumn.setCelTutor(cell.getStringCellValue());
 						fileToDB(alumn.getIdAlumno(),alumn.getApellidoPaterno(),alumn.getNombre(),alumn.getFechaNac(),alumn.getGrado(),alumn.getTel(),alumn.getNombreMadre(),alumn.getApellidoMadre(),alumn.getEmailMadre(),alumn.getCelMadre(),alumn.getTutorNombre(),alumn.getCelTutor(),alumn.getTelTutor());
-						
-						//System.out.print(alumn.getCelTutor() + "\t\t");
 						break;
 					}
 					
@@ -177,7 +148,6 @@ public class FileReport {
 		FormulaEvaluator formulaEvaluator = wb.getCreationHelper().createFormulaEvaluator();
 		
 		for(Row row: sheet) {
-			System.out.println();
 			numRow++;
 			numCol=0;
 			for(Cell cell: row) {
@@ -186,71 +156,40 @@ public class FileReport {
 				if (row.getRowNum() == 0) {
 					String[] colNames= new String[numCols];
 					colNames[numCol]=cell.getStringCellValue();
-					System.out.print(colNames[numCol] + "\t\t"); 
 				}
 				else {
 					switch(numCol) {
 					case 1:
-						//alumn= new Alumno();
 						alumn.setIdAlumno(cell.getStringCellValue());
-						//System.out.print(alumn.getIdAlumno() + "\t\t");
 						break;
 					case 4:
-						//alumn= new Alumno();
 						alumn.setGrado(cell.getStringCellValue());
-						//System.out.print(alumn.getGrado() + "\t\t");
 						break;
 					case 6:
-						//alumn= new Alumno();
 						alumn.setMateria(cell.getStringCellValue());
-						//System.out.print(alumn.getMateria() + "\t\t");
 						break;
 					case 7:
-						//alumn= new Alumno();
 						alumn.setFecIngreso(cell.getDateCellValue());
-						//alumn.setFecIngreso(cell.getDateCellValue());
-						//System.out.print(alumn.getFecIngreso() + "\t\t");
 						break;
 					case 8:
-						//alumn= new Alumno();
 						alumn.setNivelAnterior(cell.getStringCellValue());
-						//System.out.print(alumn.getNivelAnterior() + "\t\t");
 						break;
 					case 9:
-						//alumn= new Alumno();
-						alumn.setNivelActual(cell.getStringCellValue());
-						//System.out.print(alumn.getNivelActual() + "\t\t");
-						break;
+						alumn.setNivelActual(cell.getStringCellValue());break;
 					case 10:
-						//alumn= new Alumno();
 						alumn.setSet((int)cell.getNumericCellValue());
-						//System.out.print(alumn.getSet() + "\t\t");
 						break;
 					case 11:
-						//alumn= new Alumno();
 						alumn.setNumHojas((int)cell.getNumericCellValue());
-						//System.out.print(alumn.getNumHojas() + "\t\t");
 						break;
 					case 12:
-						//alumn= new Alumno();
-						//String a=formatter.format(cell.getStringCellValue());
 						alumn.setUltimaAusencia(cell.getStringCellValue());
-						//System.out.print(alumn.getUltimaAusencia() + "\t\t");
-						
 						break;
 					case 13:
-						//alumn= new Alumno();
 						alumn.setStatusAnterior(cell.getStringCellValue());
-						//System.out.print(alumn.getStatusAnterior() + "\t\t");
-						
 						break;
 					case 14:
-						//alumn= new Alumno();
 						alumn.setStatusActual(cell.getStringCellValue());
-						//System.out.print(alumn.getStatusActual() + "\t\t");
-						//System.out.print("Estoy a punto de mnadar la fec al procedimiento"+alumn.getIdAlumno()+alumn.getGrado()+
-							//	alumn.getMateria()+alumn.getFecIngreso()+
-								//alumn.getNivelAnterior());
 						updateDB(alumn.getIdAlumno(),alumn.getGrado(),
 								alumn.getMateria(),alumn.getFecIngreso(),
 								alumn.getNivelAnterior(),alumn.getNivelActual(),
@@ -261,22 +200,7 @@ public class FileReport {
 					}
 					
 					
-				}
-					/*switch(formulaEvaluator.evaluateInCell(cell).getCellType()) {
-					
-					//if cell is a numeric format
-					case Cell.CELL_TYPE_NUMERIC:
-						alumnoValues[numRow].set
-								cell.getNumericCellValue();
-						System.out.print(cell.getNumericCellValue() + "\t\t");
-						break;
-					//if cell is a string format
-					case Cell.CELL_TYPE_STRING:
-						String cp = convertirUpLow(cell.getStringCellValue());
-						System.out.print(cp + "\t\t");
-						break;
-					}
-				}*/				
+				}	
 			}
 		}
 		
@@ -292,7 +216,7 @@ public class FileReport {
 	        String ne = (String)st.nextElement();
 	        if (ne.length()>0) {
 	            builder.append(ne.substring(0, 1).toUpperCase());
-	            builder.append(ne.substring(1).toLowerCase()); //agregado
+	            builder.append(ne.substring(1).toLowerCase()); 
 	            builder.append(' ');
 	        }
 	    }
@@ -303,7 +227,6 @@ public class FileReport {
 	public static void fileToDB(String s1, String s2, String s3, String s4, String s5, String s6, String s7, String s8,String s9,String s10,String s11,String s12,String s13 ){
 		 try {
 			 CallableStatement cS = conn.prepareCall("{CALL setBaseAlumnos(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)}");
-			 	//System.out.println("Estoy ne el procedimiento");
 			 	cS.setString(1, s1);
 			 	cS.setString(2, s2);
 			 	cS.setString(3, s3);
@@ -327,7 +250,6 @@ public class FileReport {
 	public static void updateDB(String s1, String s2, String s3, String s4, String s5, String s6, int s7, int s8,String s9,String s10,String s11 ){
 		 try {
 			 CallableStatement cS = conn.prepareCall("{CALL setDatosAlumno(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)}");
-			 	//System.out.println("Estoy ne el procedimiento y la fecha de ingreso es: " + s1+s2+s3+s4+s5);
 			 	String getQueryStatement = "SET sql_mode = ''";
 		    	
 		        try {
