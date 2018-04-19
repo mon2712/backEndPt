@@ -39,6 +39,7 @@ public class resAsistente {
     @Path("/getAssistantInfo")
 	public String getAssistantInfoP(String array) throws WriterException, IOException {
     		System.out.println("array"+ array);
+    		//hola
     		return asistente.getAsistenteInfo(array);
     }
             
