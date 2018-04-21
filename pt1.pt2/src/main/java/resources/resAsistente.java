@@ -38,9 +38,15 @@ public class resAsistente {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/getAssistantInfo")
 	public String getAssistantInfoP(String array) throws WriterException, IOException {
-    		System.out.println("array"+ array);
-    		//hola
     		return asistente.getAsistenteInfo(array);
+    }
+    
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/setAssistant")
+	public String setAssistantInfo(String array) throws WriterException, IOException {
+    		return asistente.setAssistant(array);
     }
             
 }
