@@ -63,20 +63,12 @@ public class Asistente {
 		
 		        // Execute the Query, and get a java ResultSet
 		        ResultSet rs = prepareStat.executeQuery();
-		        String activo="";
+		        
 		        try (JsonGenerator gen = Json.createGenerator(swriter)) {
 		        	gen.writeStartObject();
 		            while(rs.next()) {
 		            		System.out.println(rs.getString(1) + " " + rs.getString(2)+" "+rs.getString(3)+" "+rs.getString(4)+" " +rs.getString(5) + " " + ""+rs.getString(6) + " " + rs.getString(7) + " " + rs.getString(8)+" "+rs.getString(9)+" "+rs.getString(10)+" "+rs.getString(11)+" "+rs.getString(12)+" "+rs.getString(13)+" "+rs.getString(14));
-		                if(rs.getString(8) == "active") {
-		                		activo="1";
-		                }else if(rs.getString(8)=="blocked") {
-		                		activo="2";
-		                }else if(rs.getString(8)=="disable") {
-		                		activo="0";
-		                }else {
-		                		activo="0";
-		                }
+		                
 		            		
 		            		gen.writeStartObject("assistantInfo");
 		                gen.write("name", ""+rs.getString(4));
@@ -86,7 +78,7 @@ public class Asistente {
 		                gen.write("phone", ""+rs.getString(7));
 		                gen.write("lastName", ""+rs.getString(9));
 		                gen.write("arriveTime", ""+rs.getString(10));
-		                gen.write("status", ""+activo);
+		                gen.write("status", ""+rs.getString(8));
 		                gen.write("level", ""+rs.getString(1));
 		                gen.write("lunes", ""+rs.getString(11));
 		                gen.write("miercoles", ""+rs.getString(12));
