@@ -93,70 +93,76 @@ public class Centro {
             	   gen.writeStartObject();
 	           gen.writeStartArray("asistentes");
 	            int bandera=0;
-		        while(rs.next()) {
-		        		System.out.println(rs.getString(1) + " "+rs.getString(2)+" "+rs.getString(3)+" "+rs.getString(4) + " " +rs.getString(5) + " " + rs.getString(6) +" " + rs.getString(7) + " " + rs.getString(8) + " " + rs.getString(9));
-		        		
-		        		if(asistentes.isEmpty()) {
-		        			asistentes.add(rs.getString(7));
-		        			gen.writeStartObject();
-			        			gen.write("idAsistente", rs.getString(7));
-			        			gen.write("name", rs.getString(8));
-			        			gen.write("lastName", ""+rs.getString(9));
-			        			gen.writeStartArray("students");
-				        			gen.writeStartObject();
-					        			gen.write("idStudent", rs.getString(1));
-					        			gen.write("name", rs.getString(2));
-					        			gen.write("lastName", ""+rs.getString(3));
-					        			gen.write("level", rs.getString(4));
-				        				gen.write("entranceTime", rs.getString(5));
-				        				gen.write("timeAtCenter", rs.getString(6));
-				        				gen.write("timeReduced", ""+ rs.getString(10));
-				        			gen.writeEnd(); //Cierra el objeto de 1 alumno
-				        		//gen.writeEnd(); //Cierra el array de alumnos
-		        			//gen.writeEnd();//cierra el objeto de asistente
-		        		}else {
-		        			for(i=0; i<asistentes.size(); i++) {
-			        			if(asistentes.get(i).equals(rs.getString(7))) {
-			        				System.out.println("agrego alumno " + rs.getString(1) + " mando a crear alumno nuevo");
+	            if (!rs.next()){
+	            	//ResultSet is empty
+	            		System.out.println("esta vacio");
+	            		gen.writeEnd();
+	    				gen.writeEnd();
+	            	}else {
+			        while(rs.next()) {
+			        		System.out.println("hola"+rs.getString(1) + " "+rs.getString(2)+" "+rs.getString(3)+" "+rs.getString(4) + " " +rs.getString(5) + " " + rs.getString(6) +" " + rs.getString(7) + " " + rs.getString(8) + " " + rs.getString(9));
+			        		
+			        		if(asistentes.isEmpty()) {
+			        			asistentes.add(rs.getString(7));
+			        			gen.writeStartObject();
+				        			gen.write("idAsistente", rs.getString(7));
+				        			gen.write("name", rs.getString(8));
+				        			gen.write("lastName", ""+rs.getString(9));
+				        			gen.writeStartArray("students");
+					        			gen.writeStartObject();
+						        			gen.write("idStudent", rs.getString(1));
+						        			gen.write("name", rs.getString(2));
+						        			gen.write("lastName", ""+rs.getString(3));
+						        			gen.write("level", rs.getString(4));
+					        				gen.write("entranceTime", rs.getString(5));
+					        				gen.write("timeAtCenter", rs.getString(6));
+					        				gen.write("timeReduced", ""+ rs.getString(10));
+					        			gen.writeEnd(); //Cierra el objeto de 1 alumno
+					        		//gen.writeEnd(); //Cierra el array de alumnos
+			        			//gen.writeEnd();//cierra el objeto de asistente
+			        		}else {
+			        			for(i=0; i<asistentes.size(); i++) {
+				        			if(asistentes.get(i).equals(rs.getString(7))) {
+				        				System.out.println("agrego alumno " + rs.getString(1) + " mando a crear alumno nuevo");
+				        				
+				        				gen.writeStartObject();
+					        				gen.write("idStudent", rs.getString(1));
+					        				gen.write("name", rs.getString(2));
+					        				gen.write("lastName", ""+rs.getString(3));
+					        				gen.write("level", rs.getString(4));
+					        				gen.write("entranceTime", rs.getString(5));
+					        				gen.write("timeAtCenter", rs.getString(6));
+					        			gen.writeEnd();
+					        		
+				        				bandera=0;
+				        			}else {
+				        				bandera=1;
+				        			}
+				        		}
+			        			if(bandera==1) {
+			        				System.out.println("si agrego");
+			        				gen.writeEnd();
+			        				gen.writeEnd();
 			        				
 			        				gen.writeStartObject();
-				        				gen.write("idStudent", rs.getString(1));
-				        				gen.write("name", rs.getString(2));
-				        				gen.write("lastName", ""+rs.getString(3));
-				        				gen.write("level", rs.getString(4));
-				        				gen.write("entranceTime", rs.getString(5));
-				        				gen.write("timeAtCenter", rs.getString(6));
-				        			gen.writeEnd();
-				        		
-			        				bandera=0;
-			        			}else {
-			        				bandera=1;
+				        				gen.write("idAsistente", rs.getString(7));
+				        				gen.write("name", rs.getString(8));
+				        				gen.write("lastName", ""+rs.getString(9));
+				        				gen.writeStartArray("students");
+				        				gen.writeStartObject();
+						        			gen.write("idStudent", rs.getString(1));
+						        			gen.write("name", rs.getString(2));
+						        			gen.write("lastName", ""+rs.getString(3));
+						        			gen.write("level", rs.getString(4));
+					        				gen.write("entranceTime", rs.getString(5));
+					        				gen.write("timeAtCenter", rs.getString(6));
+					        			gen.writeEnd(); //Cierra el objeto de 1 alumno
+	
+				        				
+			        				asistentes.add(rs.getString(7));
 			        			}
 			        		}
-		        			if(bandera==1) {
-		        				System.out.println("si agrego");
-		        				gen.writeEnd();
-		        				gen.writeEnd();
-		        				
-		        				gen.writeStartObject();
-			        				gen.write("idAsistente", rs.getString(7));
-			        				gen.write("name", rs.getString(8));
-			        				gen.write("lastName", ""+rs.getString(9));
-			        				gen.writeStartArray("students");
-			        				gen.writeStartObject();
-					        			gen.write("idStudent", rs.getString(1));
-					        			gen.write("name", rs.getString(2));
-					        			gen.write("lastName", ""+rs.getString(3));
-					        			gen.write("level", rs.getString(4));
-				        				gen.write("entranceTime", rs.getString(5));
-				        				gen.write("timeAtCenter", rs.getString(6));
-				        			gen.writeEnd(); //Cierra el objeto de 1 alumno
-
-			        				
-		        				asistentes.add(rs.getString(7));
-		        			}
-		        		}
-		       }
+			       }
 		        
 		        for(i=0; i<asistentes.size(); i++) {
 		        		System.out.println(asistentes.get(i));
@@ -166,6 +172,7 @@ public class Centro {
 				gen.writeEnd();
 		        gen.writeEnd();
 	            gen.writeEnd();
+	            	}
             }
 		        
 	        return swriter.toString();
