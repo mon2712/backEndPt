@@ -8,6 +8,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,10 +18,12 @@ import javax.json.stream.JsonGenerator;
 
 public class Recepcion {
 	static PreparedStatement prepareStat = null;
-    private static Connection conn = BaseDatos.conectarBD();
+    static Connection conn = BaseDatos.conectarBD();
     
-    public static String obtenerAlumnosConFalta() {
-    		
+    public static String getAlumnosLlamadas() {
+    	/*PreparedStatement prepareStat = null;
+        Connection conn = BaseDatos.conectarBD();
+        */
 		StringWriter swriter = new StringWriter();
 		try {
 			String getQueryStatement = "CALL alumnosConFalta();";
@@ -38,9 +42,10 @@ public class Recepcion {
             gen.writeStartObject();
             gen.writeStartArray("listOfCalls");
 	            while(rs.next()){
+	            	 
 	            		List<Integer> diasQueViene = new ArrayList<Integer> ();
 	
-	            		System.out.println(rs.getString(1)+ " "+rs.getString(2)+ " "+rs.getInt(3)+ " "+rs.getString(4)+ " "+rs.getString(5)+ " "+rs.getString(6)+ " "+rs.getString(7)+ " "+rs.getString(8));
+	            		//System.out.println(rs.getString(1)+ " "+rs.getString(2)+ " "+rs.getInt(3)+ " "+rs.getString(4)+ " "+rs.getString(5)+ " "+rs.getString(6)+ " "+rs.getString(7)+ " "+rs.getString(8));
 	            		int diaAnterior=0;
 	            		int today=0;
 	            		
@@ -60,7 +65,7 @@ public class Recepcion {
 	            		for(int i=0; i<4; i++) {
 	            			
 	            			if(today != i && arrayDays[i] == 1) {
-	            				System.out.println("dia: " + arrayDays[i]+ i);
+	            				//System.out.println("dia: " + arrayDays[i]+ i);
 	            				if(i == 0) diasQueViene.add(2);
 	            				if(i == 1) diasQueViene.add(4);
 	            				if(i == 2) diasQueViene.add(5);
@@ -72,18 +77,18 @@ public class Recepcion {
 	            		int size=diasQueViene.size();
 	            		
 	            		if(size == 0) {
-	            			System.out.println("size" + diasQueViene.size());
-	                		System.out.println("El dia inmediato anterior es: " + rs.getInt(8));
+	            			//System.out.println("size" + diasQueViene.size());
+	                		//System.out.println("El dia inmediato anterior es: " + rs.getInt(8));
 	                		diaAnterior=rs.getInt(8);
 	
 	            		}else {
-	            			System.out.println("size" + diasQueViene.size());
-	                		System.out.println("El dia inmediato anterior es: " + diasQueViene.get(size-1));
+	            			//System.out.println("size" + diasQueViene.size());
+	                		//System.out.println("El dia inmediato anterior es: " + diasQueViene.get(size-1));
 	                		diaAnterior=diasQueViene.get(size-1);
 	            		}
-	            		cStmt.setInt(1, 7);
-	        		    cStmt.setInt(2, 5);
-	        		    System.out.println("holi:"+rs.getInt(3) + diaAnterior);
+	            		cStmt.setInt(1, diaAnterior);
+	        		    cStmt.setInt(2, rs.getInt(3));
+	        		    //System.out.println("holi:"+rs.getInt(3) + diaAnterior);
 	        		    cStmt.registerOutParameter(3, Types.INTEGER);
 	        		    cStmt.registerOutParameter(4, Types.VARCHAR);
 	        		    cStmt.registerOutParameter(5, Types.VARCHAR);
@@ -95,10 +100,10 @@ public class Recepcion {
 	        		    
 	        		    
 	        		    cStmt.execute();    
-	        		    System.out.println("idAlumno: " + cStmt.getString(3));
+	        		    //System.out.println("idAlumno: " + cStmt.getString(3));
 	        		    
 	        		    alumn.setIdAlumno(Integer.toString(cStmt.getInt(3)));
-	        		    System.out.println("idAlumno: " + cStmt.getInt(3));
+	        		    //System.out.println("idAlumno: " + cStmt.getInt(3));
 	        		    alumn.setNombre(cStmt.getString(4));
 	        		    alumn.setApellidoPaterno(cStmt.getString(5));
 	        		    nota=""+cStmt.getString(6);
@@ -113,8 +118,8 @@ public class Recepcion {
 	        		    else active="false";
 	        		    
 	        		    	gen.writeStartObject();
-			    	            gen.write("idStudent", cStmt.getInt(3));
-			    	            gen.write("name", cStmt.getString(4) +  " " +cStmt.getString(5));
+			    	            gen.write("idStudent", alumn.getIdAlumno());
+			    	            gen.write("name", alumn.getNombre()+  " " + alumn.getApellidoPaterno());
 			    	            gen.writeStartObject("call");
 				    	            gen.write("done", done);
 				    	            gen.write("active", active);
@@ -130,33 +135,52 @@ public class Recepcion {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+	/*try {
+			conn.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}*/
 		return swriter.toString();  
     }
     
-    public static void prueba() {
-    	
-    	try {
-			CallableStatement cStmt = conn.prepareCall("{call listaLlamadas(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)}");
-			cStmt.setInt(1, 7);
-		    cStmt.setInt(2, 5);
-		    //System.out.println("holi:"+rs.getInt(3) + diaAnterior);
-		    cStmt.registerOutParameter(3, Types.INTEGER);
-		    cStmt.registerOutParameter(4, Types.VARCHAR);
-		    cStmt.registerOutParameter(5, Types.VARCHAR);
-		    cStmt.registerOutParameter(6, Types.VARCHAR);
-		    cStmt.registerOutParameter(7, Types.DATE);
-		    cStmt.registerOutParameter(8, Types.INTEGER);
-		    cStmt.registerOutParameter(9, Types.INTEGER);
-		    cStmt.registerOutParameter(10, Types.DATE);
-		    
-		    
-		    cStmt.execute();    
-		    System.out.println("idAlumno: " + cStmt.getInt(9));
-		    
-    	} catch (SQLException e) {
+    public static void NotaLlamada(int idAlumno, String nota, String fec) {
+    	/*PreparedStatement prepareStat = null;
+        Connection conn = BaseDatos.conectarBD();*/
+        CallableStatement cStmt;
+        /*SimpleDateFormat formatF = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat formatF1 = new SimpleDateFormat("dd-MM-yyyy");
+		String fech = formatF.format(fec);
+		java.util.Date fechaDate = null;
+        try {
+        	 fechaDate = formatF1.parse(fec);
+		} catch (ParseException e2) {
+			// TODO Auto-generated catch block
+			e2.printStackTrace();
+		}
+        
+        String fech = formatF.format(fechaDate);
+		*/
+		try {
+			cStmt = conn.prepareCall("{call setNotaLlamada(?, ?, ?)}");
+			cStmt.setInt(1, idAlumno);
+			System.out.println("id: " +idAlumno);
+		    cStmt.setString(2, nota);
+		    System.out.println("nOTA: " + nota);
+		    cStmt.setString(3, fec);
+		    System.out.println("Fecha: " + fec);
+		    cStmt.execute();
+		} catch (SQLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+        
+        /*try {
+			conn.close();
+		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
-
-    } 
+		}*/
+    }
+    
 }

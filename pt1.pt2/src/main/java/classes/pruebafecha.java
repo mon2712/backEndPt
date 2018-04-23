@@ -36,8 +36,9 @@ public class pruebafecha {
 		//Instructor instructor = new Instructor();
 		//instructor.obtenerGafetesAlumnos();	
 		Recepcion recepcion = new Recepcion();
-		recepcion.prueba();
+		//String alumnosLlamada= recepcion.getAlumnosLlamadas();
 		//System.out.print(alumnosLlamada);
+		recepcion.NotaLlamada(3, "hola", "23/04/2018");
 		
 		/*Asistente asistente = new Asistente();
 		String asistentes = asistente.getAsistentes();

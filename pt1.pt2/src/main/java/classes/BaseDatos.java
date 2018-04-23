@@ -15,7 +15,7 @@ public class BaseDatos {
     		//String pass ="dBoy6Ap281015";
     		String pass = "vfcnmm2201";
         try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
+            Class.forName("com.mysql.jdbc.Driver");
             System.out.print("Congrats - Seems your MySQL JDBC Driver Registered!");
         } catch (ClassNotFoundException e) {
             System.out.print("Sorry, couldn't found JDBC driver. Make sure you have added JDBC Maven Dependency Correctly");
