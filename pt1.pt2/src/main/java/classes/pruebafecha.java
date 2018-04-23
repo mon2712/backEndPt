@@ -32,8 +32,11 @@ public class pruebafecha {
 		
 		//alumno.getAlumnosNuevos();
 		
-		Instructor instructor = new Instructor();
-		instructor.obtenerGafetesAlumnos();	
+		//Instructor instructor = new Instructor();
+		//instructor.obtenerGafetesAlumnos();	
+		
+		Recepcion recepcion = new Recepcion();
+		recepcion.obtenerAlumnosConFalta();	
 		
 		/*Asistente asistente = new Asistente();
 		String asistentes = asistente.getAsistentes();

@@ -26,6 +26,7 @@ public class resIntructor {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/createIds")
 	public void createIDs(String array) throws WriterException, IOException {
+    		System.out.println(array);
     		instructor.obtenerCredenciales(array);
     }
     
