@@ -1,6 +1,7 @@
 package resources;
 
 import java.io.IOException;
+import java.sql.SQLException;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
@@ -16,6 +17,7 @@ import com.google.zxing.WriterException;
 
 import classes.Instructor;
 
+
 @Path("/instructor")
 public class resIntructor {
 	
@@ -25,15 +27,16 @@ public class resIntructor {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/createIds")
-	public void createIDs(String array) throws WriterException, IOException {
-    		instructor.obtenerCredenciales(array);
+	public void createIDs(String array) throws WriterException, IOException, SQLException {
+    	System.out.println(array);	
+    	instructor.obtenerCredenciales(array);
     }
     
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/createStampsStudents")
-	public void crearEtiquetasAlumnos(String array) throws WriterException, IOException {
+	public void crearEtiquetasAlumnos(String array) throws WriterException, IOException, SQLException {
     		instructor.obtenerEtiquetas(array);
     }
 

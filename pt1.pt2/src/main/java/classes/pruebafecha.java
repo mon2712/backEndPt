@@ -1,6 +1,7 @@
 package classes;
 
 import java.io.IOException;
+import java.sql.SQLException;
 
 import com.google.zxing.WriterException;
 
@@ -8,7 +9,7 @@ import com.google.zxing.WriterException;
 //import classes.BaseDatos;
 
 public class pruebafecha {
-	public static void main(String[] args) throws WriterException, IOException {
+	public static void main(String[] args) throws WriterException, IOException, SQLException {
 		
 		//BaseDatos dataDB = new BaseDatos();
 		//Centro centro= new Centro();
@@ -32,8 +33,11 @@ public class pruebafecha {
 		
 		//alumno.getAlumnosNuevos();
 		
-		Instructor instructor = new Instructor();
-		instructor.obtenerGafetesAlumnos();	
+		//Instructor instructor = new Instructor();
+		//instructor.obtenerGafetesAlumnos();	
+		Recepcion recepcion = new Recepcion();
+		recepcion.prueba();
+		//System.out.print(alumnosLlamada);
 		
 		/*Asistente asistente = new Asistente();
 		String asistentes = asistente.getAsistentes();

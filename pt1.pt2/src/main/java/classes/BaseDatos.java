@@ -12,10 +12,10 @@ public class BaseDatos {
 
     public static Connection conectarBD() {
     		Connection conn = null;
-    		String pass ="dBoy6Ap281015";
-    		//String pass = "vfcnmm2201";
+    		//String pass ="dBoy6Ap281015";
+    		String pass = "vfcnmm2201";
         try {
-            Class.forName("com.mysql.jdbc.Driver");
+            Class.forName("com.mysql.cj.jdbc.Driver");
             System.out.print("Congrats - Seems your MySQL JDBC Driver Registered!");
         } catch (ClassNotFoundException e) {
             System.out.print("Sorry, couldn't found JDBC driver. Make sure you have added JDBC Maven Dependency Correctly");
