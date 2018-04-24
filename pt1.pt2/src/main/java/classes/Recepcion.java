@@ -25,24 +25,50 @@ public class Recepcion {
         Connection conn = BaseDatos.conectarBD();
         */
 		StringWriter swriter = new StringWriter();
+		String resultado="";
 		try {
 			String getQueryStatement = "CALL alumnosConFalta();";
-			CallableStatement cStmt = conn.prepareCall("{call listaLlamadas(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)}");
+			CallableStatement cStmt = conn.prepareCall("{call listaNuevasLlamadas(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)}");
+			String getQueryStatement2 = "call getLlamadasEnNotifiaciones();";
 
 		    prepareStat = conn.prepareStatement(getQueryStatement);
             ResultSet rs = prepareStat.executeQuery(); //devuelbe nombre, apellido, idAlumno, lunes, miercoles, jueves, sabado
+            //Obteniendo las notificaciones de llamadas viejas
+            prepareStat = conn.prepareStatement(getQueryStatement2);
+            ResultSet rs2 = prepareStat.executeQuery();
             
-            
-            Alumno alumn= new Alumno();
-            String nota= "", ultimaAsistencia="", active="", done="",fechaLlamada="";
+            //Alumno alumn= new Alumno();
+            String nota= "", ultimaAsistencia="", active="false", done="",fechaLlamada="";
             int estatus=0, activacion=0; 
             int[] arrayDays = new int[4];
+            int tipo=0;
                  
             try (JsonGenerator gen = Json.createGenerator(swriter)) {
             gen.writeStartObject();
             gen.writeStartArray("listOfCalls");
+            	//notificaciones ya cargadas (llamadas viejas)
+            	while(rs2.next()) {
+            		tipo=1;
+            		if( rs2.getString(4)==null) {
+            			done="false";
+            		}
+            		else done="true";
+            		//System.out.println("Resultado de la consulta de notificacion id:" + rs2.getInt(1)+ " nombre: "+rs2.getString(2)+rs2.getString(3)+" call: done: "+done+" active: "+active + " nota: "+rs2.getString(5)+"fecha: "+rs2.getString(4));
+            		gen.writeStartObject();
+	    	            gen.write("idStudent", rs2.getInt(1));
+	    	            gen.write("name", ""+rs2.getString(2)+  " " + rs2.getString(3));
+	    	            gen.writeStartObject("call");
+		    	            gen.write("done", done);
+		    	            gen.write("active", active);
+		    	            gen.write("note", ""+rs2.getString(5));
+		    	            gen.write("date", ""+rs2.getString(4));
+		    	            gen.write("type", tipo);
+		    	        gen.writeEnd();
+		    	    gen.writeEnd();
+            	}
+            	//notificaciones para cargar (llamadas nuevas)
 	            while(rs.next()){
-	            	 
+	            		tipo=2;
 	            		List<Integer> diasQueViene = new ArrayList<Integer> ();
 	
 	            		System.out.println(rs.getString(1)+ " "+rs.getString(2)+ " "+rs.getInt(3)+ " "+rs.getString(4)+ " "+rs.getString(5)+ " "+rs.getString(6)+ " "+rs.getString(7)+ " "+rs.getString(8));
@@ -105,12 +131,13 @@ public class Recepcion {
 	        		    cStmt.execute();    
 	        		    System.out.println("idAlumno enviado: " +rs.getInt(3) + " idAlumno regresado: "+ cStmt.getInt(3));
 	        		    if (cStmt.getInt(11) == 0){
-		        		    alumn.setIdAlumno(Integer.toString(cStmt.getInt(3)));
-		        		    //System.out.println("idAlumno: " + cStmt.getInt(3));
+	        		    	System.out.println("idAlumno: " + cStmt.getInt(3));
+		        		    
+		        		    /*alumn.setIdAlumno(Integer.toString(cStmt.getInt(3)));
 		        		    alumn.setNombre(cStmt.getString(4));
 		        		    alumn.setApellidoPaterno(cStmt.getString(5));
 		        		    nota=""+cStmt.getString(6);
-		        		    System.out.println("nota: "+cStmt.getString(6));
+		        		    System.out.println("nota: "+cStmt.getString(6));*/
 		        		    fechaLlamada=""+cStmt.getString(7);
 		        		    estatus=cStmt.getInt(8);
 		        		    activacion=cStmt.getInt(9);
@@ -119,26 +146,30 @@ public class Recepcion {
 		        		    else done="false";
 		        		    if(activacion == 1) active="true";	
 		        		    else active="false";
-		        		    
+		        		    if(cStmt.getInt(11)==0 && cStmt.getInt(3)!=0){
+		        		    	System.out.println("Entro al los alumnos con dos faltas");
 		        		    	gen.writeStartObject();
-				    	            gen.write("idStudent", alumn.getIdAlumno());
-				    	            gen.write("name", alumn.getNombre()+  " " + alumn.getApellidoPaterno());
+				    	            gen.write("idStudent", cStmt.getInt(3));
+				    	            gen.write("name", cStmt.getString(4) +  " " + cStmt.getString(5));
 				    	            gen.writeStartObject("call");
 					    	            gen.write("done", done);
 					    	            gen.write("active", active);
 					    	            gen.write("note", nota);
 					    	            gen.write("date", fechaLlamada);
+					    	            gen.write("type", tipo);
 					    	        gen.writeEnd();
 					    	     gen.writeEnd();
+		        		    }
 			    	     }
 	            	}
 	            gen.writeEnd();
 		        gen.writeEnd();  
             	}
+            resultado=swriter.toString();
 		 } catch (SQLException e) {
 			e.printStackTrace();
 		 }
-		return swriter.toString();  
+		return resultado;  
     }
     
     public static void NotaLlamada(int idAlumno, String nota, String fec) {
