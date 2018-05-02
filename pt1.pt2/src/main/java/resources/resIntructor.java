@@ -3,6 +3,7 @@ package resources;
 import java.io.IOException;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -36,5 +37,19 @@ public class resIntructor {
 	public void crearEtiquetasAlumnos(String array) throws WriterException, IOException {
     		instructor.obtenerEtiquetas(array);
     }
+    
+	@GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/getStudentsMissingPayments")
+	public String getListaDeAdeudos() {
+    		return instructor.getListaAdeudos();
+	}
+	
+	@GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/getPaymentOfStudent")
+	public String getPagosAlumnos() {
+    		return instructor.getPagosAlumno();
+	}
 
 }

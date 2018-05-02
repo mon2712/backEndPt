@@ -3,6 +3,7 @@ package classes;
 import java.awt.Color;
 import java.io.File;
 import java.io.IOException;
+import java.io.StringWriter;
 import java.nio.file.FileSystems;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -12,6 +13,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.imageio.ImageIO;
+import javax.json.Json;
+import javax.json.stream.JsonGenerator;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
@@ -281,4 +284,133 @@ public class Instructor {
 		document.close();
 
     }
+    
+    public static String getListaAdeudos() {
+		StringWriter swriter = new StringWriter();
+	    try {
+	        String getQueryStatement = "SELECT * FROM alumno as al WHERE al.adeudo=1;";
+	
+	        prepareStat = conn.prepareStatement(getQueryStatement);
+	
+	        // Execute the Query, and get a java ResultSet
+	        ResultSet rs = prepareStat.executeQuery();
+	
+	        try (JsonGenerator gen = Json.createGenerator(swriter)) {
+	        	gen.writeStartObject();
+	            gen.writeStartArray("studentMissingPayment");
+	            while(rs.next()) {
+	            		System.out.println(rs.getString(1) + " " + rs.getString(3)+" "+rs.getString(2));
+	                gen.writeStartObject();
+		                gen.write("name", ""+rs.getString(3)+ " " + rs.getString(2));
+		                gen.write("idStudent", ""+rs.getString(1));
+		                gen.write("startDate", ""+rs.getString(7));
+		                gen.write("nivel", ""+rs.getString(9));
+	                gen.writeEnd();
+	            }
+	            gen.writeEnd();
+	            gen.writeEnd();
+	        }
+	        return swriter.toString();
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	        return null;
+	    }
+	}
+    
+    
+    public static String getPagosAlumno() {
+		StringWriter swriter = new StringWriter();
+	    try {
+	        String getQueryStatement = "Select * from colegiatura where Alumno_idAlumno=3 order by año ASC , mes ASC;";
+	
+	        prepareStat = conn.prepareStatement(getQueryStatement);
+	
+	        // Execute the Query, and get a java ResultSet
+	        ResultSet rs = prepareStat.executeQuery();
+	        int i=0;
+	        List<String> payments=new ArrayList<>();
+	        
+	        try (JsonGenerator gen = Json.createGenerator(swriter)) {
+	        		gen.writeStartObject();
+	        		gen.writeStartArray("paymentsStudent");
+		        int bandera=0;
+		            if (!rs.isBeforeFirst()){
+		            		//ResultSet is empty
+		            		System.out.println("esta vacio");
+		            		gen.writeEnd();
+		    				gen.writeEnd();
+		            	}else {
+				        while(rs.next()) {
+				        		System.out.println("pagos" + rs.getString(6));
+					        	if(payments.isEmpty()) {
+					        		payments.add(rs.getString(6));
+					        		gen.writeStartObject();
+					        		gen.write("year", rs.getString(6));
+				        			gen.writeStartArray("months");
+					        			gen.writeStartObject();
+						        			gen.write("idPayment", rs.getString(1));
+						        			gen.write("month", rs.getString(5));
+						        			gen.write("quantity", ""+rs.getString(2));
+						        			gen.write("typePayment", rs.getString(4));
+					        				gen.write("date", rs.getString(9));
+					        				gen.write("card", rs.getString(10));
+					        			gen.writeEnd(); //Cierra el objeto de 1 alumno
+					        		//gen.writeEnd(); //Cierra el array de alumnos
+					        	}else {
+				        			for(i=0; i<payments.size(); i++) {
+					        			if(payments.get(i).equals(rs.getString(6))) {
+					        				System.out.println("agrego nuevo año " + rs.getString(6) + " mando a crear nuevo año");
+					        				
+					        				gen.writeStartObject();
+					        					gen.write("idPayment", rs.getString(1));
+						        				gen.write("month", rs.getString(5));
+						        				gen.write("quantity", rs.getString(2));
+						        				gen.write("typePayment", ""+rs.getString(4));
+						        				gen.write("date", rs.getString(9));
+						        				gen.write("card", rs.getString(10));
+						        			gen.writeEnd();
+						        		
+					        				bandera=0;
+					        			}else {
+					        				bandera=1;
+					        			}
+				        			}
+				        			
+				        			if(bandera==1) {
+				        				System.out.println("si agrego");
+				        				
+				        				gen.writeEnd();
+				        				gen.writeEnd();
+				        				
+				        				gen.writeStartObject();
+				        					gen.write("year", rs.getString(6));
+					        				gen.writeStartArray("months");
+					        				gen.writeStartObject();
+						        				gen.write("idPayment", rs.getString(1));
+						        				gen.write("month", rs.getString(5));
+						        				gen.write("quantity", rs.getString(2));
+						        				gen.write("typePayment", ""+rs.getString(4));
+						        				gen.write("date", rs.getString(9));
+						        				gen.write("card", rs.getString(10));
+						        			gen.writeEnd(); //Cierra el objeto de 1 alumno
+		
+					        			
+				        				payments.add(rs.getString(6));
+				        			}
+					        	}
+				        	}
+		            	}
+					gen.writeEnd();
+					gen.writeEnd();
+					gen.writeEnd();
+					gen.writeEnd();
+	        }
+	        return swriter.toString();
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	        return null;
+	    }
+	}
+    
+    
 }

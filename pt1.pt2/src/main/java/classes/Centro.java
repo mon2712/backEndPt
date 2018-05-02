@@ -93,8 +93,8 @@ public class Centro {
             	   gen.writeStartObject();
 	           gen.writeStartArray("asistentes");
 	            int bandera=0;
-	            if (!rs.next()){
-	            	//ResultSet is empty
+	            if (!rs.isBeforeFirst()){
+	            		//ResultSet is empty
 	            		System.out.println("esta vacio");
 	            		gen.writeEnd();
 	    				gen.writeEnd();
