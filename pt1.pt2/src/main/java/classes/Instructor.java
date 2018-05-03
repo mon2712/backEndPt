@@ -121,17 +121,6 @@ public class Instructor {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-    	
-    	if (conn != null && !conn.isClosed()) {
-    	    
-    	        try {
-					conn.close();
-				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-    	    
-    	  }
 
     }
     
@@ -218,17 +207,6 @@ public class Instructor {
 		File file = new File(pdfPath);
 		document.save(file);
 		document.close();
-		
-		if (conn != null && !conn.isClosed()) {
-    	    
-	        try {
-				conn.close();
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-	    
-	  }
 
     }
     
@@ -309,17 +287,6 @@ public class Instructor {
 		File file = new File(pdfPath);
 		document.save(file);
 		document.close();
-		
-		if (conn != null && !conn.isClosed()) {
-    	    
-	        try {
-				conn.close();
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-	    
-	  }
 
     }
     

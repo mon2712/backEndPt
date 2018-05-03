@@ -27,14 +27,14 @@ public class Recepcion {
 		StringWriter swriter = new StringWriter();
 		try {
 			String getQueryStatement = "CALL alumnosConFalta();";
-			CallableStatement cStmt = conn.prepareCall("{call listaLlamadas(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)}");
+			CallableStatement cStmt = conn.prepareCall("{call listaLlamadas(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)}");
 
 		    prepareStat = conn.prepareStatement(getQueryStatement);
-            ResultSet rs = prepareStat.executeQuery();
+            ResultSet rs = prepareStat.executeQuery(); //devuelbe nombre, apellido, idAlumno, lunes, miercoles, jueves, sabado
+            
             
             Alumno alumn= new Alumno();
-            String nota= "", ultimaAsistencia="", active="", done="" ;
-			String fechaLlamada="";
+            String nota= "", ultimaAsistencia="", active="", done="",fechaLlamada="";
             int estatus=0, activacion=0; 
             int[] arrayDays = new int[4];
                  
@@ -45,7 +45,7 @@ public class Recepcion {
 	            	 
 	            		List<Integer> diasQueViene = new ArrayList<Integer> ();
 	
-	            		//System.out.println(rs.getString(1)+ " "+rs.getString(2)+ " "+rs.getInt(3)+ " "+rs.getString(4)+ " "+rs.getString(5)+ " "+rs.getString(6)+ " "+rs.getString(7)+ " "+rs.getString(8));
+	            		System.out.println(rs.getString(1)+ " "+rs.getString(2)+ " "+rs.getInt(3)+ " "+rs.getString(4)+ " "+rs.getString(5)+ " "+rs.getString(6)+ " "+rs.getString(7)+ " "+rs.getString(8));
 	            		int diaAnterior=0;
 	            		int today=0;
 	            		
@@ -86,61 +86,58 @@ public class Recepcion {
 	                		//System.out.println("El dia inmediato anterior es: " + diasQueViene.get(size-1));
 	                		diaAnterior=diasQueViene.get(size-1);
 	            		}
-	            		cStmt.setInt(1, diaAnterior);
-	        		    cStmt.setInt(2, rs.getInt(3));
+	            		
+	            		//Ejecutando uno a uno los alumnos para ver si pertenecen a la lista dellamdas por realizar (es su segunda falta)
+	            		cStmt.setInt(1, diaAnterior); //dìa anterior
+	        		    cStmt.setInt(2, rs.getInt(3)); //id del alumno
 	        		    //System.out.println("holi:"+rs.getInt(3) + diaAnterior);
-	        		    cStmt.registerOutParameter(3, Types.INTEGER);
-	        		    cStmt.registerOutParameter(4, Types.VARCHAR);
-	        		    cStmt.registerOutParameter(5, Types.VARCHAR);
-	        		    cStmt.registerOutParameter(6, Types.VARCHAR);
-	        		    cStmt.registerOutParameter(7, Types.DATE);
-	        		    cStmt.registerOutParameter(8, Types.INTEGER);
-	        		    cStmt.registerOutParameter(9, Types.INTEGER);
-	        		    cStmt.registerOutParameter(10, Types.DATE);
-	        		    
+	        		    cStmt.registerOutParameter(3, Types.INTEGER); // id regreso
+	        		    cStmt.registerOutParameter(4, Types.VARCHAR); // nombre
+	        		    cStmt.registerOutParameter(5, Types.VARCHAR); // apellido
+	        		    cStmt.registerOutParameter(6, Types.VARCHAR); // nota
+	        		    cStmt.registerOutParameter(7, Types.DATE);	  // fecha
+	        		    cStmt.registerOutParameter(8, Types.INTEGER); // estatus
+	        		    cStmt.registerOutParameter(9, Types.INTEGER); // activacion
+	        		    cStmt.registerOutParameter(10, Types.DATE);	  // fecha de ultima asistencia
+	        		    cStmt.registerOutParameter(11, Types.INTEGER); // ERROR
+	        		    cStmt.registerOutParameter(12, Types.VARCHAR); // MENSAJE DE ERROR
 	        		    
 	        		    cStmt.execute();    
-	        		    //System.out.println("idAlumno: " + cStmt.getString(3));
-	        		    
-	        		    alumn.setIdAlumno(Integer.toString(cStmt.getInt(3)));
-	        		    //System.out.println("idAlumno: " + cStmt.getInt(3));
-	        		    alumn.setNombre(cStmt.getString(4));
-	        		    alumn.setApellidoPaterno(cStmt.getString(5));
-	        		    nota=""+cStmt.getString(6);
-	        		    fechaLlamada=""+cStmt.getString(7);
-	        		    estatus=cStmt.getInt(8);
-	        		    activacion=cStmt.getInt(9);
-	        		    ultimaAsistencia=cStmt.getString(10);
-	        		    if(estatus == 1) done="true";	
-	        		    else done="false";
-	        		    
-	        		    if(activacion == 1) active="true";	
-	        		    else active="false";
-	        		    
-	        		    	gen.writeStartObject();
-			    	            gen.write("idStudent", alumn.getIdAlumno());
-			    	            gen.write("name", alumn.getNombre()+  " " + alumn.getApellidoPaterno());
-			    	            gen.writeStartObject("call");
-				    	            gen.write("done", done);
-				    	            gen.write("active", active);
-				    	            gen.write("note", nota);
-				    	            gen.write("date", fechaLlamada);
-				    	        gen.writeEnd();
-				    	     gen.writeEnd();
-		    	        }
+	        		    System.out.println("idAlumno enviado: " +rs.getInt(3) + " idAlumno regresado: "+ cStmt.getInt(3));
+	        		    if (cStmt.getInt(11) == 0){
+		        		    alumn.setIdAlumno(Integer.toString(cStmt.getInt(3)));
+		        		    //System.out.println("idAlumno: " + cStmt.getInt(3));
+		        		    alumn.setNombre(cStmt.getString(4));
+		        		    alumn.setApellidoPaterno(cStmt.getString(5));
+		        		    nota=""+cStmt.getString(6);
+		        		    System.out.println("nota: "+cStmt.getString(6));
+		        		    fechaLlamada=""+cStmt.getString(7);
+		        		    estatus=cStmt.getInt(8);
+		        		    activacion=cStmt.getInt(9);
+		        		    ultimaAsistencia=cStmt.getString(10);
+		        		    if(estatus == 1) done="true";	
+		        		    else done="false";
+		        		    if(activacion == 1) active="true";	
+		        		    else active="false";
+		        		    
+		        		    	gen.writeStartObject();
+				    	            gen.write("idStudent", alumn.getIdAlumno());
+				    	            gen.write("name", alumn.getNombre()+  " " + alumn.getApellidoPaterno());
+				    	            gen.writeStartObject("call");
+					    	            gen.write("done", done);
+					    	            gen.write("active", active);
+					    	            gen.write("note", nota);
+					    	            gen.write("date", fechaLlamada);
+					    	        gen.writeEnd();
+					    	     gen.writeEnd();
+			    	     }
+	            	}
 	            gen.writeEnd();
-		        gen.writeEnd();
-		        
-            }   
-		} catch (SQLException e) {
+		        gen.writeEnd();  
+            	}
+		 } catch (SQLException e) {
 			e.printStackTrace();
-		}
-	/*try {
-			conn.close();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}*/
+		 }
 		return swriter.toString();  
     }
     

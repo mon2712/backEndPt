@@ -23,7 +23,7 @@ public class BaseDatos {
         }
 
         try {
-        		conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/db_pt2?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", "root", pass);
+        		conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/db_pt2?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC&useSSL=false", "root", pass);
             
             if (conn != null) {
                 System.out.println("Connection Successful! Enjoy. Now it's time to push data");
