@@ -42,7 +42,7 @@ public class Instructor {
     private static Connection conn = BaseDatos.conectarBD();
     
     
-    public static void obtenerGafetesAlumnos() throws WriterException, IOException{
+    public static void obtenerGafetesAlumnos() throws WriterException, IOException, SQLException{
     	try {
             String getQueryStatement = "SELECT * FROM alumno WHERE estatus='N';";
 
@@ -118,10 +118,21 @@ public class Instructor {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    	
+    	if (conn != null && !conn.isClosed()) {
+    	    
+    	        try {
+					conn.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+    	    
+    	  }
 
     }
     
-    public static void obtenerCredenciales(String array) throws WriterException, IOException{
+    public static void obtenerCredenciales(String array) throws WriterException, IOException, SQLException{
     				
 		JSONObject obj = new JSONObject(array);
 		JSONArray selectedPeople = obj.getJSONArray("selectedPeople");
@@ -173,20 +184,25 @@ public class Instructor {
 				if(person.has("idAssistant")) {
 					String id=person.getString("idAssistant");
 					String nombre = person.getString("name");
+					System.out.println("id: "+ id);
+					System.out.println("nombre: " + nombre);
 					
 					crearqr.generateQRCodeImage(id+"A", nombre);
 							
 					String filePath="/"+id+"A.png";
+					System.out.println(filePath);
 					Image image = new Image(ImageIO.read(new File(System.getProperty("user.home")+"/Documents/qrImages"+filePath)));
-					image = image.scaleByWidth(imageWidth);
+					//System.out.println(System.getProperty("user.home"));
+					//image = image.scaleByWidth(imageWidth);
 								
 					Row<PDPage> row = table.createRow(12);
 							    
 							    
-					cell = row.createImageCell(10 , image);
+					//cell = row.createImageCell(10 , image);
 					cell.setRightBorderStyle(thinline);
 					cell = row.createCell(15, nombre, HorizontalAlignment.CENTER, VerticalAlignment.MIDDLE);
 					cell = row.createCell(25, "Asistente", HorizontalAlignment.CENTER, VerticalAlignment.MIDDLE);
+					cell = row.createCell(10, "Asistente", HorizontalAlignment.CENTER, VerticalAlignment.MIDDLE);
 				}
 			}
 		}
@@ -195,14 +211,25 @@ public class Instructor {
 		contentStream.close();
 	
 		// Save the results and ensure that the document is properly closed:
-		String pdfPath = System.getProperty("user.home")+"/Documents/Credenciales Asistentes.pdf";
+		String pdfPath = System.getProperty("user.home")+"/Documents/CredencialesAsistentes.pdf";
 		File file = new File(pdfPath);
 		document.save(file);
 		document.close();
+		
+		if (conn != null && !conn.isClosed()) {
+    	    
+	        try {
+				conn.close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+	    
+	  }
 
     }
     
-    public static void obtenerEtiquetas(String array) throws WriterException, IOException{
+    public static void obtenerEtiquetas(String array) throws WriterException, IOException, SQLException{
     		
 		JSONObject obj = new JSONObject(array);
 		JSONArray selectedPeople = obj.getJSONArray("selectedPeople");
@@ -259,7 +286,7 @@ public class Instructor {
 					String filePath="/"+id+"S.png";
 					Image image = new Image(ImageIO.read(new File(System.getProperty("user.home")+"/Documents/qrImages"+filePath)));
 					image = image.scaleByWidth(imageWidth);
-								
+					System.out.println(System.getProperty("user.home"));		
 					Row<PDPage> row = table.createRow(12);
 							    
 							    
@@ -279,6 +306,19 @@ public class Instructor {
 		File file = new File(pdfPath);
 		document.save(file);
 		document.close();
+		
+		if (conn != null && !conn.isClosed()) {
+    	    
+	        try {
+				conn.close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+	    
+	  }
 
     }
+    
+    
 }
