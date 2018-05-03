@@ -33,12 +33,18 @@ public class pruebafecha {
 		
 		//alumno.getAlumnosNuevos();
 		
+
+		//Instructor instructor = new Instructor();
+		//String pagos = instructor.getPagosAlumno();
+		//System.out.println(pagos);
+
 		//Instructor instructor = new Instructor();
 		//instructor.obtenerGafetesAlumnos();	
 		Recepcion recepcion = new Recepcion();
 		//String alumnosLlamada= recepcion.getAlumnosLlamadas();
 		//System.out.print(alumnosLlamada);
 		recepcion.NotaLlamada(3, "hola", "23/04/2018");
+
 		
 		/*Asistente asistente = new Asistente();
 		String asistentes = asistente.getAsistentes();
