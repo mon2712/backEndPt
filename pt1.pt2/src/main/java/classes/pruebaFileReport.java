@@ -10,7 +10,7 @@ public static void main(String[] args) throws IOException, ParseException, SQLEx
 		BaseDatos dataDB = new BaseDatos();
 		FileReport fr= new FileReport();
 		System.out.println("Se jecutó ");
-		//fr.getBaseInfo("C:\\Users\\Vanessa Miranda\\Desktop\\Base.xls");
+		fr.getBaseInfo("C:\\Users\\Vanessa Miranda\\Desktop\\Base.xls");
 		fr.getInfo("C:\\Users\\Vanessa Miranda\\Desktop\\Reporte agosto.xls");
 		
 		//fr.getInfo();
