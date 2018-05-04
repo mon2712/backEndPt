@@ -5,10 +5,12 @@ import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.nio.file.FileSystems;
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -121,18 +123,6 @@ public class Instructor {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-    	
-    	if (conn != null && !conn.isClosed()) {
-    	    
-    	        try {
-					conn.close();
-				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-    	    
-    	  }
-
     }
     
     public static void obtenerCredenciales(String array) throws WriterException, IOException, SQLException{
@@ -218,17 +208,6 @@ public class Instructor {
 		File file = new File(pdfPath);
 		document.save(file);
 		document.close();
-		
-		if (conn != null && !conn.isClosed()) {
-    	    
-	        try {
-				conn.close();
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-	    
-	  }
 
     }
     
@@ -309,21 +288,11 @@ public class Instructor {
 		File file = new File(pdfPath);
 		document.save(file);
 		document.close();
-		
-		if (conn != null && !conn.isClosed()) {
-    	    
-	        try {
-				conn.close();
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-	    
-	  }
 
     }
     
     public static String getListaAdeudos() {
+    		
 		StringWriter swriter = new StringWriter();
 	    try {
 	        String getQueryStatement = "SELECT * FROM alumno as al WHERE al.adeudo=1;";
@@ -356,10 +325,11 @@ public class Instructor {
 	}
     
     
-    public static String getPagosAlumno() {
+    public static String getPagosAlumno(String idStudent) {
 		StringWriter swriter = new StringWriter();
+		System.out.println("idStudent"+ idStudent);
 	    try {
-	        String getQueryStatement = "Select * from colegiatura where Alumno_idAlumno=3 order by año ASC , mes ASC;";
+	        String getQueryStatement = "Select * from colegiatura where Alumno_idAlumno='"+idStudent+"' order by año ASC , mes ASC;";
 	
 	        prepareStat = conn.prepareStatement(getQueryStatement);
 	
@@ -374,12 +344,17 @@ public class Instructor {
 		        int bandera=0;
 		            if (!rs.isBeforeFirst()){
 		            		//ResultSet is empty
-		            		System.out.println("esta vacio");
-		            		gen.writeEnd();
-		    				gen.writeEnd();
+		            		System.out.println("is empty");
+		            		gen.writeStartObject();
+			        		gen.write("err", 1);
+			        		gen.write("messageError", "No tiene pagos registrados");
+			        		gen.writeEnd();
+			        		
+			        		gen.writeEnd();
+						gen.writeEnd();
+		    				//gen.writeEnd();
 		            	}else {
 				        while(rs.next()) {
-				        		System.out.println("pagos" + rs.getString(6));
 					        	if(payments.isEmpty()) {
 					        		payments.add(rs.getString(6));
 					        		gen.writeStartObject();
@@ -397,7 +372,7 @@ public class Instructor {
 					        	}else {
 				        			for(i=0; i<payments.size(); i++) {
 					        			if(payments.get(i).equals(rs.getString(6))) {
-					        				System.out.println("agrego nuevo año " + rs.getString(6) + " mando a crear nuevo año");
+					        				//System.out.println("agrego nuevo año " + rs.getString(6) + " mando a crear nuevo año");
 					        				
 					        				gen.writeStartObject();
 					        					gen.write("idPayment", rs.getString(1));
@@ -415,7 +390,7 @@ public class Instructor {
 				        			}
 				        			
 				        			if(bandera==1) {
-				        				System.out.println("si agrego");
+				        				//System.out.println("si agrego");
 				        				
 				        				gen.writeEnd();
 				        				gen.writeEnd();
@@ -437,11 +412,11 @@ public class Instructor {
 				        			}
 					        	}
 				        	}
+				        gen.writeEnd();
+						gen.writeEnd();
+						gen.writeEnd();
+						gen.writeEnd();
 		            	}
-					gen.writeEnd();
-					gen.writeEnd();
-					gen.writeEnd();
-					gen.writeEnd();
 	        }
 	        return swriter.toString();
 	    } catch (SQLException e) {
@@ -450,4 +425,53 @@ public class Instructor {
 	    }
 	}
     
+    public static String setColegiatura(String array) {
+		StringWriter swriter = new StringWriter();
+		System.out.println("llega a pagar colegiatura"+array);
+		
+	    try {
+	    		JSONObject obj = new JSONObject(array);
+	    		
+			//JSONArray selectedPeople = obj.getJSONArray("infoAssistant");
+			
+			JSONObject colegiatura = obj.getJSONObject("infoPayment");
+			
+			CallableStatement cStmt = conn.prepareCall("{call setColegiatura(?,?,?,?,?,?,?,?,?,?)}");
+			
+			cStmt.setInt(1, colegiatura.getInt("idStudent"));
+		    cStmt.setFloat(2, colegiatura.getFloat("quantity"));
+		    cStmt.setInt(3, colegiatura.getInt("month")+1);
+		    cStmt.setInt(4, colegiatura.getInt("year"));
+		    cStmt.setInt(5, colegiatura.getInt("card"));
+		    cStmt.setInt(6, colegiatura.getInt("idRecepcionista"));
+		    cStmt.setString(7, colegiatura.getString("type"));
+		    cStmt.registerOutParameter(8, Types.INTEGER);
+		    cStmt.registerOutParameter(9, Types.INTEGER);
+		    cStmt.registerOutParameter(10, Types.VARCHAR);
+		    cStmt.execute(); 
+		    
+		    String messageError, nombre, typeUsuario;
+			int err, debe;
+			
+			debe=cStmt.getInt(8);
+			err=cStmt.getInt(9);
+			messageError=cStmt.getString(10);
+	
+	        try (JsonGenerator gen = Json.createGenerator(swriter)) {
+	        		gen.writeStartObject();
+	        		gen.writeStartObject("response");
+		        		gen.write("err", ""+err);
+		        		gen.write("messageError", ""+messageError);
+		        		gen.write("debe", ""+debe);
+	        		gen.writeEnd();
+	        		gen.writeEnd();
+	        }
+	    	
+	        return swriter.toString();
+	    	} catch (SQLException e) {
+	        e.printStackTrace();
+	        return null;
+	    }
+	}
+
 }
