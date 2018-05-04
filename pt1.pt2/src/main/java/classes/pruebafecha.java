@@ -40,15 +40,15 @@ public class pruebafecha {
 
 		//Instructor instructor = new Instructor();
 		//instructor.obtenerGafetesAlumnos();	
-		Recepcion recepcion = new Recepcion();
+		//Recepcion recepcion = new Recepcion();
 		//String alumnosLlamada= recepcion.getAlumnosLlamadas();
 		//System.out.print(alumnosLlamada);
-		recepcion.NotaLlamada(3, "hola", "23/04/2018");
+		//recepcion.NotaLlamada(3, "hola", "23/04/2018");
 
 		
-		/*Asistente asistente = new Asistente();
+		Asistente asistente = new Asistente();
 		String asistentes = asistente.getAsistentes();
-		System.out.println(asistentes);*/
+		System.out.println(asistentes);
 		
 	}
 
