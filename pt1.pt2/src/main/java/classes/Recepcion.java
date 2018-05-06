@@ -33,6 +33,7 @@ public class Recepcion {
 
 		    prepareStat = conn.prepareStatement(getQueryStatement);
             ResultSet rs = prepareStat.executeQuery(); //devuelbe nombre, apellido, idAlumno, lunes, miercoles, jueves, sabado
+            
             //Obteniendo las notificaciones de llamadas viejas
             prepareStat = conn.prepareStatement(getQueryStatement2);
             ResultSet rs2 = prepareStat.executeQuery();
@@ -41,14 +42,14 @@ public class Recepcion {
             String nota= "", ultimaAsistencia="", active="false", done="",fechaLlamada="";
             int estatus=0, activacion=0; 
             int[] arrayDays = new int[4];
-            int tipo=0;
+            String old="";
                  
             try (JsonGenerator gen = Json.createGenerator(swriter)) {
             gen.writeStartObject();
             gen.writeStartArray("listOfCalls");
             	//notificaciones ya cargadas (llamadas viejas)
             	while(rs2.next()) {
-            		tipo=1;
+            		old="true";
             		if( rs2.getString(4)==null) {
             			done="false";
             		}
@@ -62,16 +63,23 @@ public class Recepcion {
 		    	            gen.write("active", active);
 		    	            gen.write("note", ""+rs2.getString(5));
 		    	            gen.write("date", ""+rs2.getString(4));
-		    	            gen.write("type", tipo);
+		    	            gen.write("old", old);
 		    	        gen.writeEnd();
 		    	    gen.writeEnd();
             	}
+            	
             	//notificaciones para cargar (llamadas nuevas)
-	            while(rs.next()){
-	            		tipo=2;
+            	//System.out.println(rs.isBeforeFirst()+rs.getString(12));
+            	if(rs.getRow()==1 && rs.getInt(9)==1){ //no hay faltas
+            			System.out.println("recibo elerror" + rs.getString(9) );
+                }else { //si hay faltas
+                    System.out.println("Recibo info ");
+                    while(rs.next()){
+                    	//System.out.println("So" + rs.getInt(1));
+	            		old= "false";
 	            		List<Integer> diasQueViene = new ArrayList<Integer> ();
 	
-	            		System.out.println(rs.getString(1)+ " "+rs.getString(2)+ " "+rs.getInt(3)+ " "+rs.getString(4)+ " "+rs.getString(5)+ " "+rs.getString(6)+ " "+rs.getString(7)+ " "+rs.getString(8));
+	            		//System.out.println(rs.getString(1)+ " "+rs.getString(2)+ " "+rs.getInt(3)+ " "+rs.getString(4)+ " "+rs.getString(5)+ " "+rs.getString(6)+ " "+rs.getString(7)+ " "+rs.getString(8));
 	            		int diaAnterior=0;
 	            		int today=0;
 	            		
@@ -135,9 +143,9 @@ public class Recepcion {
 		        		    
 		        		    /*alumn.setIdAlumno(Integer.toString(cStmt.getInt(3)));
 		        		    alumn.setNombre(cStmt.getString(4));
-		        		    alumn.setApellidoPaterno(cStmt.getString(5));
+		        		    alumn.setApellidoPaterno(cStmt.getString(5));*/
 		        		    nota=""+cStmt.getString(6);
-		        		    System.out.println("nota: "+cStmt.getString(6));*/
+		        		    //System.out.println("nota: "+cStmt.getString(6));
 		        		    fechaLlamada=""+cStmt.getString(7);
 		        		    estatus=cStmt.getInt(8);
 		        		    activacion=cStmt.getInt(9);
@@ -156,12 +164,13 @@ public class Recepcion {
 					    	            gen.write("active", active);
 					    	            gen.write("note", nota);
 					    	            gen.write("date", fechaLlamada);
-					    	            gen.write("type", tipo);
+					    	            gen.write("old", old);
 					    	        gen.writeEnd();
 					    	     gen.writeEnd();
 		        		    }
 			    	     }
-	            	}
+	            	} 
+                }
 	            gen.writeEnd();
 		        gen.writeEnd();  
             	}
