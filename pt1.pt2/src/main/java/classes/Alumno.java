@@ -292,8 +292,11 @@ public class Alumno {
 	            while(rs.next()) {
 	            		System.out.println(rs.getString(1) + " " + rs.getString(3)+" "+rs.getString(2));
 	                gen.writeStartObject();
-	                gen.write("name", rs.getString(3)+ " " + rs.getString(2));
-	                gen.write("idStudent", rs.getString(1));
+		                gen.write("name", rs.getString(3)+ " " + rs.getString(2));
+		                gen.write("idStudent", rs.getString(1));
+		                gen.write("level", ""+rs.getString(9));
+		                gen.write("startDate", ""+rs.getString(7));
+		                gen.write("grade", ""+rs.getString(4));
 	                gen.writeEnd();
 	            }
 	            gen.writeEnd();
