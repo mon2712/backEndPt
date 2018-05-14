@@ -17,6 +17,11 @@ import javax.json.Json;
 import javax.json.stream.JsonGenerator;
 
 public class Alumno {
+	public static final int DESEMPEÑO_ATO= 0;
+	public static final int DESEMPEÑO_MEDIO = 1;
+	public static final int DESEMPEÑO_BAJO = 2;
+	
+	
 	private String idAlumno;
 	private String apellidoPaterno;
 	private String nombre;
