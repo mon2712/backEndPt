@@ -1,7 +1,11 @@
 package classes;
 
 import java.io.IOException;
+import java.io.StringWriter;
 import java.sql.SQLException;
+
+import javax.json.Json;
+import javax.json.stream.JsonGenerator;
 
 import com.google.zxing.WriterException;
 
@@ -46,9 +50,43 @@ public class pruebafecha {
 		//recepcion.NotaLlamada(3, "hola", "23/04/2018");
 
 		
-		Asistente asistente = new Asistente();
-		String asistentes = asistente.getAsistentes();
-		System.out.println(asistentes);
+		//Asistente asistente = new Asistente();
+		//String asistentes = asistente.getAsistentes();
+		//System.out.println(asistentes);
+		
+		
+		
+		/*StringWriter swriter = new StringWriter();
+		try(JsonGenerator gen = Json.createGenerator(swriter)){
+			gen.writeStartObject();
+			gen.writeStartObject("infoForm");
+			
+			gen.writeStartArray("allAssistants");
+            		gen.writeStartObject();
+            			gen.write("name", "hola");
+            			gen.write("idAssistant", "hola");
+            		gen.writeEnd();
+            		gen.writeStartObject();
+	        			gen.write("name", "hola");
+	        			gen.write("idAssistant", "hola");
+	        		gen.writeEnd();
+            	gen.writeEnd();
+            	
+            	gen.writeStartArray("allAssistants2");
+	        		gen.writeStartObject();
+	        			gen.write("name", "hola");
+	        			gen.write("idAssistant", "hola");
+	        		gen.writeEnd();
+	        		gen.writeStartObject();
+	        			gen.write("name", "hola");
+	        			gen.write("idAssistant", "hola");
+	        		gen.writeEnd();
+	        	gen.writeEnd();
+            	
+            gen.writeEnd();
+            gen.writeEnd();
+		}*/
+        
 		
 	}
 

@@ -12,6 +12,7 @@ import javax.json.Json;
 import javax.json.stream.JsonGenerator;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 public class Test {
@@ -21,31 +22,24 @@ public class Test {
 	public static String obtenerTestProyeccion(String array) throws SQLException {
 		StringWriter swriter = new StringWriter();
 		JSONObject obj = new JSONObject(array);
+		
+		JSONObject infoStudent = obj.getJSONObject("selectedStudent");
+		
 		JSONArray selectedExams = obj.getJSONArray("selectedExams");
 		
+		String level=infoStudent.getString("level");
+		
 		String cadenaExamenes = "";
-		System.out.println("longitud " + selectedExams.length());
 		for(int i=0; i<selectedExams.length(); i++) {
-			System.out.println("exam " + selectedExams.getString(i));
 			if(selectedExams.getString(i).length() != 0) {
 				if(cadenaExamenes == "") {
-					System.out.println("Primer termino ");
 					cadenaExamenes=cadenaExamenes + "'" + selectedExams.getString(i) + "'";
 				}else if(selectedExams.length()>1){
-					System.out.println("Otros terminos ");
 					cadenaExamenes=cadenaExamenes + ",'" + selectedExams.getString(i) + "'";
-				} 
-				else{
-					/*if(i==(selectedExams.length()-1)) {
-						cadenaExamenes=cadenaExamenes+","+"'" + selectedExams.getString(i) + "'";
-					}else {
-						cadenaExamenes=cadenaExamenes + "'" + selectedExams.getString(i) + "'";
-					}	*/
 				}
 			}
 		}
 		
-		System.out.println("cadenaFinal"+cadenaExamenes);
 		String getQueryStatement = "Select exu_pr.P_has_R_idpreguntaTest, preg.pregunta,resp.IdRespuesta, resp.respuesta, resp.puntaje from ExamenUbicacion as exu JOIN ExamenUbicacion_has_PreguntaTest_has_Respuesta as exu_pr  JOIN PreguntaTest as preg JOIN Respuesta as resp\n" + 
 				"ON exu.idExamenU=exu_pr.ExamenUbicacion_idExamenU AND preg.idpreguntaTest=exu_pr.P_has_R_idpreguntaTest AND resp.IdRespuesta=exu_pr.P_has_R_idRespuesta\n" + 
 				"WHERE  exu.nombre IN ("+cadenaExamenes+") group by exu_pr.P_has_R_idpreguntaTest, preg.pregunta, resp.IdRespuesta, resp.respuesta, resp.puntaje order by exu_pr.P_has_R_idpreguntaTest;";
@@ -67,35 +61,41 @@ public class Test {
         prepareStat = conn.prepareStatement(getQueryStatementTotalScore);
 
         ResultSet rsTotalScore = prepareStat.executeQuery();
-        
+
+        String getQueryStatementStartPoint = "Select * from Nivel_has_PreguntaTest_has_Respuesta as nivelPR JOIN PreguntaTest as pt JOIN Respuesta as resp JOIN nivel as niv\n" + 
+        		"ON nivelPR.P_has_R_idpreguntaTest=pt.idpreguntaTest AND nivelPR.P_has_R_IdRespuesta=resp.IdRespuesta AND nivelPR.Nivel_idNivel=niv.idNivel\n" + 
+        		"WHERE nivelPR.puntoInicio=1 AND niv.nombre='"+level+"';";
+
+        prepareStat = conn.prepareStatement(getQueryStatementStartPoint);
+
+        ResultSet rsStartPointTest = prepareStat.executeQuery();
+
         List<String> questions=new ArrayList<>();
         List<String> exams=new ArrayList<>();
+        List<String> questionsPI=new ArrayList<>();
         int i=0;
 
         try (JsonGenerator gen = Json.createGenerator(swriter)) {
 	        	gen.writeStartObject();
-	    		gen.writeStartArray("infoForm");
-	    		
-	    		gen.writeStartObject();
+	        	gen.writeStartObject("infoForm");
+	        	
 	    		gen.writeStartArray("generalForm");
 	        int bandera=0;
 	            if (!rs.isBeforeFirst()){
-	            		//ResultSet is empty
-	            		System.out.println("is empty");
 	            		gen.writeStartObject();
-		        		gen.write("err", 1);
-		        		gen.write("messageError", "No existen registros de preguntas");
-		        		gen.writeEnd();
+		        			gen.write("err", 1);
+		        			gen.write("messageError", "No existen registros de preguntas");
+		        		gen.writeEnd(); //cierro el de error 
 		        		
-		        		gen.writeEnd();
-					gen.writeEnd();
-	    				//gen.writeEnd();
+		        		gen.writeEnd(); //cierro el de array generalForm cuando esta vacio
+					
+		        		//gen.writeEnd(); era el del objeto que se borro
 	            	}else {
 			        while(rs.next()) {
 				        	if(questions.isEmpty()) {
 				        		questions.add(rs.getString(1));
 				        		
-				        		gen.writeStartObject();
+				        		gen.writeStartObject(); //obj con id 2
 				        		gen.write("id", rs.getInt(1));
 				        		gen.write("question", rs.getString(2));
 			        			gen.writeStartArray("answers");
@@ -103,8 +103,7 @@ public class Test {
 					        			gen.write("id", rs.getInt(3));
 					        			gen.write("label", rs.getString(4));
 					        			gen.write("score", ""+rs.getInt(5));
-				        			gen.writeEnd(); //Cierra el objeto de 1 alumno
-				        		//gen.writeEnd(); //Cierra el array de alumnos
+				        			gen.writeEnd(); //Cierra el objeto de 1 elemento
 				        	}else {
 			        			for(i=0; i<questions.size(); i++) {
 				        			if(questions.get(i).equals(rs.getString(1))) {
@@ -114,7 +113,7 @@ public class Test {
 				        					gen.write("id", rs.getInt(3));
 					        				gen.write("label", rs.getString(4));
 					        				gen.write("score", rs.getInt(5));
-					        			gen.writeEnd();
+					        			gen.writeEnd(); //cierra los objetos de los demas 
 					        		
 				        				bandera=0;
 				        			}else {
@@ -123,10 +122,8 @@ public class Test {
 			        			}
 			        			
 			        			if(bandera==1) {
-			        				//System.out.println("si agrego");
-			        				
-			        				gen.writeEnd();
-			        				gen.writeEnd();
+			        				gen.writeEnd(); //cierra el array de answers
+			        				gen.writeEnd(); //cierro el objeto que inicia con id 2
 			        				
 			        				gen.writeStartObject();
 			        					gen.write("id", rs.getInt(1));
@@ -143,29 +140,23 @@ public class Test {
 			        			}
 				        	}
 			        	}
-			        gen.writeEnd();
 					gen.writeEnd();
 					gen.writeEnd();
 					gen.writeEnd();
 	            	}
 	                 
-	    		gen.writeStartObject();
+	    		
 	    		gen.writeStartArray("examsInfo");
 	        bandera=0;
 	            if (!rsExamsScore.isBeforeFirst()){
-	            		//ResultSet is empty
-	            		System.out.println("is empty");
 	            		gen.writeStartObject();
 		        		gen.write("err", 1);
 		        		gen.write("messageError", "No existen registros de preguntas");
 		        		gen.writeEnd();
 		        		
 		        		gen.writeEnd();
-					gen.writeEnd();
-	    				//gen.writeEnd();
 	            	}else {
 			        while(rsExamsScore.next()) {
-			        		System.out.println("hola" + rsExamsScore.getString(4));
 				        	if(exams.isEmpty()) {
 				        		exams.add(rsExamsScore.getString(1));
 				        		gen.writeStartObject();
@@ -176,17 +167,17 @@ public class Test {
 					        			gen.write("id", rsExamsScore.getInt(3));
 					        			gen.write("level", rsExamsScore.getString(4));
 					        			gen.write("score", rsExamsScore.getInt(5));
-				        			gen.writeEnd(); //Cierra el objeto de 1 alumno
-				        		//gen.writeEnd(); //Cierra el array de alumnos
+					        			gen.write("real", 0);
+				        			gen.writeEnd(); //Cierra el objeto de 1 
 				        	}else {
 			        			for(i=0; i<exams.size(); i++) {
 				        			if(exams.get(i).equals(rsExamsScore.getString(1))) {
-				        				//System.out.println("agrego nuevo año " + rs.getString(6) + " mando a crear nuevo año");
 				        				
 				        				gen.writeStartObject();
 				        					gen.write("id", rsExamsScore.getInt(3));
 					        				gen.write("level", rsExamsScore.getString(4));
 					        				gen.write("score", rsExamsScore.getInt(5));
+					        				gen.write("real", 0);
 					        			gen.writeEnd();
 					        		
 				        				bandera=0;
@@ -195,9 +186,7 @@ public class Test {
 				        			}
 			        			}
 			        			
-			        			if(bandera==1) {
-			        				//System.out.println("si agrego");
-			        				
+			        			if(bandera==1) {			        				
 			        				gen.writeEnd();
 			        				gen.writeEnd();
 			        				
@@ -209,6 +198,7 @@ public class Test {
 					        				gen.write("id", rsExamsScore.getInt(3));
 					        				gen.write("level", rsExamsScore.getString(4));
 					        				gen.write("score", rsExamsScore.getInt(5));
+					        				gen.write("real", 0);
 					        			gen.writeEnd(); //Cierra el objeto de 1 alumno
 	
 				        			
@@ -216,21 +206,18 @@ public class Test {
 			        			}
 				        	}
 			        	}
-			        gen.writeEnd();
 					gen.writeEnd();
 					gen.writeEnd();
 					gen.writeEnd();
 	            	}
 	            
 	        
-	       	gen.writeStartObject();
+	       	
 	    		gen.writeStartArray("finalScorePerLevel");
 	            if (!rsTotalScore.isBeforeFirst()){
-	            		//ResultSet is empty
-	            		System.out.println("is empty");
 	            		gen.writeStartObject();
 		        			gen.write("err", 1);
-		        			gen.write("messageError", "No existen registros de preguntas");
+		        			gen.write("messageError", "No existen niveles");
 		        		gen.writeEnd();
 		        		
 	            	}else {
@@ -239,16 +226,82 @@ public class Test {
 				        		gen.write("id", rsTotalScore.getInt(1));
 				        		gen.write("level", rsTotalScore.getString(2));
 				        		gen.write("total", rsTotalScore.getInt(3));
+				        		gen.write("real", 0);
 				        	gen.writeEnd();
 			        	}
 			    
 	            	}
 	       	gen.writeEnd();
-			gen.writeEnd();
-				
+	       	
+	       	
+	       	gen.writeStartArray("questionsPI");
+	        bandera=0;
+	            if (!rsStartPointTest.isBeforeFirst()){
+	            		gen.writeStartObject();
+		        			gen.write("err", 4);
+		        			gen.write("messageError", "No se tienen datos para una proyección de ese nivel");
+		        		gen.writeEnd();
+		        		
+					gen.writeEnd();
+	            	}else {
+			        while(rsStartPointTest.next()) {
+				        	if(questionsPI.isEmpty()) {
+				        		questionsPI.add(rsStartPointTest.getString(2));
+				        		gen.writeStartObject();
+				        		gen.write("id", rsStartPointTest.getInt(2));
+				        		gen.write("question", rsStartPointTest.getString(7));
+				        		gen.write("identification", rsStartPointTest.getString(5));
+				        		gen.write("selected", rsStartPointTest.getString(3));
+			        			gen.writeStartArray("answers");
+				        			gen.writeStartObject();
+					        			gen.write("id", rsStartPointTest.getInt(8));
+					        			gen.write("answer", rsStartPointTest.getString(9));
+					        			gen.write("score", rsStartPointTest.getInt(10));
+				        			gen.writeEnd(); //Cierra el objeto de 1 
+				        	}else {
+				        		for(i=0; i<questionsPI.size(); i++) {
+				        			if(questionsPI.get(i).equals(rsStartPointTest.getString(2))) {
+				        			
+				        				gen.writeStartObject();
+				        					gen.write("id", rsStartPointTest.getInt(8));
+				        					gen.write("answer", rsStartPointTest.getString(9));
+				        					gen.write("score", rsStartPointTest.getInt(10));
+					        			gen.writeEnd();
+					        		
+				        				bandera=0;
+				        			}else {
+				        				bandera=1;
+				        			}
+			        			}
+			        			
+			        			if(bandera==1) {	     
+			        				gen.writeEnd();
+			        				gen.writeEnd();
+			        				
+			        				gen.writeStartObject();
+			        				gen.write("id", rsStartPointTest.getInt(2));
+					        		gen.write("question", rsStartPointTest.getString(7));
+					        		gen.write("identification", rsStartPointTest.getString(5));
+					        		gen.write("selected", rsStartPointTest.getString(3));
+				        			gen.writeStartArray("answers");
+					        			gen.writeStartObject();
+						        			gen.write("id", rsStartPointTest.getInt(8));
+						        			gen.write("answer", rsStartPointTest.getString(9));
+						        			gen.write("score", rsStartPointTest.getInt(10));
+						        			gen.write("real", 0);
+					        			gen.writeEnd(); //Cierra el objeto de 1 alumno
+	
+					        			questionsPI.add(rsStartPointTest.getString(2));
+			        			}
+				        	}
+			        	}
+					gen.writeEnd();
+					gen.writeEnd();
+					gen.writeEnd();
+	            	}
 	            
-	            gen.writeEnd();
-	            gen.writeEnd();
+	            gen.writeEnd(); //inicio de la variable infoForm
+	            gen.writeEnd(); //inicio
 	    }
         
         return swriter.toString();
