@@ -1,0 +1,32 @@
+//A continuación escribimos nuestras reglas en un archivo frecuenciaInicial.drl
+
+
+package rules
+
+import classes.Nivel;
+
+rule "nivel Iinicial 3A"
+
+	dialect "java"
+	
+	salience 20
+    when
+        nivelObject : Nivel(getPuntajeDesempeño() <= 30)
+    then 
+        nivelObject.setNivelMessage("Bajo " + nivelObject.getDesempeñoBajo());
+        nivelObject.setDesempeño(nivelObject.getDesempeñoBajo());
+    end
+rule "nivel Inicial 2A"
+    when
+        nivelObject : Nivel(getPuntajeDesempeño() > 30 && getPuntajeDesempeño() <= 75)
+    then 
+        nivelObject.setNivelMessage("Medio " + nivelObject.getDesempeñoMedio());
+        nivelObject.setDesempeño(nivelObject.getDesempeñoMedio());
+    end
+rule "desempeño Bajo"
+    when
+        nivelObject : Nivel(getPuntajeDesempeño() > 75 && getPuntajeDesempeño() <= 95)
+    then 
+        nivelObject.setNivelMessage("Alto " + nivelObject.getDesempeñoAlto());
+        nivelObject.setDesempeño(nivelObject.getDesempeñoAlto());
+	end

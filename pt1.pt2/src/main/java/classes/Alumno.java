@@ -46,6 +46,97 @@ public class Alumno {
 	private String statusActual;
 	private int set;
 	private int numHojas;
+	private int gradoNum;
+	private int fluidez;
+	private int fluidezResta;
+	private int trabajoB;
+	private int concentracion;
+	private int fluidezMultiplicacion;
+	private int calculoMental;
+	private int procedimientosCortos;
+	private int divisionConResta;
+	private int simplificacion;
+	private int cuenta;
+	private int anteSuc;
+	
+	
+	public int getAnteSuc() {
+		return anteSuc;
+	}
+	public void setAnteSuc(int anteSuc) {
+		this.anteSuc = anteSuc;
+	}
+	public int getCuenta() {
+		return cuenta;
+	}
+	public void setCuenta(int cuenta) {
+		this.cuenta = cuenta;
+	}
+	public int getFluidez() {
+		return fluidez;
+	}
+	public void setFluidez(int fluidez) {
+		this.fluidez = fluidez;
+	}
+	public int getDivisionConResta() {
+		return divisionConResta;
+	}
+	public void setDivisionConResta(int divisionConResta) {
+		this.divisionConResta = divisionConResta;
+	}
+	public int getSimplificacion() {
+		return simplificacion;
+	}
+	public void setSimplificacion(int simplificacion) {
+		this.simplificacion = simplificacion;
+	}
+	public int getTrabajoB() {
+		return trabajoB;
+	}
+	public int getFluidezMultiplicacion() {
+		return fluidezMultiplicacion;
+	}
+	public void setFluidezMultiplicacion(int fluidezMultiplicacion) {
+		this.fluidezMultiplicacion = fluidezMultiplicacion;
+	}
+	public int getCalculoMental() {
+		return calculoMental;
+	}
+	public void setCalculoMental(int calculoMental) {
+		this.calculoMental = calculoMental;
+	}
+	public int getProcedimientosCortos() {
+		return procedimientosCortos;
+	}
+	public void setProcedimientosCortos(int procedimientosCortos) {
+		this.procedimientosCortos = procedimientosCortos;
+	}
+	public void setFecIngreso(String fecIngreso) {
+		this.fecIngreso = fecIngreso;
+	}
+	public void setTrabajoB(int trabajoB) {
+		this.trabajoB = trabajoB;
+	}
+
+	
+	public int getFluidezResta() {
+		return fluidezResta;
+	}
+	public void setFluidezResta(int fluidezResta) {
+		this.fluidezResta = fluidezResta;
+	}
+	public int getConcentracion() {
+		return concentracion;
+	}
+	public void setConcentracion(int concentración) {
+		this.concentracion = concentración;
+	}
+	public int getGradoNum() {
+		return gradoNum;
+	}
+	public void setGradoNum(int gradoNum) {
+		this.gradoNum = gradoNum;
+	}
 	public String getIdAlumno() {
 		return idAlumno;
 	}
@@ -69,6 +160,20 @@ public class Alumno {
 	}
 	public void setGrado(String grado) {
 		this.grado = grado;
+		switch (grado) {
+			case "pk1":
+				this.gradoNum=-1;
+			break;
+			case "pk2":
+				this.gradoNum=-2;
+			break;
+			case "pk3":
+				this.gradoNum=-3;
+			break;
+			default:
+				this.gradoNum=Integer.parseInt(this.grado);
+			break;
+		}
 	}
 	public String getTel() {
 		return tel;

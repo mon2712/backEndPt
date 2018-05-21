@@ -10,19 +10,19 @@ public class ProyeccionNivel {
 	
 	
 	//private int idProyeccionN;
-	private float fecuenciaEstudio;
+	private double frecuenciaEstudio;
 	private String frecuenciaInciso;
 	private String nivel;
 	private int hojasTotales;
 	private int hojasDiarias;
 	private int hojasMes;
 	private int cantidadMeses;
-	
+	/*
 	public ProyeccionNivel(Alumno alumno, List<Nivel> niveles) {
 		super();
 		this.alumno = alumno;
 		this.niveles = niveles;
-	}
+	}*/
 
 	public Alumno getAlumno() {
 		return alumno;
@@ -48,12 +48,12 @@ public class ProyeccionNivel {
 		this.idProyeccionN = idProyeccionN;
 	}*/
 
-	public float getFecuenciaEstudio() {
-		return fecuenciaEstudio;
+	public double getFrecuenciaEstudio() {
+		return frecuenciaEstudio;
 	}
 
-	public void setFecuenciaEstudio(float fecuenciaEstudio) {
-		this.fecuenciaEstudio = fecuenciaEstudio;
+	public void setFrecuenciaEstudio(double fecuenciaEstudio) {
+		this.frecuenciaEstudio = fecuenciaEstudio;
 	}
 
 	public String getFrecuenciaInciso() {
@@ -103,7 +103,7 @@ public class ProyeccionNivel {
 	public void setCantidadMeses(int cantidadMeses) {
 		this.cantidadMeses = cantidadMeses;
 	}
- 
+	
 	// getters y setters
 	
 	

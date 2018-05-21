@@ -18,7 +18,7 @@ import org.drools.core.WorkingMemory;
 public class pruebaDrools {
 
 		public static void main(String[] args) throws DroolsParserException,
-				IOException {
+			IOException {
 			DroolsTest droolsTest = new DroolsTest();
 			droolsTest.executeDrools();
 		}
@@ -109,7 +109,7 @@ public class pruebaDrools {
 					break;
 					}
 				System.out.println(" nivel: "+ n + " Freceuncias: " + Frec);
-				niveles[x-nivelUbicacion] = new Nivel(x,n,Frec);
+				niveles[x-nivelUbicacion] = new Nivel();
 				niveles[x-nivelUbicacion].setPuntajeDesempeño(puntaje[x-nivelUbicacion]);
 			}
 			//List <Nivel> niveles = Arrays.asList(nivel1, nivel2, nivel3, nivel4, nivel5, nivel6);
@@ -168,7 +168,7 @@ public class pruebaDrools {
 			alumno.setIdAlumno("1");
 			List <Nivel> niv = new ArrayList <Nivel> ();
 			niv = Arrays.asList (niveles);
-			ProyeccionNivel proyeccionNivel = new ProyeccionNivel(alumno, niv);
+			//ProyeccionNivel proyeccionNivel = new ProyeccionNivel(alumno, niv);
 			
 			//product.setType("gold");
 			for(int x=nivelUbicacion; x<=6; x++) {
