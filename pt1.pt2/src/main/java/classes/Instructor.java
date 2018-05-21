@@ -438,11 +438,14 @@ public class Instructor {
 			
 			CallableStatement cStmt = conn.prepareCall("{call setColegiatura(?,?,?,?,?,?,?,?,?,?)}");
 			
+			int card=0;
+			if(colegiatura.getString("card").length() == 0) card=0; else card=Integer.parseInt(colegiatura.getString("card"));
+			
 			cStmt.setInt(1, colegiatura.getInt("idStudent"));
 		    cStmt.setFloat(2, colegiatura.getFloat("quantity"));
 		    cStmt.setInt(3, colegiatura.getInt("month")+1);
 		    cStmt.setInt(4, colegiatura.getInt("year"));
-		    cStmt.setInt(5, colegiatura.getInt("card"));
+		    cStmt.setInt(5, card);
 		    cStmt.setInt(6, colegiatura.getInt("idRecepcionista"));
 		    cStmt.setString(7, colegiatura.getString("type"));
 		    cStmt.registerOutParameter(8, Types.INTEGER);
@@ -456,7 +459,6 @@ public class Instructor {
 			debe=cStmt.getInt(8);
 			err=cStmt.getInt(9);
 			messageError=cStmt.getString(10);
-	
 	        try (JsonGenerator gen = Json.createGenerator(swriter)) {
 	        		gen.writeStartObject();
 	        		gen.writeStartObject("response");

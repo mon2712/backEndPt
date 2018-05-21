@@ -292,8 +292,11 @@ public class Alumno {
 	            while(rs.next()) {
 	            		System.out.println(rs.getString(1) + " " + rs.getString(3)+" "+rs.getString(2));
 	                gen.writeStartObject();
-	                gen.write("name", rs.getString(3)+ " " + rs.getString(2));
-	                gen.write("idStudent", rs.getString(1));
+		                gen.write("name", rs.getString(3)+ " " + rs.getString(2));
+		                gen.write("idStudent", rs.getString(1));
+		                gen.write("level", ""+rs.getString(9));
+		                gen.write("startDate", ""+rs.getString(7));
+		                gen.write("grade", ""+rs.getString(4));
 	                gen.writeEnd();
 	            }
 	            gen.writeEnd();
@@ -304,6 +307,75 @@ public class Alumno {
             e.printStackTrace();
             return null;
         }
+    }
+    
+    public static String getAlumnosSinProyeccion() {
+		StringWriter swriter = new StringWriter();
+	    try {
+	        String getQueryStatement = "SELECT * FROM Alumno AS al\r\n" + 
+	        		"WHERE NOT EXISTS (\r\n" + 
+	        		"  SELECT * FROM ProyeccionAnual AS pa WHERE al.idAlumno=pa.Alumno_idAlumno\r\n" + 
+	        		") AND al.estatus='N' AND al.nivel in ('3A','2A','A','B','C','D');";
+	
+	        prepareStat = conn.prepareStatement(getQueryStatement);
+	
+	        // Execute the Query, and get a java ResultSet
+	        ResultSet rs = prepareStat.executeQuery();
+	
+	        try (JsonGenerator gen = Json.createGenerator(swriter)) {
+	        	gen.writeStartObject();
+	            gen.writeStartArray("allStudents");
+	            while(rs.next()) {
+	            		System.out.println(rs.getString(1) + " " + rs.getString(3)+" "+rs.getString(2));
+	                gen.writeStartObject();
+		                gen.write("name", rs.getString(3)+ " " + rs.getString(2));
+		                gen.write("idStudent", rs.getString(1));
+		                gen.write("level", ""+rs.getString(9));
+		                gen.write("startDate", ""+rs.getString(7));
+		                gen.write("grade", ""+rs.getString(4));
+	                gen.writeEnd();
+	            }
+	            gen.writeEnd();
+	            gen.writeEnd();
+	        }
+	        return swriter.toString();
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	        return null;
+	    }
+    }
+    
+    public static String getAlumnosConProyeccion() {
+		StringWriter swriter = new StringWriter();
+	    try {
+	        String getQueryStatement = "SELECT * FROM Alumno as al RIGHT JOIN ProyeccionAnual as pa ON al.idAlumno=pa.Alumno_idAlumno WHERE al.nivel in ('3A','2A','A','B','C','D');";
+	
+	        prepareStat = conn.prepareStatement(getQueryStatement);
+	
+	        // Execute the Query, and get a java ResultSet
+	        ResultSet rs = prepareStat.executeQuery();
+	
+	        try (JsonGenerator gen = Json.createGenerator(swriter)) {
+	        	gen.writeStartObject();
+	            gen.writeStartArray("allStudents");
+	            while(rs.next()) {
+	            		System.out.println(rs.getString(1) + " " + rs.getString(3)+" "+rs.getString(2));
+	                gen.writeStartObject();
+		                gen.write("name", rs.getString(3)+ " " + rs.getString(2));
+		                gen.write("idStudent", rs.getString(1));
+		                gen.write("level", ""+rs.getString(9));
+		                gen.write("startDate", ""+rs.getString(7));
+		                gen.write("grade", ""+rs.getString(4));
+	                gen.writeEnd();
+	            }
+	            gen.writeEnd();
+	            gen.writeEnd();
+	        }
+	        return swriter.toString();
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	        return null;
+	    }
     }
     
 }
