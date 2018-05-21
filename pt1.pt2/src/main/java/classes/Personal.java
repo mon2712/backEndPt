@@ -17,11 +17,12 @@ public class Personal {
     private static Connection conn = BaseDatos.conectarBD();
     
     public static String iniciarSesion(String username, String password) {
+    		System.out.println("llega a la funcion con: " + username + " passowrd: " + password);
     		String type="", name="";
     		int id;
     		StringWriter swriter = new StringWriter();
     		try {
-    		    CallableStatement cStmt = conn.prepareCall("{call verify_user(?, ?, ?, ?, ?)}");
+    		    CallableStatement cStmt = conn.prepareCall("{call verifyUser(?, ?, ?, ?, ?)}");
 	
     		    cStmt.setString(1, username);
     		    cStmt.setString(2, password);

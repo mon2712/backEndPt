@@ -3,15 +3,20 @@ package classes;
 import java.awt.Color;
 import java.io.File;
 import java.io.IOException;
+import java.io.StringWriter;
 import java.nio.file.FileSystems;
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.imageio.ImageIO;
+import javax.json.Json;
+import javax.json.stream.JsonGenerator;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
@@ -118,18 +123,6 @@ public class Instructor {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-    	
-    	if (conn != null && !conn.isClosed()) {
-    	    
-    	        try {
-					conn.close();
-				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-    	    
-    	  }
-
     }
     
     public static void obtenerCredenciales(String array) throws WriterException, IOException, SQLException{
@@ -215,17 +208,6 @@ public class Instructor {
 		File file = new File(pdfPath);
 		document.save(file);
 		document.close();
-		
-		if (conn != null && !conn.isClosed()) {
-    	    
-	        try {
-				conn.close();
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-	    
-	  }
 
     }
     
@@ -306,19 +288,192 @@ public class Instructor {
 		File file = new File(pdfPath);
 		document.save(file);
 		document.close();
-		
-		if (conn != null && !conn.isClosed()) {
-    	    
-	        try {
-				conn.close();
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-	    
-	  }
 
     }
     
+    public static String getListaAdeudos() {
+    		
+		StringWriter swriter = new StringWriter();
+	    try {
+	        String getQueryStatement = "SELECT * FROM alumno as al WHERE al.adeudo=1;";
+	
+	        prepareStat = conn.prepareStatement(getQueryStatement);
+	
+	        // Execute the Query, and get a java ResultSet
+	        ResultSet rs = prepareStat.executeQuery();
+	
+	        try (JsonGenerator gen = Json.createGenerator(swriter)) {
+	        	gen.writeStartObject();
+	            gen.writeStartArray("studentMissingPayment");
+	            while(rs.next()) {
+	            		System.out.println(rs.getString(1) + " " + rs.getString(3)+" "+rs.getString(2));
+	                gen.writeStartObject();
+		                gen.write("name", ""+rs.getString(3)+ " " + rs.getString(2));
+		                gen.write("idStudent", ""+rs.getString(1));
+		                gen.write("startDate", ""+rs.getString(7));
+		                gen.write("nivel", ""+rs.getString(9));
+	                gen.writeEnd();
+	            }
+	            gen.writeEnd();
+	            gen.writeEnd();
+	        }
+	        return swriter.toString();
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	        return null;
+	    }
+	}
     
+    
+    public static String getPagosAlumno(String idStudent) {
+		StringWriter swriter = new StringWriter();
+		System.out.println("idStudent"+ idStudent);
+	    try {
+	        String getQueryStatement = "Select * from colegiatura where Alumno_idAlumno='"+idStudent+"' order by año ASC , mes ASC;";
+	
+	        prepareStat = conn.prepareStatement(getQueryStatement);
+	
+	        // Execute the Query, and get a java ResultSet
+	        ResultSet rs = prepareStat.executeQuery();
+	        int i=0;
+	        List<String> payments=new ArrayList<>();
+	        
+	        try (JsonGenerator gen = Json.createGenerator(swriter)) {
+	        		gen.writeStartObject();
+	        		gen.writeStartArray("paymentsStudent");
+		        int bandera=0;
+		            if (!rs.isBeforeFirst()){
+		            		//ResultSet is empty
+		            		System.out.println("is empty");
+		            		gen.writeStartObject();
+			        		gen.write("err", 1);
+			        		gen.write("messageError", "No tiene pagos registrados");
+			        		gen.writeEnd();
+			        		
+			        		gen.writeEnd();
+						gen.writeEnd();
+		    				//gen.writeEnd();
+		            	}else {
+				        while(rs.next()) {
+					        	if(payments.isEmpty()) {
+					        		payments.add(rs.getString(6));
+					        		gen.writeStartObject();
+					        		gen.write("year", rs.getString(6));
+				        			gen.writeStartArray("months");
+					        			gen.writeStartObject();
+						        			gen.write("idPayment", rs.getString(1));
+						        			gen.write("month", rs.getString(5));
+						        			gen.write("quantity", ""+rs.getString(2));
+						        			gen.write("typePayment", rs.getString(4));
+					        				gen.write("date", rs.getString(9));
+					        				gen.write("card", rs.getString(10));
+					        			gen.writeEnd(); //Cierra el objeto de 1 alumno
+					        		//gen.writeEnd(); //Cierra el array de alumnos
+					        	}else {
+				        			for(i=0; i<payments.size(); i++) {
+					        			if(payments.get(i).equals(rs.getString(6))) {
+					        				//System.out.println("agrego nuevo año " + rs.getString(6) + " mando a crear nuevo año");
+					        				
+					        				gen.writeStartObject();
+					        					gen.write("idPayment", rs.getString(1));
+						        				gen.write("month", rs.getString(5));
+						        				gen.write("quantity", rs.getString(2));
+						        				gen.write("typePayment", ""+rs.getString(4));
+						        				gen.write("date", rs.getString(9));
+						        				gen.write("card", rs.getString(10));
+						        			gen.writeEnd();
+						        		
+					        				bandera=0;
+					        			}else {
+					        				bandera=1;
+					        			}
+				        			}
+				        			
+				        			if(bandera==1) {
+				        				//System.out.println("si agrego");
+				        				
+				        				gen.writeEnd();
+				        				gen.writeEnd();
+				        				
+				        				gen.writeStartObject();
+				        					gen.write("year", rs.getString(6));
+					        				gen.writeStartArray("months");
+					        				gen.writeStartObject();
+						        				gen.write("idPayment", rs.getString(1));
+						        				gen.write("month", rs.getString(5));
+						        				gen.write("quantity", rs.getString(2));
+						        				gen.write("typePayment", ""+rs.getString(4));
+						        				gen.write("date", rs.getString(9));
+						        				gen.write("card", rs.getString(10));
+						        			gen.writeEnd(); //Cierra el objeto de 1 alumno
+		
+					        			
+				        				payments.add(rs.getString(6));
+				        			}
+					        	}
+				        	}
+				        gen.writeEnd();
+						gen.writeEnd();
+						gen.writeEnd();
+						gen.writeEnd();
+		            	}
+	        }
+	        return swriter.toString();
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	        return null;
+	    }
+	}
+    
+    public static String setColegiatura(String array) {
+		StringWriter swriter = new StringWriter();
+		System.out.println("llega a pagar colegiatura"+array);
+		
+	    try {
+	    		JSONObject obj = new JSONObject(array);
+	    		
+			//JSONArray selectedPeople = obj.getJSONArray("infoAssistant");
+			
+			JSONObject colegiatura = obj.getJSONObject("infoPayment");
+			
+			CallableStatement cStmt = conn.prepareCall("{call setColegiatura(?,?,?,?,?,?,?,?,?,?)}");
+			
+			int card=0;
+			if(colegiatura.getString("card").length() == 0) card=0; else card=Integer.parseInt(colegiatura.getString("card"));
+			
+			cStmt.setInt(1, colegiatura.getInt("idStudent"));
+		    cStmt.setFloat(2, colegiatura.getFloat("quantity"));
+		    cStmt.setInt(3, colegiatura.getInt("month")+1);
+		    cStmt.setInt(4, colegiatura.getInt("year"));
+		    cStmt.setInt(5, card);
+		    cStmt.setInt(6, colegiatura.getInt("idRecepcionista"));
+		    cStmt.setString(7, colegiatura.getString("type"));
+		    cStmt.registerOutParameter(8, Types.INTEGER);
+		    cStmt.registerOutParameter(9, Types.INTEGER);
+		    cStmt.registerOutParameter(10, Types.VARCHAR);
+		    cStmt.execute(); 
+		    
+		    String messageError, nombre, typeUsuario;
+			int err, debe;
+			
+			debe=cStmt.getInt(8);
+			err=cStmt.getInt(9);
+			messageError=cStmt.getString(10);
+	        try (JsonGenerator gen = Json.createGenerator(swriter)) {
+	        		gen.writeStartObject();
+	        		gen.writeStartObject("response");
+		        		gen.write("err", ""+err);
+		        		gen.write("messageError", ""+messageError);
+		        		gen.write("debe", ""+debe);
+	        		gen.writeEnd();
+	        		gen.writeEnd();
+	        }
+	    	
+	        return swriter.toString();
+	    	} catch (SQLException e) {
+	        e.printStackTrace();
+	        return null;
+	    }
+	}
+
 }

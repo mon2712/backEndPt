@@ -115,6 +115,13 @@ public class Asistente {
 	    			if(asis.getString("idAssistant").length() == 0 ) {
 	    				System.out.println("no existe");
 	    				
+	    				int lunes=0, miercoles=0, jueves=0, sabado=0;
+	    				
+	    				if(asis.getString("lunes").length() == 0) lunes=0;
+	    				if(asis.getString("miercoles").length() == 0) miercoles=0;
+	    				if(asis.getString("jueves").length() == 0) jueves=0;
+	    				if(asis.getString("sabado").length() == 0) sabado=0;
+	    				
 	    				CallableStatement cStmt = conn.prepareCall("{call setUsuario(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}");
 	    				
 	        		    cStmt.setString(1, asis.getString("name"));
@@ -124,11 +131,11 @@ public class Asistente {
 	        		    cStmt.setString(5, asis.getString("username"));
 	        		    cStmt.setString(6, asis.getString("arriveTime"));
 	        		    cStmt.setString(7, asis.getString("level"));
-	        		    cStmt.setString(8, asis.getString("typeUser"));
-	        		    cStmt.setInt(9, asis.getInt("lunes"));
-	        		    cStmt.setInt(10, asis.getInt("miercoles"));
-	        		    cStmt.setInt(11, asis.getInt("jueves"));
-	        		    cStmt.setInt(12, asis.getInt("sabado"));
+	        		    cStmt.setString(8, asis.getString("type"));
+	        		    cStmt.setInt(9, lunes);
+	        		    cStmt.setInt(10, miercoles);
+	        		    cStmt.setInt(11, jueves);
+	        		    cStmt.setInt(12, sabado);
 	        		    cStmt.registerOutParameter(13, Types.VARCHAR);
 	        		    cStmt.registerOutParameter(14, Types.VARCHAR);
 	        		    cStmt.registerOutParameter(15, Types.INTEGER);

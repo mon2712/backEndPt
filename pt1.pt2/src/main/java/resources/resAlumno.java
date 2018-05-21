@@ -11,6 +11,7 @@ import classes.Alumno;
 
 @Path("/alumno")
 public class resAlumno {
+	Alumno alumno = new Alumno();
 	
 	@GET
     @Consumes(MediaType.APPLICATION_JSON)
@@ -18,7 +19,6 @@ public class resAlumno {
     @Path("/getStudentFile")
 	public String getLoginSession(@QueryParam("id") int idAlumno) {
     		System.out.println("hola"+idAlumno);
-    		Alumno alumno = new Alumno();
     		return alumno.obtenerFichaAlumno(idAlumno);
 	}
 	
@@ -28,7 +28,22 @@ public class resAlumno {
     @Path("/getAllStudents")
 	public String getAllStudents(@QueryParam("filter") String filter) {
 		System.out.println("hola getallstudents"+filter);
-    		Alumno alumno = new Alumno();
     		return alumno.getAlumnos(filter);
+	}
+	
+	@GET
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/getStudentsWithoutAnnualPlan")
+	public String getAllStudentsWAnnualP() {
+    		return alumno.getAlumnosSinProyeccion();
+	}
+	
+	@GET
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/getStudentsWithAnnualPlan")
+	public String getStudentsWithAnnualPlan() {
+    		return alumno.getAlumnosConProyeccion();
 	}
 }
