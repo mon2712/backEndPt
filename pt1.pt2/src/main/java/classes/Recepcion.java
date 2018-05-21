@@ -21,9 +21,6 @@ public class Recepcion {
     static Connection conn = BaseDatos.conectarBD();
     
     public static String getAlumnosLlamadas() {
-    	/*PreparedStatement prepareStat = null;
-        Connection conn = BaseDatos.conectarBD();
-        */
 		StringWriter swriter = new StringWriter();
 		try {
 			String getQueryStatement = "CALL alumnosConFalta();";
@@ -71,9 +68,7 @@ public class Recepcion {
 	            				if(i == 2) diasQueViene.add(5);
 	            				if(i == 3) diasQueViene.add(7);
 	            			}
-	            			
 	            		}
-	            		
 	            		int size=diasQueViene.size();
 	            		
 	            		if(size == 0) {
@@ -88,7 +83,6 @@ public class Recepcion {
 	            		}
 	            		cStmt.setInt(1, diaAnterior);
 	        		    cStmt.setInt(2, rs.getInt(3));
-	        		    //System.out.println("holi:"+rs.getInt(3) + diaAnterior);
 	        		    cStmt.registerOutParameter(3, Types.INTEGER);
 	        		    cStmt.registerOutParameter(4, Types.VARCHAR);
 	        		    cStmt.registerOutParameter(5, Types.VARCHAR);
@@ -103,7 +97,6 @@ public class Recepcion {
 	        		    //System.out.println("idAlumno: " + cStmt.getString(3));
 	        		    
 	        		    alumn.setIdAlumno(Integer.toString(cStmt.getInt(3)));
-	        		    //System.out.println("idAlumno: " + cStmt.getInt(3));
 	        		    alumn.setNombre(cStmt.getString(4));
 	        		    alumn.setApellidoPaterno(cStmt.getString(5));
 	        		    nota=""+cStmt.getString(6);
@@ -130,57 +123,25 @@ public class Recepcion {
 		    	        }
 	            gen.writeEnd();
 		        gen.writeEnd();
-		        
             }   
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-	/*try {
-			conn.close();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}*/
-		return swriter.toString();  
+	  return swriter.toString();  
     }
     
     public static void NotaLlamada(int idAlumno, String nota, String fec) {
-    	/*PreparedStatement prepareStat = null;
-        Connection conn = BaseDatos.conectarBD();*/
         CallableStatement cStmt;
-        /*SimpleDateFormat formatF = new SimpleDateFormat("yyyy-MM-dd");
-        SimpleDateFormat formatF1 = new SimpleDateFormat("dd-MM-yyyy");
-		String fech = formatF.format(fec);
-		java.util.Date fechaDate = null;
-        try {
-        	 fechaDate = formatF1.parse(fec);
-		} catch (ParseException e2) {
-			// TODO Auto-generated catch block
-			e2.printStackTrace();
-		}
-        
-        String fech = formatF.format(fechaDate);
-		*/
 		try {
 			cStmt = conn.prepareCall("{call setNotaLlamada(?, ?, ?)}");
 			cStmt.setInt(1, idAlumno);
-			System.out.println("id: " +idAlumno);
 		    cStmt.setString(2, nota);
-		    System.out.println("nOTA: " + nota);
 		    cStmt.setString(3, fec);
-		    System.out.println("Fecha: " + fec);
 		    cStmt.execute();
 		} catch (SQLException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-        
-        /*try {
-			conn.close();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}*/
     }
     
 }
