@@ -353,19 +353,14 @@ public class Alumno {
     		    cStmt.registerOutParameter(15, Types.INTEGER);
     		    cStmt.execute();    
     		    
-    		    int err, debeColegiatura, asistencias;
-    		    String nombre, tutor, telefono="", apellido, nivel,debe;
+    		    int err, debeColegiatura;
+    		    String telefono="",debe;
+    		    
     		    err=cStmt.getInt(15);
     		    debeColegiatura=cStmt.getInt(2);
-    		    asistencias=cStmt.getInt(3);
-    		    nombre = cStmt.getString(5);
-    		    apellido = cStmt.getString(6);
-    		    nivel = cStmt.getString(7);
-    		    telefono = cStmt.getString(8);
-    		    tutor=cStmt.getString(4);
     		    
-    		    System.out.println("cel "+cStmt.getString(9));
     		    Alumno alumno = new Alumno();
+    		    
     		    alumno.setNombre(cStmt.getString(11));
     		    alumno.setApellidoPaterno(cStmt.getString(12));
     		    alumno.setNivelActual(cStmt.getString(13));
@@ -376,9 +371,10 @@ public class Alumno {
     		    alumno.setAdeudo(cStmt.getInt(10));
     		    alumno.setAsistencias(cStmt.getInt(3));
     		    alumno.setTutorNombre(cStmt.getString(4));
-    		    alumno.setTelTutor(cStmt.getString(5));
+    		    alumno.setCelTutor(cStmt.getString(5));
     		    
     		    System.out.println("usuario: "+alumno.getNombre() + " " + alumno.getApellidoPaterno() + " " + alumno.getNivelActual()+"telefono"+alumno.getTel());
+    		    
     		    if (alumno.getAdeudo() == 1) debe="true"; else debe="false";
     		    if (alumno.getTel() == null) telefono=""; else telefono=alumno.getTel();
     		    
@@ -388,12 +384,12 @@ public class Alumno {
     	    	            gen.writeStartObject();
     	    	            gen.writeStartObject("student");
     	    	            		gen.write("code", 1);
-    	    	            		gen.write("type", "No existen alumnos con ese id");
+    	    	            		gen.write("type", "No existe alumno con ese id");
     	    	            gen.writeEnd();
     	    	            gen.writeEnd();
     	    	        }
     		    }else if(err == 0) {
-    		    		System.out.println("existe un alumno"+nombre);
+    		    		System.out.println("existe un alumno"+alumno.getNombre());
 	    	        try (JsonGenerator gen = Json.createGenerator(swriter)) {
 	    	            gen.writeStartObject();
 	    	            gen.writeStartObject("student");
@@ -402,10 +398,13 @@ public class Alumno {
 	    	            		gen.write("lastName", alumno.getApellidoPaterno());
 	    	            		gen.write("level", alumno.getNivelActual());
 	    	            		gen.write("tutor", alumno.getTutorNombre());
-	    	            		gen.write("phone", telefono);
-	    	            		gen.write("cellphone", alumno.getCelMadre());
+	    	            		gen.write("cellTutor", alumno.getCelTutor());
 	    	            		gen.write("missingPayment", debe);
 	    	            		gen.write("assistances", alumno.getAsistencias());
+	    	            		gen.write("nameMom", ""+alumno.getNombreMadre());
+	    	            		gen.write("lastNameMom", ""+alumno.getApellidoMadre());
+	    	            		gen.write("phoneHouse", telefono);
+	    	            		gen.write("cellMom", alumno.getCelMadre());
 	    	            gen.writeEnd();
 	    	            gen.writeEnd();
 	    	        }
