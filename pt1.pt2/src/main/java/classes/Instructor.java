@@ -180,22 +180,21 @@ public class Instructor {
 					System.out.println("id: "+ id);
 					System.out.println("nombre: " + nombre);
 					
-					crearqr.generateQRCodeImage(id+"A", nombre);
+					crearqr.generateQRCodeImage(id+"-A-F", nombre);
 							
-					String filePath="/"+id+"A.png";
+					String filePath="/"+id+"-A-F.png";
 					System.out.println(filePath);
 					Image image = new Image(ImageIO.read(new File(System.getProperty("user.home")+"/Documents/qrImages"+filePath)));
 					//System.out.println(System.getProperty("user.home"));
-					//image = image.scaleByWidth(imageWidth);
+					image = image.scaleByWidth(imageWidth);
 								
 					Row<PDPage> row = table.createRow(12);
 							    
 							    
-					//cell = row.createImageCell(10 , image);
+					cell = row.createImageCell(10 , image);
 					cell.setRightBorderStyle(thinline);
 					cell = row.createCell(15, nombre, HorizontalAlignment.CENTER, VerticalAlignment.MIDDLE);
 					cell = row.createCell(25, "Asistente", HorizontalAlignment.CENTER, VerticalAlignment.MIDDLE);
-					cell = row.createCell(10, "Asistente", HorizontalAlignment.CENTER, VerticalAlignment.MIDDLE);
 				}
 			}
 		}
@@ -263,9 +262,9 @@ public class Instructor {
 					String id=person.getString("idStudent");
 					String nombre = person.getString("name");
 					
-					crearqr.generateQRCodeImage(id+"S", nombre);
+					crearqr.generateQRCodeImage(id+"-S-F", nombre);
 							
-					String filePath="/"+id+"S.png";
+					String filePath="/"+id+"-S-F.png";
 					Image image = new Image(ImageIO.read(new File(System.getProperty("user.home")+"/Documents/qrImages"+filePath)));
 					image = image.scaleByWidth(imageWidth);
 					System.out.println(System.getProperty("user.home"));		

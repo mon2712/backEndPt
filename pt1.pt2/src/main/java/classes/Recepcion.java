@@ -16,6 +16,8 @@ import java.util.List;
 import javax.json.Json;
 import javax.json.stream.JsonGenerator;
 
+import org.json.JSONObject;
+
 public class Recepcion {
 	static PreparedStatement prepareStat = null;
     static Connection conn = BaseDatos.conectarBD();
@@ -142,6 +144,66 @@ public class Recepcion {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
+    }
+    
+    public static String setAsistencia(String array) {
+		StringWriter swriter = new StringWriter();
+		System.out.println("array "+array);
+		
+		JSONObject obj = new JSONObject(array);
+		
+		JSONObject scanned = obj.getJSONObject("scanned");
+		
+		int id = scanned.getInt("id");
+		String types = scanned.getString("type");
+		
+		System.out.println("id "+id+" tipo "+types);
+		
+		if(types.equals("S")) {
+			System.out.println("alumno");
+			 try {
+			        String getQueryStatement = "SELECT * FROM Alumno WHERE idAlumno='"+Integer.toString(id)+"';";
+			
+			        prepareStat = conn.prepareStatement(getQueryStatement);
+			
+			        // Execute the Query, and get a java ResultSet
+			        ResultSet rs = prepareStat.executeQuery();
+			
+			        try (JsonGenerator gen = Json.createGenerator(swriter)) {
+			        	gen.writeStartObject();
+			            while(rs.next()) {
+			            		System.out.println(rs.getString(1) + " " + rs.getString(3)+" "+rs.getString(2));
+			                gen.writeStartObject("student");
+				                gen.write("name", rs.getString(3)+ " " + rs.getString(2));
+				                gen.write("idStudent", rs.getString(1));
+				                gen.write("level", ""+rs.getString(9));
+				                gen.write("startDate", ""+rs.getString(7));
+				                gen.write("grade", ""+rs.getString(4));
+				                gen.write("nameMom", ""+rs.getString(18));
+				                gen.write("lastNameMom", ""+rs.getString(19));
+				                gen.write("phone", rs.getString(17));
+				                gen.write("cel", ""+rs.getString(20));
+				                gen.write("tutor", ""+rs.getString(14));
+				                gen.write("nameMom", ""+rs.getString(28));
+			                gen.writeEnd();
+			            }
+			            gen.writeEnd();
+			        }
+			        System.out.println("swriter "+swriter.toString());
+			        //return swriter.toString();
+			    } catch (SQLException e) {
+			        e.printStackTrace();
+			        return null;
+			    }
+			 
+		}else if(types.equals("A")) {
+			System.out.println("asistente");
+		}else {
+			System.out.println("error");
+		}
+		
+		return swriter.toString();
+
     }
     
 }

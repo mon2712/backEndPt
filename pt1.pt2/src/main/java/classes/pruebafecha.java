@@ -55,7 +55,7 @@ public class pruebafecha {
 
 		Auxiliar aux= new Auxiliar();
 		WorkingMemory wk=aux.conexionDrools();
-		aux.executeFrecInicial(wk);
+		aux.executeFrecuencias(wk);
 		
 		/*pruebaDSL prueba = new pruebaDSL();
 		

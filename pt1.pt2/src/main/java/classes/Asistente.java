@@ -116,11 +116,12 @@ public class Asistente {
 	    				System.out.println("no existe");
 	    				
 	    				int lunes=0, miercoles=0, jueves=0, sabado=0;
+	    				System.out.println("lunes" +  asis.getInt("lunes"));
 	    				
-	    				if(asis.getString("lunes").length() == 0) lunes=0;
-	    				if(asis.getString("miercoles").length() == 0) miercoles=0;
-	    				if(asis.getString("jueves").length() == 0) jueves=0;
-	    				if(asis.getString("sabado").length() == 0) sabado=0;
+	    				if(asis.getString("lunes").length() == 0) lunes=0; else lunes=asis.getInt("lunes");
+	    				if(asis.getString("miercoles").length() == 0) miercoles=0; else miercoles=asis.getInt("miercoles");
+	    				if(asis.getString("jueves").length() == 0) jueves=0; else jueves=asis.getInt("jueves");
+	    				if(asis.getString("sabado").length() == 0) sabado=0; else sabado=asis.getInt("sabado");
 	    				
 	    				CallableStatement cStmt = conn.prepareCall("{call setUsuario(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}");
 	    				

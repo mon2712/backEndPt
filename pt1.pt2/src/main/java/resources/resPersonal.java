@@ -12,6 +12,7 @@ import classes.Personal;
 
 @Path("/personal")
 public class resPersonal {
+	Personal personal = new Personal();
 	
     @GET
     @Consumes(MediaType.APPLICATION_JSON)
@@ -19,7 +20,15 @@ public class resPersonal {
     @Path("/getLogin")
 	public String getLoginSession(@QueryParam("user") String user, @QueryParam("pass") String pass) {
     		System.out.println("hola"+user+pass);
-    		Personal personal = new Personal();
+    		
     		return personal.iniciarSesion(user,pass);
+	}
+    
+    @GET
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/getPersonal")
+	public String getAllPersonal() {
+    		return personal.getPersonal();
 	}
 }

@@ -4,6 +4,7 @@ import java.io.StringWriter;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 
@@ -66,5 +67,36 @@ public class Personal {
     		
     		return swriter.toString();
     }
+    
+    public static String getPersonal() {
+		StringWriter swriter = new StringWriter();
+	    try {
+	        String getQueryStatement = "SELECT us.idUsuario, us.nombre, us.apellido FROM Usuario as us  JOIN Asistente as asis JOIN Recepcionista as rec  \n" + 
+	        		"ON (us.idUsuario=rec.Usuario_idUsuario) OR (us.idUsuario=asis.Usuario_idUsuario) GROUP BY us.idUsuario;";
+	
+	        prepareStat = conn.prepareStatement(getQueryStatement);
+	
+	        // Execute the Query, and get a java ResultSet
+	        ResultSet rs = prepareStat.executeQuery();
+	
+	        try (JsonGenerator gen = Json.createGenerator(swriter)) {
+	        	gen.writeStartObject();
+	            gen.writeStartArray("allAssistants");
+	            while(rs.next()) {
+	            		//System.out.println(rs.getString(1) + " " + rs.getString(3)+" "+rs.getString(2));
+		            	gen.writeStartObject();
+		               	gen.write("name", ""+rs.getString(2)+ " " + rs.getString(3));
+		                gen.write("idAssistant", ""+rs.getString(1));
+		            gen.writeEnd();
+	            }
+	            gen.writeEnd();
+	            gen.writeEnd();
+	        }
+	        return swriter.toString();
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	        return null;
+	    }
+	}
 
 }
