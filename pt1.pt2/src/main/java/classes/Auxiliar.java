@@ -6,6 +6,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringWriter;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -20,9 +22,15 @@ import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.core.RuleBase;
 import org.drools.core.RuleBaseFactory;
 import org.drools.core.WorkingMemory;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.kie.internal.KnowledgeBaseFactory;
 
 public class Auxiliar {
+	
+	static PreparedStatement prepareStat = null;
+    private static Connection conn = BaseDatos.conectarBD();
+    
 	public float frecuenciaInicial;
 	public String nivelInicial;
 	public String[] respuestasUbicacion;
@@ -42,7 +50,6 @@ public class Auxiliar {
 	public WorkingMemory conexionDrools() throws DroolsParserException, IOException {
 
 		PackageBuilder packageBuilder = new PackageBuilder();
-
 		String ruleFile = "../rules/proyeccionNivel.drl";
 		//String ruleFile = "../rules/proyNivel.drl";
 		InputStream resourceAsStream = getClass().getResourceAsStream(ruleFile);
@@ -58,8 +65,111 @@ public class Auxiliar {
 		return workingMemory;
 		
 	}
+	public void exFrecuencias(WorkingMemory workingMemory,int nivelUbicacion) throws SQLException {
+		int dimension = 6 - nivelUbicacion+1;
+		int desempeñoGral=0;
+		String [] desempeñoNivel = {"malo","malo","malo","malo","malo","malo"};  //obtenidos del front
+		System.out.println("Dimension: " + dimension);
+		Nivel[] niveles = new Nivel[dimension];
+		double frecInicial = 3.4;
+		//List<Double> Frec=new ArrayList<Double>();
+		
+		for(int x =nivelUbicacion; x<=6; x++) {
+			List<Double> Frec=new ArrayList<Double>();
+			String n="";
+			switch (x){
+				case 1: 
+					n= "3A";
+				break;
+				case 2: 
+					n= "2A";
+				break;
+				case 3: 
+					n= "A";
+				break;
+				case 4: 
+					n= "B";
+				break;
+				case 5: 
+					n= "C";
+				break;
+				case 6: 
+					n= "D";
+				break;
+			}
+			String getQueryStatement = " ";
+			ResultSet rs;
+			getQueryStatement = "SELECT distinct frecuenciaEstudio FROM ProyeccionNivel where Nivel_idNivel="+Integer.toString(x)+" order by frecuenciaEstudio;";
+	        prepareStat = conn.prepareStatement(getQueryStatement);
+	        rs = prepareStat.executeQuery();
+			int i=0;
+			
+	        while(rs.next()) {
+	        	Frec.add(rs.getDouble(1));
+	        	i++;
+	        }
+	        
+	        
+	        System.out.println(" nivel: "+ n + " Freceuncias: " + Frec);
+			//System.out.println(" x: "+ x + " nivelUbicacion: " + nivelUbicacion+ " indice: " + (x-nivelUbicacion));
+			niveles[x-nivelUbicacion] = new Nivel();
+			niveles[x-nivelUbicacion].setIdNivel(x);
+			niveles[x-nivelUbicacion].setNombreNivel(n);
+			niveles[x-nivelUbicacion].setFrecuencias(Frec);
+			niveles[x-nivelUbicacion].setDesempeñoNivel(desempeñoNivel[x-nivelUbicacion]);
+			
+			workingMemory.insert(niveles[x-nivelUbicacion]);
+			workingMemory.fireAllRules();
+			System.out.println("Mensaje: "+niveles[x-nivelUbicacion].getNivelMessage());
+			//niveles[x-nivelUbicacion].setPuntajeDesempeño(puntaje[x-nivelUbicacion]);
+	        int size= Frec.size();
+	        System.out.println("size: "+ size);
+	        
+		}
+		double []frecProy = new double [6-nivelUbicacion+1];
+		int size, frecOriginal, s=0, indiceActual=0, mov=0, totalF=0;
 	
-	public void executeFrecuencias(WorkingMemory workingMemory) {
+		for(int x=0;x<=(6-nivelUbicacion);x++) { //nivel
+			size=niveles[x].getFrecuencias().size();
+			s=0;
+			/*while(s<size && niveles[x].getFrecuencias().get(s)!=frecInicial) {
+				//System.out.println("Freceuncia " +  (x+1) + ": " + niveles[x].getFrecuencias().get(s));
+				s++;
+			}*/
+			if(x==0) {
+				indiceActual=niveles[x].getFrecuencias().indexOf(frecInicial);
+				if(indiceActual == -1) {
+					System.out.println("La frecuencia no existe");
+					break;
+				}
+				else {
+					System.out.println("Está en el indice: " + indiceActual);
+				}
+				//System.out.println("Avanzaré " + (niveles[x].getDesempeño()) + " Indices");
+	
+			}
+			else {
+				
+				indiceActual = indiceActual+ niveles[x].getDesempeño();
+				System.out.println("Está en el indice: " + indiceActual);
+				System.out.println("Avanzaré " + (niveles[x].getDesempeño()) + " Indices");
+				totalF = niveles[x].getFrecuencias().size()-1;
+				System.out.println("El numero de frecuencias de este nivel es: " + totalF);
+				if(indiceActual > totalF){
+					indiceActual = totalF;
+					System.out.println("No se puede avanzar mas, nos vamos ala ultima freceuncia: " + indiceActual);
+				}
+				//frecProy[x] = niveles[x].getFrecuencias().get(indiceActual);
+			}
+			//System.out.println("Frecuencia: "+niveles[x].getFrecuencias().get(indiceActual) + " x: " + x);
+			frecProy[x]= niveles[x].getFrecuencias().get(indiceActual);
+		  }
+		for(int x=0; x<6; x++) {
+			System.out.println("Frecuencia " + (x+1) + " : " + frecProy[x]);
+		}
+		
+	}
+	/*public void executeFrecuencias(WorkingMemory workingMemory) throws SQLException {
 		int [] puntaje = {8,8,8,8,8,8};  //obtenidos del front
 		int nivelUbicacion=1; //Obtenido del front
 		double frecInicial = 3.4;
@@ -73,27 +183,96 @@ public class Auxiliar {
 			switch (x){
 				case 1: 
 					n= "3A";
-					Frec=Arrays.asList(1.0, 1.1, 1.2, 1.4, 1.5, 1.6, 1.7, 1.8, 2.0, 2.2, 2.3, 3.0, 3.3, 3.4);
+					Frec=Arrays.asList(1.0	,
+							1.1	,
+							1.2	,
+							1.4	,
+							1.5	,
+							1.6	,
+							1.7	,
+							1.8	,
+							2.0	,
+							2.2	,
+							2.3	,
+							3.0	,
+							3.3	,
+							3.4	,
+							3.6	
+);
 				break;
 				case 2: 
 					n= "2A";
-					Frec=Arrays.asList(1.0,1.2,1.7,2.0, 2.5, 2.6, 3.2, 3.3, 3.7, 4.3, 4.4);
+					Frec=Arrays.asList(1.0	,
+							1.2	,
+							1.6	,
+							2.0	,
+							2.6	,
+							3.2	,
+							3.7	,
+							4.4	
+);
 				break;
 				case 3: 
 					n= "A";
-					Frec=Arrays.asList(1.0, 1.2, 1.3, 1.5, 2.0, 2.1, 2.4, 2.8, 3.1, 3.3, 3.5, 3.8, 3.9, 4.3, 4.5);
+					Frec=Arrays.asList(1.0	,
+							1.4	,
+							1.5	,
+							1.6	,
+							1.8	,
+							1.9	,
+							2.8	,
+							3.3	,
+							4.3	
+);
 				break;
 				case 4: 
 					n= "B";
-					Frec=Arrays.asList(1.0, 1.2, 1.3, 1.4, 1.5, 1.7, 1.9, 2.0, 2.5, 2.8, 2.9, 3.1, 3.2, 3.5, 3.6, 3.9, 4.1, 4.2);
+					Frec=Arrays.asList(1.0	,
+							1.3	,
+							1.7	,
+							1.4	,
+							1.5	,
+							1.2	,
+							1.9	,
+							2.0	,
+							2.5	,
+							2.8	,
+							2.9	,
+							3.5	,
+							4.1	,
+							4.2	
+);
 				break;
 				case 5: 
 					n= "C";
-					Frec=Arrays.asList(1.0, 1.2, 1.3, 1.4, 1.5,1.6, 1.7,2.0, 2.3, 2.8, 3.0, 3.3, 3.4, 3.5, 3.6, 3.7, 3.8, 3.9, 4.0);
+					Frec=Arrays.asList(1.0	,
+							1.2	,
+							1.4	,
+							1.5	,
+							1.6	,
+							1.7	,
+							1.3	,
+							2.0	,
+							2.3	,
+							2.8	,
+							3.0	,
+							3.3	
+);
 				break;
 				case 6: 
 					n= "D";
-					Frec=Arrays.asList(1.0, 1.1, 1.3, 1.4, 1.7, 1.8, 2.0, 2.1, 2.5, 2.6, 2.7, 3.0, 3.1, 3.2, 3.4, 3.5, 3.6, 3.7, 3.8, 3.9, 4.0);
+					Frec=Arrays.asList(1.1	,
+							1.3	,
+							1.4	,
+							1.5	,
+							1.0	,
+							1.8	,
+							2.5	,
+							3.0	,
+							3.6	,
+							4.9	,
+							3.2	
+);
 				break;
 				}
 			System.out.println(" nivel: "+ n + " Freceuncias: " + Frec);
@@ -150,83 +329,129 @@ public class Auxiliar {
 			System.out.println("Frecuencia " + (x+1) + " : " + frecProy[x]);
 		}
 	}
-	
+	*/
 	
 	public void executeFrecInicial(WorkingMemory workingMemory) {
 		//Nivel niv = new Nivel();
-		String json=this.crearJson();
-		System.out.println();
-		Alumno alumn = new Alumno();
+		String arrayJson=this.crearJson();
+		JSONObject obj = new JSONObject(arrayJson);
 		
-		alumn.setNivelActual("3A");
-		alumn.setGrado("6");
-		alumn.setFluidez(1);
-		alumn.setConcentracion(0);
-		alumn.setAnteSuc(1);
-		alumn.setCuenta(0);
+		JSONObject results = obj.getJSONObject("resultsTest");
 		
+			JSONObject infoStudent = results.getJSONObject("infoStudent");
 		
-		/*alumn.setNivelActual("2A");
-		alumn.setGrado("6");
-		alumn.setFluidez(0);
-		alumn.setConcentracion(0);
-		alumn.setCuenta(0);*/
+			int desempeñoGeneral = results.getInt("finalScore");
 		
-		/*alumn.setNivelActual("A");
-		alumn.setGrado("7");
-		alumn.setFluidezResta(0);
-		alumn.setTrabajoB(0);*/
-		
-		/*alumn.setNivelActual("B");
-		alumn.setGrado("7");
-		alumn.setFluidez(0);
-		alumn.setTrabajoB(0);
-		alumn.setConcentracion(0);*/
-		
-		/*alumn.setNivelActual("C");
-		alumn.setFluidezMultiplicacion(0);
-		alumn.setCalculoMental(1);
-		alumn.setProcedimientosCortos(0);*/
-		
-		/*alumn.setNivelActual("D");
-		alumn.setDivisionConResta(1);
-		alumn.setSimplificacion(1);*/
-		
+			JSONArray exams = results.getJSONArray("exams");
+			JSONArray frecuenciaIncial = results.getJSONArray("startPoint");
+			String n;
+			System.out.println("puntajeDesempeño " + desempeñoGeneral);
+			System.out.println("examenes " + exams);
+			System.out.println("infoStudent" +infoStudent.toString());
+			System.out.println("para frecuencia inicial" + frecuenciaIncial.toString());
+			System.out.println("nivel" + infoStudent.getString("level"));
+			
+			n=infoStudent.getString("level");
+			String g=infoStudent.getString("grade");
+			Alumno alumn = new Alumno();
+			alumn.setPuntajeDesempeño(desempeñoGeneral);
+			workingMemory.insert(alumn);
+			workingMemory.fireAllRules();
+			//System.out.println("Desempeño general: " +  alumn.getDesempeño());
+			alumn.setNivelActual(n);
+			alumn.setGrado(g);
+			String id;
+			for(int i=0; i<frecuenciaIncial.length();i++) {
+				JSONObject res = (JSONObject) frecuenciaIncial.get(i);
+				id=res.getString("identificador");
+			
+				switch (id) {
+					case "fluidez":
+						alumn.setFluidez(res.getInt("answer"));
+					break;
+					case "concentracion":
+						alumn.setConcentracion(res.getInt("answer"));
+					break;
+					case "antysuc":
+						alumn.setAnteSuc(res.getInt("answer"));
+					break;
+					case "cuenta":
+						alumn.setCuenta(res.getInt("answer"));
+					break;
+					case "trabajoB":
+						alumn.setTrabajoB(res.getInt("answer"));
+					break;
+					case "procedimiento":
+						alumn.setProcedimientosCortos(res.getInt("answer"));
+					break;
+					case "calculo":
+						alumn.setCalculoMental(res.getInt("answer"));
+					break;
+					case "division":
+						alumn.setDivisionConResta(res.getInt("answer"));
+					break;
+					case "simplifica":
+						alumn.setSimplificacion(res.getInt("answer"));
+					break;
+				}
+				System.out.println("Id: " + id + " Answer: " + res.getInt("answer"));
+			}
 		
 		ProyeccionNivel pn = new ProyeccionNivel();
 		pn.setAlumno(alumn);
 		workingMemory.insert(pn);
 		workingMemory.fireAllRules();
 		
+		
+		
 	}
 	public String crearJson() {
 		StringWriter swriter = new StringWriter();
 		String alumno[], testInicial[], desempeñoGral[], puntajeNivel[];
             try (JsonGenerator gen = Json.createGenerator(swriter)) {
-                gen.writeStartObject();
-	                gen.write("puntajeDesempeño", "70");
-	                	gen.writeStartObject("infoStudnet");
+            	gen.writeStartObject();
+                gen.writeStartObject("resultsTest");
+	                gen.write("finalScore", "76");
+	                gen.writeStartObject("infoStudent");
 	                    //gen.writeStartObject();
-		                    gen.write("level", "2A");
-		                    gen.write("grade", "1");
-		                    gen.write("name", "Itzel Aguilar");
-		                    gen.write("idStudent", "3");
-		                    gen.write("startDate", "2017-04-03");
-		                gen.writeEnd();
-		                gen.writeStartArray("para freceucnia inicial");
-		                gen.writeStartObject();
-		                    gen.write("desempeño", "malo");
-		                    gen.write("level", "3A");
-		                gen.writeEnd();
-		                gen.writeStartObject();
-		                	gen.write("desempeño", "malo");
-		                	gen.write("level", "2A");
-		                gen.writeEnd();
-		                gen.writeStartObject();
-		                	gen.write("desempeño", "malo");
-		                	gen.write("level", "A");
-		                gen.writeEnd();
+		                gen.write("level", "2A");
+		                gen.write("grade", "6");
+		                gen.write("name", "Itzel Aguilar");
+		                gen.write("idStudent", "3");
+		                gen.write("startDate", "2017-04-03");
 		            gen.writeEnd();
+		            gen.writeStartArray("exams");
+			             gen.writeStartObject();
+			                 gen.write("desempeño", "malo");
+			                 gen.write("level", "3A");
+			             gen.writeEnd();
+			             gen.writeStartObject();
+			                 gen.write("desempeño", "malo");
+			                 gen.write("level", "2A");
+			             gen.writeEnd();
+			             gen.writeStartObject();
+			                 gen.write("desempeño", "malo");
+			                 gen.write("level", "A");
+			             gen.writeEnd();
+		            gen.writeEnd();
+		            gen.writeStartArray("startPoint");
+		             gen.writeStartObject();
+		                 gen.write("identificador", "fluidez");
+		                 gen.write("answer", "0");
+		                 gen.write("answerLbl", "Si");
+		             gen.writeEnd();
+		             gen.writeStartObject();
+			             gen.write("identificador", "concentracion");
+		                 gen.write("answer", "0");
+		                 gen.write("answerLbl", "Si");
+		             gen.writeEnd();
+		             gen.writeStartObject();
+			             gen.write("identificador", "cuenta");
+		                 gen.write("answer", "1");
+		                 gen.write("answerLbl", "Cortos");
+		             gen.writeEnd();
+	            gen.writeEnd();
+                gen.writeEnd();
                 gen.writeEnd();
             }
         return swriter.toString(); 

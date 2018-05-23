@@ -55,8 +55,9 @@ public class pruebafecha {
 
 		Auxiliar aux= new Auxiliar();
 		WorkingMemory wk=aux.conexionDrools();
-		aux.executeFrecInicial(wk);
-		
+		//aux.executeFrecuencias(wk);
+		//aux.executeFrecInicial(wk);
+		aux.exFrecuencias(wk,1);
 		/*pruebaDSL prueba = new pruebaDSL();
 		
         //Cargamos la base de reglas

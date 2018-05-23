@@ -160,6 +160,7 @@ public class ProyeccionAnual {
 		System.out.println("infoStudent" +infoStudent.toString());
 		System.out.println("para frecuencia inicial" + frecuenciaIncial.toString());
 		
+		//llamar a la funcion, insertar ne la bd y mandar idalumno en la siguiente funcion
 		
 		//String proyeccion = obtenerProyeccionAnual(infoStudent.getInt("idStudent")); //Obtiene la proyeccion despues de la insercion
 		String proyeccion = obtenerProyeccionAnual(3); //Obtiene la proyeccion despues de la insercion
