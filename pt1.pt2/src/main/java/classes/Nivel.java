@@ -12,9 +12,29 @@ public class Nivel {
 	private int desempeño;
 	private String nombreNivel;
 	private List<Double> Frecuencias;
+	private List<String> tipos;
+	
+	
+	public List<String> getTipos() {
+		return tipos;
+	}
+
+	public void setTipos(List<String> tipos) {
+		this.tipos = tipos;
+	}
+
 	private String desempeñoNivel;
+	private String desempeñoGeneral;
 	
 	
+	public String getDesempeñoGeneral() {
+		return desempeñoGeneral;
+	}
+
+	public void setDesempeñoGeneral(String desempeñoGeneral) {
+		this.desempeñoGeneral = desempeñoGeneral;
+	}
+
 	public String getDesempeñoNivel() {
 		return desempeñoNivel;
 	}

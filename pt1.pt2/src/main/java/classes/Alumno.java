@@ -186,13 +186,13 @@ public class Alumno {
 	public void setGrado(String grado) {
 		this.grado = grado;
 		switch (grado) {
-			case "pk1":
+			case "PK1":
 				this.gradoNum=-1;
 			break;
-			case "pk2":
+			case "PK2":
 				this.gradoNum=-2;
 			break;
-			case "pk3":
+			case "PK3":
 				this.gradoNum=-3;
 			break;
 			default:

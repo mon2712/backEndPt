@@ -950,17 +950,13 @@ rule "Frecuencia D 1.4a"
 end
 //-----------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-
 rule "desempeño Bajo nivel"
 dialect "java"
 	salience 8
 	    when
-        nivelObject : Nivel(getDesempeñoNivel() == "malo" )&&
-        alumnoObject : Alumno(getDesempeño() == "malo") ||
-        nivelObject : Nivel(getDesempeñoNivel() == "malo" )&&
-        alumnoObject : Alumno(getDesempeño() == "medio") ||
-        nivelObject : Nivel(getDesempeñoNivel() == "medio" )&&
-        alumnoObject : Alumno(getDesempeño() == "malo")
+        nivelObject : Nivel((getDesempeñoNivel() == "malo" && getDesempeñoGeneral() == "malo") ||
+        					(getDesempeñoNivel() == "malo" && getDesempeñoGeneral() == "medio") ||
+        					(getDesempeñoNivel() == "medio" && getDesempeñoGeneral() == "malo"))
     then 
         nivelObject.setNivelMessage("Bajo, + " + nivelObject.getDesempeñoBajo());
         nivelObject.setDesempeño(nivelObject.getDesempeñoBajo());
@@ -968,12 +964,9 @@ end
 rule "desempeño Medio nivel"
 	salience 8
     when
-    	nivelObject : Nivel(getDesempeñoNivel() == "malo" )&&
-        alumnoObject : Alumno(getDesempeño() == "bueno") ||
-        nivelObject : Nivel(getDesempeñoNivel() == "medio" )&&
-        alumnoObject : Alumno(getDesempeño() == "medio") ||
-        nivelObject : Nivel(getDesempeñoNivel() == "bueno" )&&
-        alumnoObject : Alumno(getDesempeño() == "malo")
+    	nivelObject : Nivel((getDesempeñoNivel() == "malo" && getDesempeñoGeneral() == "bueno") ||
+        					(getDesempeñoNivel() == "medio" && getDesempeñoGeneral() == "medio") ||
+        					(getDesempeñoNivel() == "bueno" && getDesempeñoGeneral() == "malo"))
     then 
         nivelObject.setNivelMessage("Medio, + " + nivelObject.getDesempeñoMedio());
         nivelObject.setDesempeño(nivelObject.getDesempeñoMedio());
@@ -981,12 +974,9 @@ end
 rule "desempeño Alto nivel"
 	salience 8
     when
-    	nivelObject : Nivel(getDesempeñoNivel() == "medio" )&&
-        alumnoObject : Alumno(getDesempeño() == "bueno") ||
-        nivelObject : Nivel(getDesempeñoNivel() == "bueno" )&&
-        alumnoObject : Alumno(getDesempeño() == "bueno") ||
-        nivelObject : Nivel(getDesempeñoNivel() == "bueno" )&&
-        alumnoObject : Alumno(getDesempeño() == "medio")
+    	nivelObject : Nivel((getDesempeñoNivel() == "medio" && getDesempeñoGeneral() == "bueno") ||
+        					(getDesempeñoNivel() == "bueno" && getDesempeñoGeneral() == "bueno") ||
+        					(getDesempeñoNivel() == "bueno" && getDesempeñoGeneral() == "medio"))
     then 
         nivelObject.setNivelMessage("Alto, + " + nivelObject.getDesempeñoAlto());
         nivelObject.setDesempeño(nivelObject.getDesempeñoAlto());
@@ -999,7 +989,9 @@ dialect "java"
 	    when
         alumnoObject : Alumno(getPuntajeDesempeño() <= 30)
     then 
-        alumnoObject.setDesempeño(alumnoObject.getDesempeñoBajo());
+    	alumnoObject.setDesempeño(alumnoObject.getDesempeñoBajo());
+    	System.out.println("El desempeño general es "+ alumnoObject.getDesempeño());
+        
 end
 rule "desempeño Medio general"
 	salience 10
@@ -1007,6 +999,7 @@ rule "desempeño Medio general"
         alumnoObject : Alumno(getPuntajeDesempeño() > 30 && getPuntajeDesempeño() <= 75)
     then 
         alumnoObject.setDesempeño(alumnoObject.getDesempeñoMedio());
+        System.out.println("El desempeño general es "+ alumnoObject.getDesempeño());
 end
 rule "desempeño Alto general"
 	salience 10
@@ -1014,4 +1007,5 @@ rule "desempeño Alto general"
         alumnoObject : Alumno(getPuntajeDesempeño() > 75 && getPuntajeDesempeño() <= 95)
     then 
        alumnoObject.setDesempeño(alumnoObject.getDesempeñoAlto());
+       System.out.println("El desempeño general es "+ alumnoObject.getDesempeño());
 end

@@ -1,5 +1,6 @@
 package classes;
 
+import java.io.IOException;
 import java.io.StringWriter;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -9,6 +10,8 @@ import java.sql.SQLException;
 import javax.json.Json;
 import javax.json.stream.JsonGenerator;
 
+import org.drools.compiler.compiler.DroolsParserException;
+import org.drools.core.WorkingMemory;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -142,7 +145,7 @@ public class ProyeccionAnual {
 		return swriter.toString();
 	}
 	
-	public static String crearProyeccionAnual(String array) throws JSONException, SQLException {
+	public static String crearProyeccionAnual(String array) throws JSONException, SQLException, DroolsParserException, IOException {
 		
 		
 		JSONObject obj = new JSONObject(array);
@@ -150,7 +153,7 @@ public class ProyeccionAnual {
 		JSONObject results = obj.getJSONObject("resultsTest");
 		
 			JSONObject infoStudent = results.getJSONObject("infoStudent");
-		
+			String idStudent=infoStudent.getString("idStudent");
 			int desempeñoGeneral = results.getInt("finalScore");
 		
 			JSONArray exams = results.getJSONArray("exams");
@@ -160,10 +163,19 @@ public class ProyeccionAnual {
 		System.out.println("infoStudent" +infoStudent.toString());
 		System.out.println("para frecuencia inicial" + frecuenciaIncial.toString());
 		
+		Auxiliar aux= new Auxiliar();
+		
+		String fileRules1="../rules/proyeccionNivel.drl";
+		//String fileRules2="../rules/desempeño.drl";
+		//String arrayJson=aux.crearJson();
+		//JSONObject obj = new JSONObject(arrayJson);
+		WorkingMemory wk=aux.conexionDrools(fileRules1);
+		//JSONObject results = obj.getJSONObject("resultsTest");
+		aux.executeFrecInicial(wk, results);
 		//llamar a la funcion, insertar ne la bd y mandar idalumno en la siguiente funcion
 		
 		//String proyeccion = obtenerProyeccionAnual(infoStudent.getInt("idStudent")); //Obtiene la proyeccion despues de la insercion
-		String proyeccion = obtenerProyeccionAnual(3); //Obtiene la proyeccion despues de la insercion
+		String proyeccion = obtenerProyeccionAnual(Integer.parseInt("7")); //Obtiene la proyeccion despues de la insercion
 		return proyeccion;
 	}
 

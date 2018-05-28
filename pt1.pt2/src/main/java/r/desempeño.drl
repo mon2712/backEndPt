@@ -1,0 +1,45 @@
+//A continuación escribimos nuestras reglas en un archivo proyeccionNivel.drl
+
+
+package rules
+
+import classes.Nivel;
+import classes.Alumno;
+import classes.ProyeccionNivel;
+import classes.ProyeccionAnual;
+
+//-----------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+rule "desempeño Bajo nivel"
+dialect "java"
+	salience 8
+	    when
+        nivelObject : Nivel((getDesempeñoNivel() == "malo" && getDesempeñoGeneral() == "malo") ||
+        					(getDesempeñoNivel() == "malo" && getDesempeñoGeneral() == "medio") ||
+        					(getDesempeñoNivel() == "medio" && getDesempeñoGeneral() == "malo"))
+    then 
+        nivelObject.setNivelMessage("Bajo, + " + nivelObject.getDesempeñoBajo());
+        nivelObject.setDesempeño(nivelObject.getDesempeñoBajo());
+end
+rule "desempeño Medio nivel"
+	salience 8
+    when
+    	nivelObject : Nivel((getDesempeñoNivel() == "malo" && getDesempeñoGeneral() == "bueno") ||
+        					(getDesempeñoNivel() == "medio" && getDesempeñoGeneral() == "medio") ||
+        					(getDesempeñoNivel() == "bueno" && getDesempeñoGeneral() == "malo"))
+    then 
+        nivelObject.setNivelMessage("Medio, + " + nivelObject.getDesempeñoMedio());
+        nivelObject.setDesempeño(nivelObject.getDesempeñoMedio());
+end
+rule "desempeño Alto nivel"
+	salience 8
+    when
+    	nivelObject : Nivel((getDesempeñoNivel() == "medio" && getDesempeñoGeneral() == "bueno") ||
+        					(getDesempeñoNivel() == "bueno" && getDesempeñoGeneral() == "bueno") ||
+        					(getDesempeñoNivel() == "bueno" && getDesempeñoGeneral() == "medio"))
+    then 
+        nivelObject.setNivelMessage("Alto, + " + nivelObject.getDesempeñoAlto());
+        nivelObject.setDesempeño(nivelObject.getDesempeñoAlto());
+end
+//-----------------------------------------------------------------------------------------------------------------
