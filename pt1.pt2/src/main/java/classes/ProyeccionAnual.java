@@ -30,6 +30,9 @@ public class ProyeccionAnual {
 	private String timeLevel;
 	private String dailyTime;
 	
+	
+	
+	
 	public String getLevel() {
 		return level;
 	}
@@ -84,6 +87,7 @@ public class ProyeccionAnual {
 	public void setDailyTime(String dailyTime) {
 		this.dailyTime = dailyTime;
 	}
+
 	
 	public static String obtenerProyeccionAnual(int idAlumno) throws SQLException {
 		System.out.println("id "+idAlumno);
@@ -145,14 +149,25 @@ public class ProyeccionAnual {
 		return swriter.toString();
 	}
 	
-	public static String crearProyeccionAnual(String array) throws JSONException, SQLException, DroolsParserException, IOException {
+	public static String crearProyeccionAnual(String array) throws JSONException, SQLException, IOException {
 		
+		Auxiliar aux= new Auxiliar();
+				WorkingMemory wk;
+				try {
+					wk = aux.conexionDrools();
+					aux.executeFrecInicial(wk);
+				} catch (DroolsParserException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+	//	JSONObject obj = new JSONObject(array);
 		
-		JSONObject obj = new JSONObject(array);
+		//JSONObject results = obj.getJSONObject("resultsTest");
 		
-		JSONObject results = obj.getJSONObject("resultsTest");
-		
-			JSONObject infoStudent = results.getJSONObject("infoStudent");
+			/*JSONObject infoStudent = results.getJSONObject("infoStudent");
 			String idStudent=infoStudent.getString("idStudent");
 			int desempeñoGeneral = results.getInt("finalScore");
 		
@@ -161,18 +176,9 @@ public class ProyeccionAnual {
 		
 		System.out.println("puntajeDesempeño " + desempeñoGeneral);
 		System.out.println("infoStudent" +infoStudent.toString());
-		System.out.println("para frecuencia inicial" + frecuenciaIncial.toString());
+		System.out.println("para frecuencia inicial" + frecuenciaIncial.toString());*/
 		
-		Auxiliar aux= new Auxiliar();
 		
-		String fileRules1="../rules/proyeccionNivel.drl";
-		//String fileRules2="../rules/desempeño.drl";
-		//String arrayJson=aux.crearJson();
-		//JSONObject obj = new JSONObject(arrayJson);
-		WorkingMemory wk=aux.conexionDrools(fileRules1);
-		//JSONObject results = obj.getJSONObject("resultsTest");
-		aux.executeFrecInicial(wk, results);
-		//llamar a la funcion, insertar ne la bd y mandar idalumno en la siguiente funcion
 		
 		//String proyeccion = obtenerProyeccionAnual(infoStudent.getInt("idStudent")); //Obtiene la proyeccion despues de la insercion
 		String proyeccion = obtenerProyeccionAnual(Integer.parseInt("7")); //Obtiene la proyeccion despues de la insercion

@@ -49,11 +49,10 @@ public class Auxiliar {
 		droolsTest.executeDrools();
 	}*/
 		
-	public WorkingMemory conexionDrools(String ruleFile) throws DroolsParserException, IOException {
+	public WorkingMemory conexionDrools() throws DroolsParserException, IOException {
 
 		PackageBuilder packageBuilder = new PackageBuilder();
-		//String ruleFile = fileRules;
-		//String ruleFile = "../rules/proyNivel.drl";
+		String ruleFile = "../rules/proyeccionNive.drl";
 		InputStream resourceAsStream = getClass().getResourceAsStream(ruleFile);
 
 		Reader reader = new InputStreamReader(resourceAsStream);
@@ -215,12 +214,12 @@ public class Auxiliar {
 	}
 
 	
-	public void executeFrecInicial(WorkingMemory workingMemory, JSONObject results ) {
+	public void executeFrecInicial(WorkingMemory workingMemory) {
 		//Nivel niv = new Nivel();
-		//String arrayJson=this.crearJson();
-		//JSONObject obj = new JSONObject(arrayJson);
+		String arrayJson=this.crearJson();
+		JSONObject obj = new JSONObject(arrayJson);
 		
-		//JSONObject results = obj.getJSONObject("resultsTest");
+		JSONObject results = obj.getJSONObject("resultsTest");
 		
 			JSONObject infoStudent = results.getJSONObject("infoStudent");
 		
@@ -307,12 +306,12 @@ public class Auxiliar {
 		pn.setAlumno(alumn);
 		workingMemory.insert(pn);
 		workingMemory.fireAllRules();
-		try {
+		/*try {
 			this.exFrecuencias(workingMemory,pn, desempeñosNivel, nivel);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		}*/
 		
 		
 		
@@ -386,165 +385,4 @@ public class Auxiliar {
         return swriter.toString(); 
 	}
 	
-	/*public void executeFrecuencias(WorkingMemory workingMemory) throws SQLException {
-	int [] puntaje = {8,8,8,8,8,8};  //obtenidos del front
-	int nivelUbicacion=1; //Obtenido del front
-	double frecInicial = 3.4;
-	int dimension = 6 - nivelUbicacion+1;
-	System.out.println("Dimension: " + dimension);
-	Nivel[] niveles = new Nivel[dimension];
-	List<Double> Frec=new ArrayList<Double>();
-	
-	for(int x =nivelUbicacion; x<=6; x++) {
-		String n="";
-		switch (x){
-			case 1: 
-				n= "3A";
-				Frec=Arrays.asList(1.0	,
-						1.1	,
-						1.2	,
-						1.4	,
-						1.5	,
-						1.6	,
-						1.7	,
-						1.8	,
-						2.0	,
-						2.2	,
-						2.3	,
-						3.0	,
-						3.3	,
-						3.4	,
-						3.6	
-);
-			break;
-			case 2: 
-				n= "2A";
-				Frec=Arrays.asList(1.0	,
-						1.2	,
-						1.6	,
-						2.0	,
-						2.6	,
-						3.2	,
-						3.7	,
-						4.4	
-);
-			break;
-			case 3: 
-				n= "A";
-				Frec=Arrays.asList(1.0	,
-						1.4	,
-						1.5	,
-						1.6	,
-						1.8	,
-						1.9	,
-						2.8	,
-						3.3	,
-						4.3	
-);
-			break;
-			case 4: 
-				n= "B";
-				Frec=Arrays.asList(1.0	,
-						1.3	,
-						1.7	,
-						1.4	,
-						1.5	,
-						1.2	,
-						1.9	,
-						2.0	,
-						2.5	,
-						2.8	,
-						2.9	,
-						3.5	,
-						4.1	,
-						4.2	
-);
-			break;
-			case 5: 
-				n= "C";
-				Frec=Arrays.asList(1.0	,
-						1.2	,
-						1.4	,
-						1.5	,
-						1.6	,
-						1.7	,
-						1.3	,
-						2.0	,
-						2.3	,
-						2.8	,
-						3.0	,
-						3.3	
-);
-			break;
-			case 6: 
-				n= "D";
-				Frec=Arrays.asList(1.1	,
-						1.3	,
-						1.4	,
-						1.5	,
-						1.0	,
-						1.8	,
-						2.5	,
-						3.0	,
-						3.6	,
-						4.9	,
-						3.2	
-);
-			break;
-			}
-		System.out.println(" nivel: "+ n + " Freceuncias: " + Frec);
-		//System.out.println(" x: "+ x + " nivelUbicacion: " + nivelUbicacion+ " indice: " + (x-nivelUbicacion));
-		niveles[x-nivelUbicacion] = new Nivel();
-		niveles[x-nivelUbicacion].setIdNivel(x);
-		niveles[x-nivelUbicacion].setNombreNivel(n);
-		niveles[x-nivelUbicacion].setFrecuencias(Frec);
-		niveles[x-nivelUbicacion].setPuntajeDesempeño(puntaje[x-nivelUbicacion]);
-	
-		workingMemory.insert(niveles[x-nivelUbicacion]);
-		workingMemory.fireAllRules();
-		System.out.println(niveles[x-nivelUbicacion].getNivelMessage());
-	}
-	double []frecProy = new double [6-nivelUbicacion+1];
-	int size, frecOriginal, s=0, indiceActual=0, mov=0, totalF=0;
-
-	for(int x=0;x<=(6-nivelUbicacion);x++) { //nivel
-		size=niveles[x].getFrecuencias().size();
-		s=0;
-		while(s<size && niveles[x].getFrecuencias().get(s)!=frecInicial) {
-			//System.out.println("Freceuncia " +  (x+1) + ": " + niveles[x].getFrecuencias().get(s));
-			s++;
-		}
-		if(x==0) {
-			indiceActual=niveles[x].getFrecuencias().indexOf(frecInicial);
-			if(indiceActual == -1) {
-				System.out.println("La frecuencia no existe");
-				break;
-			}
-			else {
-				System.out.println("Está en el indice: " + indiceActual);
-			}
-			//System.out.println("Avanzaré " + (niveles[x].getDesempeño()) + " Indices");
-
-		}
-		else {
-			
-			indiceActual = indiceActual+ niveles[x].getDesempeño();
-			System.out.println("Está en el indice: " + indiceActual);
-			System.out.println("Avanzaré " + (niveles[x].getDesempeño()) + " Indices");
-			totalF = niveles[x].getFrecuencias().size()-1;
-			System.out.println("El numero de frecuencias de este nivel es: " + totalF);
-			if(indiceActual > totalF){
-				indiceActual = totalF;
-				System.out.println("No se puede avanzar mas, nos vamos ala ultima freceuncia: " + indiceActual);
-			}
-			//frecProy[x] = niveles[x].getFrecuencias().get(indiceActual);
-		}
-		//System.out.println("Frecuencia: "+niveles[x].getFrecuencias().get(indiceActual) + " x: " + x);
-		frecProy[x]= niveles[x].getFrecuencias().get(indiceActual);
-	  }
-	for(int x=0; x<6; x++) {
-		System.out.println("Frecuencia " + (x+1) + " : " + frecProy[x]);
-	}
-}
-*/
 }
