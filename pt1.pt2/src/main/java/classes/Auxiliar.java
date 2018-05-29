@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringWriter;
+import java.sql.CallableStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -199,7 +200,7 @@ public class Auxiliar {
 		workingMemory.fireAllRules();
 		
 	}
-	public String crearJson() {
+	public String crearJson() {                                                       
 		StringWriter swriter = new StringWriter();
 		String alumno[], testInicial[], desempeñoGral[], puntajeNivel[];
             try (JsonGenerator gen = Json.createGenerator(swriter)) {
@@ -232,4 +233,7 @@ public class Auxiliar {
         return swriter.toString(); 
 	}
 	
+    public static void asignarAsistente(int idAlumno) {
+    		
+    }
 }

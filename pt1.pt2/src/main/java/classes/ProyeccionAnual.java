@@ -1,5 +1,6 @@
 package classes;
 
+import java.io.IOException;
 import java.io.StringWriter;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -9,6 +10,8 @@ import java.sql.SQLException;
 import javax.json.Json;
 import javax.json.stream.JsonGenerator;
 
+import org.drools.compiler.compiler.DroolsParserException;
+import org.drools.core.WorkingMemory;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -143,6 +146,19 @@ public class ProyeccionAnual {
 	}
 	
 	public static String crearProyeccionAnual(String array) throws JSONException, SQLException {
+		
+		Auxiliar aux= new Auxiliar();
+		WorkingMemory wk;
+		try {
+			wk = aux.conexionDrools();
+			aux.executeFrecuencias(wk);
+		} catch (DroolsParserException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		
 		JSONObject obj = new JSONObject(array);
