@@ -163,11 +163,11 @@ public class ProyeccionAnual {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-	//	JSONObject obj = new JSONObject(array);
+	      JSONObject obj = new JSONObject(array);
 		
-		//JSONObject results = obj.getJSONObject("resultsTest");
+		JSONObject results = obj.getJSONObject("resultsTest");
 		
-			/*JSONObject infoStudent = results.getJSONObject("infoStudent");
+			JSONObject infoStudent = results.getJSONObject("infoStudent");
 			String idStudent=infoStudent.getString("idStudent");
 			int desempeñoGeneral = results.getInt("finalScore");
 		
@@ -176,7 +176,7 @@ public class ProyeccionAnual {
 		
 		System.out.println("puntajeDesempeño " + desempeñoGeneral);
 		System.out.println("infoStudent" +infoStudent.toString());
-		System.out.println("para frecuencia inicial" + frecuenciaIncial.toString());*/
+		System.out.println("para frecuencia inicial" + frecuenciaIncial.toString());
 		
 		
 		
