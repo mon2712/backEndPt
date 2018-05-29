@@ -56,7 +56,7 @@ public class pruebafecha {
 
 		Auxiliar aux= new Auxiliar();
 		
-		String fileRules1="../rules/proyeccionNivel.drl";
+		//String fileRules1="../rules/proyeccionNivel.drl";
 		//String fileRules2="../rules/desempeño.drl";
 		String arrayJson=aux.crearJson();
 		JSONObject obj = new JSONObject(arrayJson);

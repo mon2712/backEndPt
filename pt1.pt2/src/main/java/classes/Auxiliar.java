@@ -306,12 +306,12 @@ public class Auxiliar {
 		pn.setAlumno(alumn);
 		workingMemory.insert(pn);
 		workingMemory.fireAllRules();
-		/*try {
+		try {
 			this.exFrecuencias(workingMemory,pn, desempeñosNivel, nivel);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}*/
+		}
 		
 		
 		
