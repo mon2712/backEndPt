@@ -214,10 +214,10 @@ public class Auxiliar {
 	}
 
 	
-	public void executeFrecInicial(WorkingMemory workingMemory) {
+	public void executeFrecInicial(WorkingMemory workingMemory, String array) {
 		//Nivel niv = new Nivel();
-		String arrayJson=this.crearJson();
-		JSONObject obj = new JSONObject(arrayJson);
+		//String array=this.crearJson();
+		JSONObject obj = new JSONObject(array);
 		
 		JSONObject results = obj.getJSONObject("resultsTest");
 		

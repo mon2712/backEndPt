@@ -155,7 +155,7 @@ public class ProyeccionAnual {
 				WorkingMemory wk;
 				try {
 					wk = aux.conexionDrools();
-					aux.executeFrecInicial(wk);
+					aux.executeFrecInicial(wk, array);
 				} catch (DroolsParserException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -178,10 +178,8 @@ public class ProyeccionAnual {
 		System.out.println("infoStudent" +infoStudent.toString());
 		System.out.println("para frecuencia inicial" + frecuenciaIncial.toString());
 		
-		
-		
 		//String proyeccion = obtenerProyeccionAnual(infoStudent.getInt("idStudent")); //Obtiene la proyeccion despues de la insercion
-		String proyeccion = obtenerProyeccionAnual(Integer.parseInt("7")); //Obtiene la proyeccion despues de la insercion
+		String proyeccion = obtenerProyeccionAnual(Integer.parseInt(idStudent)); //Obtiene la proyeccion despues de la insercion
 		return proyeccion;
 	}
 
