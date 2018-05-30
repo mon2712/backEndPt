@@ -7,6 +7,8 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringWriter;
 import java.sql.CallableStatement;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -40,6 +42,9 @@ public class Auxiliar {
 		Auxiliar droolsTest = new Auxiliar();
 		droolsTest.executeDrools();
 	}*/
+	
+	static PreparedStatement prepareStat = null;
+    private static Connection conn = BaseDatos.conectarBD();
 		
 	public WorkingMemory conexionDrools() throws DroolsParserException, IOException {
 
@@ -234,16 +239,82 @@ public class Auxiliar {
         return swriter.toString(); 
 	}
 	
-    public static void asignarAsistente(String alumno) {
-    		//System.out.println("Nivel " + nivel + "idAlumno " + idAlumno);
+    public static void asignarAsistente(String alumno) throws SQLException {
+    		String[] niveles = {"3A","2A","A","B","C","D","E","F","G","H","I","J"}; 
+    		
     		JSONObject obj2 = new JSONObject(alumno);
 		JSONObject alumnoIn = obj2.getJSONObject("student");
 		
-		
 		String nivel="";
 		nivel=alumnoIn.getString("level");
-		System.out.println("alumno " + alumnoIn.getString("level"));
+		System.out.println("alumno " + alumnoIn.getString("level") + niveles.length);
 		
+		int index=-1;
+		for(int i=0; i<niveles.length; i++) {
+			if(niveles[i].equals(nivel)) {
+				System.out.println("en el if " + niveles[i] + " " + nivel);
+				index=i;
+			}else {
+				System.out.println("no esta en el array");
+			}
+		}
+		System.out.println("index "+ index);
+		
+		String nivelesToCheck="";
+		if(index==-1) {
+			nivelesToCheck="'J'";
+		}else {
+			for(int i=0; i<niveles.length; i++) {
+				if(i >= index) {
+					if(nivelesToCheck == "") {
+						nivelesToCheck=nivelesToCheck + "'" + niveles[i] +"'";
+					}else if(niveles.length > 1) {
+						nivelesToCheck=nivelesToCheck +",'"+niveles[i] + "'";
+					}
+				}
+			}
+		}
+		
+		
+		System.out.println("cadena final " + nivelesToCheck);
+		
+		String getQueryStatement = "SELECT pas.Asistente_Usuario_idUsuario, users.nombre, users.apellido, COUNT(pas.Alumno_idAlumno) FROM asistencia as pas JOIN usuario as users\r\n" + 
+				"ON pas.Asistente_Usuario_idUsuario=users.idUsuario\r\n" + 
+				"WHERE fecha=CURDATE() AND Asistente_Usuario_idUsuario IN (\r\n" + 
+				"	SELECT asist.Usuario_idUsuario FROM asistencia as lista JOIN asistente as asist ON lista.Asistente_Usuario_idUsuario=asist.Usuario_idUsuario \r\n" + 
+				"	WHERE fecha=CURDATE() AND asist.nivel IN ("+nivelesToCheck+") )\r\n" + 
+				"GROUP BY pas.Asistente_Usuario_idUsuario ORDER BY COUNT(pas.Alumno_idAlumno);";
+
+        prepareStat = conn.prepareStatement(getQueryStatement);
+
+        ResultSet rs = prepareStat.executeQuery();
+
+        if (!rs.isBeforeFirst()){
+        		System.out.println("no hay alumnos asignados");
+        		
+        		String queryAsistentes = "SELECT asist.Usuario_idUsuario, users.nombre, users.apellido FROM asistencia as lista JOIN asistente as asist JOIN usuario as users\r\n" + 
+        				"ON lista.Asistente_Usuario_idUsuario=asist.Usuario_idUsuario  AND asist.usuario_idUsuario=users.idUsuario\r\n" + 
+        				"WHERE fecha=CURDATE() AND asist.nivel IN ("+nivelesToCheck+") GROUP BY asist.Usuario_idUsuario;";
+
+        		prepareStat = conn.prepareStatement(queryAsistentes);
+
+            ResultSet rsAsistentes = prepareStat.executeQuery();
+            
+            if (!rsAsistentes.isBeforeFirst()){
+            		System.out.println("no hay asistentes calificadas");
+            }else {
+            		if(rsAsistentes.first()) {
+            			System.out.println("asistente nuevo " + rs.getString(2));
+            		}
+            }
+        		
+        }else {
+        		System.out.println("hay resultado");
+        		if(rs.first()) {
+        			System.out.println("asistente " + rs.getString(2));
+        		}
+        		
+        }
 		
 
     }

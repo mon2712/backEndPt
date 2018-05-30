@@ -146,7 +146,7 @@ public class Recepcion {
 		}
     }
     
-    public static String setAsistencia(String array) {
+    public static String setAsistencia(String array) throws SQLException {
 		StringWriter swriter = new StringWriter();
 		String finalResult = "";
 		
