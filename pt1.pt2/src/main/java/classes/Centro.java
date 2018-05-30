@@ -95,7 +95,7 @@ public class Centro {
 	            int bandera=0;
 	            if (!rs.isBeforeFirst()){
 	            		//ResultSet is empty
-	            		System.out.println("esta vacio");
+	            		System.out.println("esta vacio de alumnos");
 	            		gen.writeEnd();
 	    				gen.writeEnd();
 	            	}else {

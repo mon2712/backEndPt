@@ -164,8 +164,19 @@ public class Recepcion {
 		if(types.equals("S")) {
 			System.out.println("alumno");
 			Alumno alumno = new Alumno();
+			Centro centro = new Centro();
 			
 			String alumnoInfo = alumno.obtenerFichaAlumno(id);
+			String centroStatus = centro.getEstatusCentro();
+			
+			System.out.println("centroStatus " + centroStatus);
+			
+			System.out.println("alumnoInfo "+ alumnoInfo);
+			
+						
+			Auxiliar aux = new Auxiliar();
+			aux.asignarAsistente(alumnoInfo);
+
 			
 		/*	String query = " insert into users (first_name, last_name, date_created, is_admin, num_points)"
 			        + " values (?, ?, ?, ?, ?)";

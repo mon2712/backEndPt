@@ -361,6 +361,7 @@ public class Alumno {
     		    
     		    Alumno alumno = new Alumno();
     		    
+    		    
     		    alumno.setNombre(cStmt.getString(11));
     		    alumno.setApellidoPaterno(cStmt.getString(12));
     		    alumno.setNivelActual(cStmt.getString(13));

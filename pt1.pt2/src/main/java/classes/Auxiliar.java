@@ -21,6 +21,7 @@ import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.core.RuleBase;
 import org.drools.core.RuleBaseFactory;
 import org.drools.core.WorkingMemory;
+import org.json.JSONObject;
 import org.kie.internal.KnowledgeBaseFactory;
 
 public class Auxiliar {
@@ -233,7 +234,17 @@ public class Auxiliar {
         return swriter.toString(); 
 	}
 	
-    public static void asignarAsistente(int idAlumno) {
-    		
+    public static void asignarAsistente(String alumno) {
+    		//System.out.println("Nivel " + nivel + "idAlumno " + idAlumno);
+    		JSONObject obj2 = new JSONObject(alumno);
+		JSONObject alumnoIn = obj2.getJSONObject("student");
+		
+		
+		String nivel="";
+		nivel=alumnoIn.getString("level");
+		System.out.println("alumno " + alumnoIn.getString("level"));
+		
+		
+
     }
 }
