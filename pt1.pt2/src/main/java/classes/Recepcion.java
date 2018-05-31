@@ -164,39 +164,64 @@ public class Recepcion {
 		if(types.equals("S")) {
 			System.out.println("alumno");
 			Alumno alumno = new Alumno();
-			Centro centro = new Centro();
 			
 			String alumnoInfo = alumno.obtenerFichaAlumno(id);
-			String centroStatus = centro.getEstatusCentro();
-			
-			System.out.println("centroStatus " + centroStatus);
 			
 			System.out.println("alumnoInfo "+ alumnoInfo);
 			
 						
 			Auxiliar aux = new Auxiliar();
-			aux.asignarAsistente(alumnoInfo);
-
+			String asistente = aux.asignarAsistente(alumnoInfo);
 			
-		/*	String query = " insert into users (first_name, last_name, date_created, is_admin, num_points)"
-			        + " values (?, ?, ?, ?, ?)";
+			System.out.println("asistente en setAsistencia: " + asistente);
 
-			      // create the mysql insert preparedstatement
-			      PreparedStatement preparedStmt = conn.prepareStatement(query);
-			      preparedStmt.setString (1, "Barney");
-			      preparedStmt.setString (2, "Rubble");
-			      preparedStmt.setDate   (3, startDate);
-			      preparedStmt.setBoolean(4, false);
-			      preparedStmt.setInt    (5, 5000);
-
-			      // execute the preparedstatement
-			      preparedStmt.execute();
-			      
-			      conn.close();*/
-			 
+			JSONObject obj2 = new JSONObject(asistente);
+			
+			JSONObject infoAssistant = obj2.getJSONObject("infoAssistant");
+			
+			if(infoAssistant.getInt("error") == 0 ) {
+				System.out.println("insert");
+				CallableStatement cStmt = conn.prepareCall("{call setAsistencia(?,?,?,?)}");
+				
+	    		    cStmt.setInt(1, id);
+	    		    cStmt.setInt(2, infoAssistant.getInt("id"));
+	    		    cStmt.setString(3, "student");
+	    		    cStmt.registerOutParameter(4, Types.INTEGER);
+	    		    
+	    		    cStmt.execute();  
+	    		    
+	    		    if(cStmt.getInt(4) == 0) {
+	    		    		//getRecomendaciones
+	    		    		System.out.println("se agrego");
+	    		    }else {
+	    		    		System.out.println("no se agrego");
+	    		    }
+	    		    
+			}else {
+				System.out.println("no insert");
+			}
+			
+			//System.out.println("nombre" + infoAssistant.getString("name"));
+			
+			
 			finalResult = alumnoInfo;
 		}else if(types.equals("A")) {
 			System.out.println("asistente");
+			CallableStatement cStmt = conn.prepareCall("{call setAsistencia(?,?,?,?)}");
+			
+		    cStmt.setInt(1, 0);
+		    cStmt.setInt(2, id);
+		    cStmt.setString(3, "assistant");
+		    cStmt.registerOutParameter(4, Types.INTEGER);
+		    
+		    cStmt.execute();  
+		    
+		    if(cStmt.getInt(4) == 0) {
+		    		//getRecomendaciones
+		    		System.out.println("se agrego");
+		    }else {
+		    		System.out.println("no se agrego");
+		    }
 		}else {
 			System.out.println("error");
 		}

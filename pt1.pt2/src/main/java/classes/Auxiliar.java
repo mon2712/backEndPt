@@ -239,11 +239,12 @@ public class Auxiliar {
         return swriter.toString(); 
 	}
 	
-    public static void asignarAsistente(String alumno) throws SQLException {
+    public static String asignarAsistente(String alumno) throws SQLException {
     		String[] niveles = {"3A","2A","A","B","C","D","E","F","G","H","I","J"}; 
-    		
+    		String asistente = "";
     		JSONObject obj2 = new JSONObject(alumno);
 		JSONObject alumnoIn = obj2.getJSONObject("student");
+		StringWriter swriter = new StringWriter();
 		
 		String nivel="";
 		nivel=alumnoIn.getString("level");
@@ -276,46 +277,131 @@ public class Auxiliar {
 		}
 		
 		
-		System.out.println("cadena final " + nivelesToCheck);
+		//System.out.println("cadena final " + nivelesToCheck);
 		
-		String getQueryStatement = "SELECT pas.Asistente_Usuario_idUsuario, users.nombre, users.apellido, COUNT(pas.Alumno_idAlumno) FROM asistencia as pas JOIN usuario as users\r\n" + 
-				"ON pas.Asistente_Usuario_idUsuario=users.idUsuario\r\n" + 
-				"WHERE fecha=CURDATE() AND Asistente_Usuario_idUsuario IN (\r\n" + 
-				"	SELECT asist.Usuario_idUsuario FROM asistencia as lista JOIN asistente as asist ON lista.Asistente_Usuario_idUsuario=asist.Usuario_idUsuario \r\n" + 
-				"	WHERE fecha=CURDATE() AND asist.nivel IN ("+nivelesToCheck+") )\r\n" + 
-				"GROUP BY pas.Asistente_Usuario_idUsuario ORDER BY COUNT(pas.Alumno_idAlumno);";
+			
+			String getQueryStatement = "SELECT pas.Asistente_Usuario_idUsuario, users.nombre, users.apellido, COUNT(pas.Alumno_idAlumno) FROM asistencia as pas JOIN usuario as users\r\n" + 
+					"ON pas.Asistente_Usuario_idUsuario=users.idUsuario\r\n" + 
+					"WHERE fecha=CURDATE() AND Asistente_Usuario_idUsuario IN (\r\n" + 
+					"	SELECT asist.Usuario_idUsuario FROM asistencia as lista JOIN asistente as asist ON lista.Asistente_Usuario_idUsuario=asist.Usuario_idUsuario \r\n" + 
+					"	WHERE fecha=CURDATE() AND horaSalida='00:00:00' AND asist.nivel IN ("+nivelesToCheck+") )\r\n" + 
+					"GROUP BY pas.Asistente_Usuario_idUsuario ORDER BY COUNT(pas.Alumno_idAlumno);";
+	
+	        prepareStat = conn.prepareStatement(getQueryStatement);
+	
+	        ResultSet rs = prepareStat.executeQuery();
+	
+	        if (!rs.isBeforeFirst()){
+	        		System.out.println("no hay alumnos asignados");
+	        		
+	        		String queryAsistentes = "SELECT asist.Usuario_idUsuario, users.nombre, users.apellido FROM asistencia as lista JOIN asistente as asist JOIN usuario as users\r\n" + 
+	        				"ON lista.Asistente_Usuario_idUsuario=asist.Usuario_idUsuario  AND asist.usuario_idUsuario=users.idUsuario\r\n" + 
+	        				"WHERE fecha=CURDATE() AND horaSalida='00:00:00' AND asist.nivel IN ("+nivelesToCheck+") GROUP BY asist.Usuario_idUsuario;";
+	
+	        		prepareStat = conn.prepareStatement(queryAsistentes);
+	
+	            ResultSet rsAsistentes = prepareStat.executeQuery();
+	            
+	            if (!rsAsistentes.isBeforeFirst()){
+	            		System.out.println("no hay asistentes calificadas");
+	            		
+	            		String queryNoCalificadas = "SELECT pas.Asistente_Usuario_idUsuario, users.nombre, users.apellido, asist.nivel, COUNT(pas.Alumno_idAlumno) FROM asistencia as pas JOIN usuario as users JOIN Asistente as asist\r\n" + 
+	            				"ON pas.Asistente_Usuario_idUsuario=users.idUsuario AND asist.Usuario_idUsuario=users.idUsuario\r\n" + 
+	            				"WHERE  fecha=CURDATE() AND horaSalida='00:00:00' AND Asistente_Usuario_idUsuario IN (\r\n" + 
+	            				"	SELECT asist.Usuario_idUsuario FROM asistencia as lista JOIN asistente as asist ON lista.Asistente_Usuario_idUsuario=asist.Usuario_idUsuario \r\n" + 
+	            				"	WHERE fecha=CURDATE()  )\r\n" + 
+	            				"GROUP BY pas.Asistente_Usuario_idUsuario ORDER BY asist.nivel DESC;";
+	
+	            		prepareStat = conn.prepareStatement(queryNoCalificadas);
+	
+	                ResultSet rsNoCualificados = prepareStat.executeQuery();
+	                
+	                if (!rsNoCualificados.isBeforeFirst()){
+	                		System.out.println(" esta vacio 3 ");
+	                		
+	              		try (JsonGenerator gen = Json.createGenerator(swriter)) {
+                				gen.writeStartObject();
+                				gen.writeStartObject("infoAssistant");
+                					gen.write("error", 1);
+            		                gen.write("message", "No hay asistentes en el centro.");
+            		            gen.writeEnd();
+                    	        gen.writeEnd();
+                			}
+	              		
+	                }else {
+	                		//esta vacio
+	                		System.out.println("esta vacio");
+	                		if(rsNoCualificados.first()) {
+	                			System.out.println("hola " + rsNoCualificados.getString(2));
+	                			asistente=rsNoCualificados.getString(2) + " " + rsNoCualificados.getString(3);
+	                			
+	                			try (JsonGenerator gen = Json.createGenerator(swriter)) {
+	                				gen.writeStartObject();
+	                				gen.writeStartObject("infoAssistant");
+	                					gen.write("error", 0);
+	            		                	gen.write("id", rsNoCualificados.getInt(1));
+	            		                	gen.write("name", rsNoCualificados.getString(2));
+	            		                	gen.write("lastName", ""+rsNoCualificados.getString(3));
+	            		            gen.writeEnd();
+	                    	        gen.writeEnd();
+	                			} catch (SQLException e) {
+	                		        e.printStackTrace();
+	                		        return null;
+	                		    }
+	                			
+	                		}
 
-        prepareStat = conn.prepareStatement(getQueryStatement);
-
-        ResultSet rs = prepareStat.executeQuery();
-
-        if (!rs.isBeforeFirst()){
-        		System.out.println("no hay alumnos asignados");
-        		
-        		String queryAsistentes = "SELECT asist.Usuario_idUsuario, users.nombre, users.apellido FROM asistencia as lista JOIN asistente as asist JOIN usuario as users\r\n" + 
-        				"ON lista.Asistente_Usuario_idUsuario=asist.Usuario_idUsuario  AND asist.usuario_idUsuario=users.idUsuario\r\n" + 
-        				"WHERE fecha=CURDATE() AND asist.nivel IN ("+nivelesToCheck+") GROUP BY asist.Usuario_idUsuario;";
-
-        		prepareStat = conn.prepareStatement(queryAsistentes);
-
-            ResultSet rsAsistentes = prepareStat.executeQuery();
+	                }
+	                
+	                
+	            		
+	            }else {
+	            		if(rsAsistentes.first()) {
+	            			System.out.println("asistente nuevo " + rs.getString(2));
+	            			asistente=rsAsistentes.getString(2) + " " + rsAsistentes.getString(3);
+	            			try (JsonGenerator gen = Json.createGenerator(swriter)) {
+	            				gen.writeStartObject();
+	            				gen.writeStartObject("infoAssistant");
+	            					gen.write("error", 0);
+            		                gen.write("id", rsAsistentes.getInt(1));
+            		                gen.write("name", rsAsistentes.getString(2));
+            		                gen.write("lastName", ""+rsAsistentes.getString(3));
+            		            gen.writeEnd();
+            		            gen.writeEnd();
+	            			} catch (SQLException e) {
+                		        e.printStackTrace();
+                		        return null;
+                		    }
+	            		}
+	            }
+	        		
+	        }else {
+	        		System.out.println("hay resultado");
+	        		if(rs.first()) {
+	        			System.out.println("asistente " + rs.getString(2));
+	        			asistente=rs.getString(2) + " " + rs.getString(3);
+	        			try (JsonGenerator gen = Json.createGenerator(swriter)) {
+	            			
+		        			gen.writeStartObject();
+	            			gen.writeStartObject("infoAssistant");
+	            				gen.write("error", 0);
+	        		            	gen.write("id", rs.getInt(1));
+	        		            	gen.write("name", rs.getString(2));
+	        		            	gen.write("lastName", ""+rs.getString(3));
+	        	            gen.writeEnd();
+	        	            gen.writeEnd();
+		        		} catch (SQLException e) {
+	        		        e.printStackTrace();
+	        		        return null;
+	        		    }
+	        		}
+	        		
+	        }
+	        
             
-            if (!rsAsistentes.isBeforeFirst()){
-            		System.out.println("no hay asistentes calificadas");
-            }else {
-            		if(rsAsistentes.first()) {
-            			System.out.println("asistente nuevo " + rs.getString(2));
-            		}
-            }
-        		
-        }else {
-        		System.out.println("hay resultado");
-        		if(rs.first()) {
-        			System.out.println("asistente " + rs.getString(2));
-        		}
-        		
-        }
-		
+            System.out.println("swriter " + swriter.toString());
+	        
+	        return swriter.toString();
 
     }
 }
