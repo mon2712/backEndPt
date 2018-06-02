@@ -1,0 +1,13 @@
+d//A continuación escribimos nuestras reglas en un archivo proyeccionNivel.drl
+
+
+package rules
+expander proyNivel.dsl
+import classes.Nivel;
+rule "nivelInicialA"
+	dialect "java"
+	when
+		Cuando el nivel de inicio sea A
+	then
+		Poner fluidez en mensaje
+end

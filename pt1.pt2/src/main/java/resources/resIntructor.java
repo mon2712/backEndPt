@@ -51,8 +51,16 @@ public class resIntructor {
 	@GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/getPaymentOfStudent")
-	public String getPagosAlumnos() {
-    		return instructor.getPagosAlumno();
+	public String getPagosAlumnos(@QueryParam("idStudent") String idStudent) {
+    		return instructor.getPagosAlumno(idStudent);
 	}
+	
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/setTuition")
+	public String setTuitionPayment(String array) throws WriterException, IOException {
+    		return instructor.setColegiatura(array);
+    }
 
 }

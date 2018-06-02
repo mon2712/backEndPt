@@ -21,9 +21,6 @@ public class Recepcion {
     static Connection conn = BaseDatos.conectarBD();
     
     public static String getAlumnosLlamadas() {
-    	/*PreparedStatement prepareStat = null;
-        Connection conn = BaseDatos.conectarBD();
-        */
 		StringWriter swriter = new StringWriter();
 		String resultado="";
 		try {
@@ -105,9 +102,7 @@ public class Recepcion {
 	            				if(i == 2) diasQueViene.add(5);
 	            				if(i == 3) diasQueViene.add(7);
 	            			}
-	            			
 	            		}
-	            		
 	            		int size=diasQueViene.size();
 	            		
 	            		if(size == 0) {
@@ -135,8 +130,10 @@ public class Recepcion {
 	        		    cStmt.registerOutParameter(10, Types.DATE);	  // fecha de ultima asistencia
 	        		    cStmt.registerOutParameter(11, Types.INTEGER); // ERROR
 	        		    cStmt.registerOutParameter(12, Types.VARCHAR); // MENSAJE DE ERROR
+
 	        		    
 	        		    cStmt.execute();    
+
 	        		    System.out.println("idAlumno enviado: " +rs.getInt(3) + " idAlumno regresado: "+ cStmt.getInt(3));
 	        		    if (cStmt.getInt(11) == 0){
 	        		    	System.out.println("idAlumno: " + cStmt.getInt(3));
@@ -171,53 +168,58 @@ public class Recepcion {
 			    	     }
 	            	} 
                 }
+/*
+	        		    //System.out.println("idAlumno: " + cStmt.getString(3));
+	        		    
+	        		    alumn.setIdAlumno(Integer.toString(cStmt.getInt(3)));
+	        		    alumn.setNombre(cStmt.getString(4));
+	        		    alumn.setApellidoPaterno(cStmt.getString(5));
+	        		    nota=""+cStmt.getString(6);
+	        		    fechaLlamada=""+cStmt.getString(7);
+	        		    estatus=cStmt.getInt(8);
+	        		    activacion=cStmt.getInt(9);
+	        		    ultimaAsistencia=cStmt.getString(10);
+	        		    if(estatus == 1) done="true";	
+	        		    else done="false";
+	        		    
+	        		    if(activacion == 1) active="true";	
+	        		    else active="false";
+	        		    
+	        		    	gen.writeStartObject();
+			    	            gen.write("idStudent", alumn.getIdAlumno());
+			    	            gen.write("name", alumn.getNombre()+  " " + alumn.getApellidoPaterno());
+			    	            gen.writeStartObject("call");
+				    	            gen.write("done", done);
+				    	            gen.write("active", active);
+				    	            gen.write("note", nota);
+				    	            gen.write("date", fechaLlamada);
+				    	        gen.writeEnd();
+				    	     gen.writeEnd();
+		    	        }
+*/
 	            gen.writeEnd();
 		        gen.writeEnd();  
             	}
             resultado=swriter.toString();
 		 } catch (SQLException e) {
+
 			e.printStackTrace();
 		 }
 		return resultado;  
     }
     
     public static void NotaLlamada(int idAlumno, String nota, String fec) {
-    	/*PreparedStatement prepareStat = null;
-        Connection conn = BaseDatos.conectarBD();*/
         CallableStatement cStmt;
-        /*SimpleDateFormat formatF = new SimpleDateFormat("yyyy-MM-dd");
-        SimpleDateFormat formatF1 = new SimpleDateFormat("dd-MM-yyyy");
-		String fech = formatF.format(fec);
-		java.util.Date fechaDate = null;
-        try {
-        	 fechaDate = formatF1.parse(fec);
-		} catch (ParseException e2) {
-			// TODO Auto-generated catch block
-			e2.printStackTrace();
-		}
-        
-        String fech = formatF.format(fechaDate);
-		*/
 		try {
 			cStmt = conn.prepareCall("{call setNotaLlamada(?, ?, ?)}");
 			cStmt.setInt(1, idAlumno);
-			System.out.println("id: " +idAlumno);
 		    cStmt.setString(2, nota);
-		    System.out.println("nOTA: " + nota);
 		    cStmt.setString(3, fec);
-		    System.out.println("Fecha: " + fec);
 		    cStmt.execute();
 		} catch (SQLException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-        
-        /*try {
-			conn.close();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}*/
     }
     
 }
