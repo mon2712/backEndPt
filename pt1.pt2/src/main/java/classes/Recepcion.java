@@ -219,9 +219,46 @@ public class Recepcion {
 		    if(cStmt.getInt(4) == 0) {
 		    		//getRecomendaciones
 		    		System.out.println("se agrego");
+		    		String queryAsistentes = "SELECT asis.Asistente_Usuario_idUsuario, users.nombre, users.apellido, users.telefono, asis.horaEntrada, users.horaLlegada, asist.nivel FROM Asistencia as asis \r\n" + 
+		    				"JOIN Usuario as users JOIN Asistente as asist ON asis.Asistente_Usuario_idUsuario=users.idUsuario AND asist.Usuario_idUsuario=users.idUsuario \r\n" + 
+		    				"WHERE  asis.Asistente_Usuario_idUsuario="+Integer.toString(id)+" AND fecha=CURDATE() AND Alumno_idAlumno is NULL;";
+		    		
+		    		System.out.println("cadena "+ queryAsistentes);
+	
+	        		prepareStat = conn.prepareStatement(queryAsistentes);
+	
+	            ResultSet rsAsistente = prepareStat.executeQuery();
+	            
+	            if(rsAsistente.first()) {
+		            	try (JsonGenerator gen = Json.createGenerator(swriter)) {
+	        				gen.writeStartObject();
+	        				gen.writeStartObject("student");
+	        					gen.write("code", 0);
+	    		                	gen.write("id", rsAsistente.getInt(1));
+	    		                	gen.write("name", rsAsistente.getString(2));
+	    		                	gen.write("lastName", ""+rsAsistente.getString(3));
+	    	    	            		gen.write("level", rsAsistente.getString(7));
+	    	    	            		gen.write("tutor", "");
+	    	    	            		gen.write("cellTutor", "");
+	    	    	            		gen.write("missingPayment", "");
+	    	    	            		gen.write("assistances", "");
+	    	    	            		gen.write("nameMom", "");
+	    	    	            		gen.write("lastNameMom", "");
+	    	    	            		gen.write("phoneHouse","");
+	    	    	            		gen.write("cellMom", "");
+	    		            gen.writeEnd();
+	            	        gen.writeEnd();
+	        			} catch (SQLException e) {
+	        		        e.printStackTrace();
+	        		        return null;
+	        		    }
+	            }
+	            finalResult = swriter.toString();
+	            System.out.println("cadena final " + finalResult);
 		    }else {
 		    		System.out.println("no se agrego");
 		    }
+		    
 		}else {
 			System.out.println("error");
 		}

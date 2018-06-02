@@ -280,8 +280,8 @@ public class Auxiliar {
 		//System.out.println("cadena final " + nivelesToCheck);
 		
 			
-			String getQueryStatement = "SELECT pas.Asistente_Usuario_idUsuario, users.nombre, users.apellido, COUNT(pas.Alumno_idAlumno) FROM asistencia as pas JOIN usuario as users\r\n" + 
-					"ON pas.Asistente_Usuario_idUsuario=users.idUsuario\r\n" + 
+			String getQueryStatement = "SELECT pas.Asistente_Usuario_idUsuario, users.nombre, users.apellido, users.telefono, COUNT(pas.Alumno_idAlumno) FROM asistencia as pas JOIN usuario as users JOIN Asistente as asiste\r\n" + 
+					"ON pas.Asistente_Usuario_idUsuario=users.idUsuario AND asiste.Usuario_idUsuario=users.idUsuario \r\n" + 
 					"WHERE fecha=CURDATE() AND Asistente_Usuario_idUsuario IN (\r\n" + 
 					"	SELECT asist.Usuario_idUsuario FROM asistencia as lista JOIN asistente as asist ON lista.Asistente_Usuario_idUsuario=asist.Usuario_idUsuario \r\n" + 
 					"	WHERE fecha=CURDATE() AND horaSalida='00:00:00' AND asist.nivel IN ("+nivelesToCheck+") )\r\n" + 
@@ -294,7 +294,7 @@ public class Auxiliar {
 	        if (!rs.isBeforeFirst()){
 	        		System.out.println("no hay alumnos asignados");
 	        		
-	        		String queryAsistentes = "SELECT asist.Usuario_idUsuario, users.nombre, users.apellido FROM asistencia as lista JOIN asistente as asist JOIN usuario as users\r\n" + 
+	        		String queryAsistentes = "SELECT asist.Usuario_idUsuario, users.nombre, users.apellido, users.telefono, asist.nivel FROM asistencia as lista JOIN asistente as asist JOIN usuario as users\r\n" + 
 	        				"ON lista.Asistente_Usuario_idUsuario=asist.Usuario_idUsuario  AND asist.usuario_idUsuario=users.idUsuario\r\n" + 
 	        				"WHERE fecha=CURDATE() AND horaSalida='00:00:00' AND asist.nivel IN ("+nivelesToCheck+") GROUP BY asist.Usuario_idUsuario;";
 	
@@ -305,7 +305,7 @@ public class Auxiliar {
 	            if (!rsAsistentes.isBeforeFirst()){
 	            		System.out.println("no hay asistentes calificadas");
 	            		
-	            		String queryNoCalificadas = "SELECT pas.Asistente_Usuario_idUsuario, users.nombre, users.apellido, asist.nivel, COUNT(pas.Alumno_idAlumno) FROM asistencia as pas JOIN usuario as users JOIN Asistente as asist\r\n" + 
+	            		String queryNoCalificadas = "SELECT pas.Asistente_Usuario_idUsuario, users.nombre, users.apellido, users.telefono, asist.nivel, COUNT(pas.Alumno_idAlumno) FROM asistencia as pas JOIN usuario as users JOIN Asistente as asist\r\n" + 
 	            				"ON pas.Asistente_Usuario_idUsuario=users.idUsuario AND asist.Usuario_idUsuario=users.idUsuario\r\n" + 
 	            				"WHERE  fecha=CURDATE() AND horaSalida='00:00:00' AND Asistente_Usuario_idUsuario IN (\r\n" + 
 	            				"	SELECT asist.Usuario_idUsuario FROM asistencia as lista JOIN asistente as asist ON lista.Asistente_Usuario_idUsuario=asist.Usuario_idUsuario \r\n" + 
@@ -330,7 +330,7 @@ public class Auxiliar {
 	              		
 	                }else {
 	                		//esta vacio
-	                		System.out.println("esta vacio");
+	                		System.out.println("no esta vacio");
 	                		if(rsNoCualificados.first()) {
 	                			System.out.println("hola " + rsNoCualificados.getString(2));
 	                			asistente=rsNoCualificados.getString(2) + " " + rsNoCualificados.getString(3);
@@ -342,6 +342,15 @@ public class Auxiliar {
 	            		                	gen.write("id", rsNoCualificados.getInt(1));
 	            		                	gen.write("name", rsNoCualificados.getString(2));
 	            		                	gen.write("lastName", ""+rsNoCualificados.getString(3));
+		        	    	            		gen.write("level", rsNoCualificados.getString(4));
+		        	    	            		gen.write("tutor", "");
+		        	    	            		gen.write("cellTutor", "");
+		        	    	            		gen.write("missingPayment", "");
+		        	    	            		gen.write("assistances", "");
+		        	    	            		gen.write("nameMom", "");
+		        	    	            		gen.write("lastNameMom", "");
+		        	    	            		gen.write("phoneHouse","");
+		        	    	            		gen.write("cellMom", "");
 	            		            gen.writeEnd();
 	                    	        gen.writeEnd();
 	                			} catch (SQLException e) {
@@ -366,6 +375,15 @@ public class Auxiliar {
             		                gen.write("id", rsAsistentes.getInt(1));
             		                gen.write("name", rsAsistentes.getString(2));
             		                gen.write("lastName", ""+rsAsistentes.getString(3));
+		    	    	            		gen.write("level", rsAsistentes.getString(4));
+		    	    	            		gen.write("tutor", "");
+		    	    	            		gen.write("cellTutor", "");
+		    	    	            		gen.write("missingPayment", "");
+		    	    	            		gen.write("assistances", "");
+		    	    	            		gen.write("nameMom", "");
+		    	    	            		gen.write("lastNameMom", "");
+		    	    	            		gen.write("phoneHouse","");
+		    	    	            		gen.write("cellMom", "");
             		            gen.writeEnd();
             		            gen.writeEnd();
 	            			} catch (SQLException e) {
@@ -388,6 +406,15 @@ public class Auxiliar {
 	        		            	gen.write("id", rs.getInt(1));
 	        		            	gen.write("name", rs.getString(2));
 	        		            	gen.write("lastName", ""+rs.getString(3));
+	    	    	            		gen.write("level", rs.getString(4));
+	    	    	            		gen.write("tutor", "");
+	    	    	            		gen.write("cellTutor", "");
+	    	    	            		gen.write("missingPayment", "");
+	    	    	            		gen.write("assistances", "");
+	    	    	            		gen.write("nameMom", "");
+	    	    	            		gen.write("lastNameMom", "");
+	    	    	            		gen.write("phoneHouse","");
+	    	    	            		gen.write("cellMom", "");
 	        	            gen.writeEnd();
 	        	            gen.writeEnd();
 		        		} catch (SQLException e) {
