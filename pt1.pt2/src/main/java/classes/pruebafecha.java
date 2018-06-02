@@ -63,7 +63,7 @@ public class pruebafecha {
 		WorkingMemory wk=aux.conexionDrools();
 		JSONObject results = obj.getJSONObject("resultsTest");
 		//aux.executeFrecuencias(wk);
-		aux.executeFrecInicial(wk);
+		aux.executeFrecInicial(wk, arrayJson);
 		//aux.exFrecuencias(wk,2);
 		/*pruebaDSL prueba = new pruebaDSL();
 		
