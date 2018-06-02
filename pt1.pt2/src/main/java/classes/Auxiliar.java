@@ -52,7 +52,7 @@ public class Auxiliar {
 	public WorkingMemory conexionDrools() throws DroolsParserException, IOException {
 
 		PackageBuilder packageBuilder = new PackageBuilder();
-		String ruleFile = "../rules/proyeccionNive.drl";
+		String ruleFile = "../rules/proyeccionNivel.drl";
 		InputStream resourceAsStream = getClass().getResourceAsStream(ruleFile);
 
 		Reader reader = new InputStreamReader(resourceAsStream);
@@ -255,6 +255,7 @@ public class Auxiliar {
 				JSONObject res = (JSONObject) exams.get(i);
 				desNivel[i]=res.getString("desempeño");
 				level[i] = res.getString("level");
+				System.out.println("Indice de Nivel: " + i + " nivel: " + level[i] );
 			}
 			
 			int newIndice=Arrays.binarySearch(level, n);
@@ -262,7 +263,7 @@ public class Auxiliar {
 			//String desempeñosNivel[] = new String [exams.length()- newIndice];
 			//String nivel[] = new String [exams.length()- newIndice];
 			String desempeñosNivel[]=Arrays.copyOf(desNivel, newIndice);
-			String nivel[]=Arrays.copyOfRange(level, newIndice, exams.length());
+			String nivel[]=Arrays.copyOf(level, newIndice);
 			//System.out.println("Examenes desempeños:  "+ Arrays.asList(desempeñosNivel) + " Niveles: " + Arrays.asList(nivel));
 			
 			
@@ -311,10 +312,7 @@ public class Auxiliar {
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
-		
-		
-		
+		}		
 	}
 	public String crearJson() {
 		StringWriter swriter = new StringWriter();
@@ -356,6 +354,10 @@ public class Auxiliar {
 			                 gen.write("desempeño", "malo");
 			                 gen.write("level", "D");
 			             gen.writeEnd();
+			             gen.writeStartObject();
+			                 gen.write("desempeño", "malo");
+			                 gen.write("level", "E");
+		                 gen.writeEnd();
 		            gen.writeEnd();
 		            gen.writeStartArray("startPoint");
 		             gen.writeStartObject();
