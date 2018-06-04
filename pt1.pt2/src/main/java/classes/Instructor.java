@@ -123,6 +123,7 @@ public class Instructor {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
     }
     
     public static void obtenerCredenciales(String array) throws WriterException, IOException, SQLException{
