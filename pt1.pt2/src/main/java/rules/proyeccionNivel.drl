@@ -7,6 +7,7 @@ import classes.Nivel;
 import classes.Alumno;
 import classes.ProyeccionNivel;
 import classes.ProyeccionAnual;
+import classes.Registro;
 
 //---Nivel3A-----------------------------------------------------------------------------------------------------------------------------------------------
 rule "Frecuencia 3A 1.0a"

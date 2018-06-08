@@ -73,49 +73,49 @@ public class FileReport {
 					
 					switch(numCol) {
 					case 1:
-						alumn.setIdAlumno(cell.getStringCellValue());
+						alumn.setIdAlumno(cell.getStringCellValue().trim());
 						break;
 					case 2:
-						String cp = convertirUpLow(cell.getStringCellValue());
+						String cp = convertirUpLow(cell.getStringCellValue().trim());
 						alumn.setApellidoPaterno(cp);//System.out.print(alumn.getApellidoPaterno() + "\t\t");
 						break;
 					case 3:
-						String cp2 = convertirUpLow(cell.getStringCellValue());
+						String cp2 = convertirUpLow(cell.getStringCellValue().trim());
 						alumn.setNombre(cp2);
 						break;
 					case 4:
 						alumn.setFechaNac(cell.getDateCellValue());
 						break;
 					case 5:
-						alumn.setGrado(cell.getStringCellValue());
+						alumn.setGrado(cell.getStringCellValue().trim());
 						break;
 					case 6:
-						alumn.setTel(cell.getStringCellValue());
+						alumn.setTel(cell.getStringCellValue().trim());
 						break;						
 					case 7:
-						String cp3 = convertirUpLow(cell.getStringCellValue());
+						String cp3 = convertirUpLow(cell.getStringCellValue().trim());
 						alumn.setNombreMadre(cp3);
 						//System.out.print(alumn.getNombreMadre() + "\t\t");
 						break;
 					case 8:
-						String cp4 = convertirUpLow(cell.getStringCellValue());
+						String cp4 = convertirUpLow(cell.getStringCellValue().trim());
 						alumn.setApellidoMadre(cp4);//System.out.print(alumn.getFecIngreso() + "\t\t");
 						break;
 					case 9:
-						alumn.setEmailMadre(cell.getStringCellValue());//System.out.print(alumn.getEmailMadre() + "\t\t");
+						alumn.setEmailMadre(cell.getStringCellValue().trim());//System.out.print(alumn.getEmailMadre() + "\t\t");
 						break;
 					case 10:
-						alumn.setCelMadre(cell.getStringCellValue());
+						alumn.setCelMadre(cell.getStringCellValue().trim());
 						break;
 					case 11:
-						String cp5 = convertirUpLow(cell.getStringCellValue());
+						String cp5 = convertirUpLow(cell.getStringCellValue().trim());
 						alumn.setTutorNombre(cp5);
 						break;
 					case 18:
-						alumn.setTelTutor(cell.getStringCellValue());
+						alumn.setTelTutor(cell.getStringCellValue().trim());
 						break;
 					case 20:
-						alumn.setCelTutor(cell.getStringCellValue());
+						alumn.setCelTutor(cell.getStringCellValue().trim());
 						fileToDB(alumn.getIdAlumno(),alumn.getApellidoPaterno(),alumn.getNombre(),alumn.getFechaNac(),alumn.getGrado(),alumn.getTel(),alumn.getNombreMadre(),alumn.getApellidoMadre(),alumn.getEmailMadre(),alumn.getCelMadre(),alumn.getTutorNombre(),alumn.getCelTutor(),alumn.getTelTutor());
 						break;
 					}

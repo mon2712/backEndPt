@@ -30,6 +30,9 @@ public class ProgramacionDiaria {
 		this.tipo = tipo;
 	}
 	
+	/*public static String getProgramacionDiaria() {
+		
+	}*/
 	
 
 }

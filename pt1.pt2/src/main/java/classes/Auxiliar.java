@@ -51,17 +51,18 @@ public class Auxiliar {
 		
 	public WorkingMemory conexionDrools() throws DroolsParserException, IOException {
 
-		PackageBuilder packageBuilder = new PackageBuilder();
+		PackageBuilder pB = new PackageBuilder();
 		String ruleFile = "../rules/proyeccionNivel.drl";
+		//String ruleFile = "../rules/registro_progDiaria.drl";
 		InputStream resourceAsStream = getClass().getResourceAsStream(ruleFile);
 
 		Reader reader = new InputStreamReader(resourceAsStream);
-		packageBuilder.addPackageFromDrl(reader);
-		org.drools.core.rule.Package rulesPackage = packageBuilder.getPackage();
-		RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-		ruleBase.addPackage(rulesPackage);
+		pB.addPackageFromDrl(reader);
+		org.drools.core.rule.Package rulesPackage = pB.getPackage();
+		RuleBase rB = RuleBaseFactory.newRuleBase();
+		rB.addPackage(rulesPackage);
 
-		WorkingMemory workingMemory = ruleBase.newStatefulSession();
+		WorkingMemory workingMemory = rB.newStatefulSession();
 		
 		return workingMemory;
 		
@@ -386,5 +387,7 @@ public class Auxiliar {
             }
         return swriter.toString(); 
 	}
+	
+	
 	
 }

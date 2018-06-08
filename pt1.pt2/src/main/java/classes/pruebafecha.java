@@ -76,7 +76,7 @@ public class pruebafecha {
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}*/
+		}
           
 
 		
@@ -118,6 +118,24 @@ public class pruebafecha {
 		}*/
         
 		
+		/*Registro rs= new Registro();
+		rs.setUno(100);
+		rs.setDos(100);
+		rs.setTres(100);
+		rs.setCuatro(110);
+		rs.setCinco(110);
+		rs.setSeis(110);
+		rs.setSiete(100);
+		rs.setOcho(100);
+		rs.setNueve(110);
+		rs.setDiez(110);
+		//System.out.println(rs.getUno() + " " + rs.getDos()  + " " + rs.getTres()  + " " + rs.getCuatro() + " " + rs.getCinco() + " " +  rs.getSeis()  + " " +  rs.getSiete()  + " " +  rs.getOcho() + " " + rs.getNueve() + " " + rs.getDiez());
+		Auxiliar aux=new Auxiliar();
+		WorkingMemory wm=aux.conexionDrools();
+		rs.setCantidadCalificaciones(rs, wm);
+		System.out.println("Num 70: " +  rs.getNumSetenta() + " Num 80: " + rs.getNumOchenta() + " Num 90: " + rs.getNumNoventa() +" Num 100: " + rs.getNumCien()+ " Num flechas:" + rs.getNumFlecha() + "  Num triangulo: " + rs.getNumTriangulo());
+
+		System.out.println("La evaluacion es: "+ rs.getEvaluacion());*/
 	}
 
 }

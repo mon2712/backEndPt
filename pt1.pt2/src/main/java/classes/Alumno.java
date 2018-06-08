@@ -195,6 +195,9 @@ public class Alumno {
 			case "PK3":
 				this.gradoNum=-3;
 			break;
+			case "K":
+				this.gradoNum=-4;
+			break;
 			default:
 				this.gradoNum=Integer.parseInt(this.grado);
 			break;
