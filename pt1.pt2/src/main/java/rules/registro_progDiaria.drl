@@ -36,7 +36,9 @@ rule "Disminuir frecuencia"
     salience 0
 	dialect "java"
     when
-       registroObject: Registro((getNumTriangulo() + getNumFlecha())>4)
+       registroObject: Registro(getEvaluacion=="Excelente")
+       Registro(getTime()<=getNivel().getMaxTime())
+       Registro(getNivel().getFrecuencias().indecOf())
     then 
     	registroObject.setEvaluacion("Mala");
 end

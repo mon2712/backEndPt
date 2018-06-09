@@ -11,7 +11,7 @@ public class Registro {
 	private int idSet;
 	private String fecha;
 	private String tipo;
-	private String tiempo;
+	private int tiempo;
 	private int uno;
 	private int dos;
 	private int tres;
@@ -29,7 +29,15 @@ public class Registro {
 	private int numSetenta;
 	private int numFlecha;
 	private int numTriangulo;
+	private Nivel nivel;
 	
+	
+	public Nivel getNivel() {
+		return nivel;
+	}
+	public void setNivel(Nivel nivel) {
+		this.nivel = nivel;
+	}
 	public int getNumCien() {
 		return numCien;
 	}
@@ -103,10 +111,10 @@ public class Registro {
 	public void setTipo(String tipo) {
 		this.tipo = tipo;
 	}
-	public String getTiempo() {
+	public int getTiempo() {
 		return tiempo;
 	}
-	public void setTiempo(String tiempo) {
+	public void setTiempo(int tiempo) {
 		this.tiempo = tiempo;
 	}
 	public int getUno() {

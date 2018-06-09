@@ -13,19 +13,37 @@ public class Nivel {
 	private String nombreNivel;
 	private List<Double> Frecuencias;
 	private List<String> tipos;
+	private String desempeñoNivel;
+	private String desempeñoGeneral;
+	private String desempeñoMessage;
+	private int mintime;
+	private int maxTime;
 	
 	
+	
+	public int getMintime() {
+		return mintime;
+	}
+
+	public void setMintime(int mintime) {
+		this.mintime = mintime;
+	}
+
+	public int getMaxTime() {
+		return maxTime;
+	}
+
+	public void setMaxTime(int maxTime) {
+		this.maxTime = maxTime;
+	}
+
 	public List<String> getTipos() {
 		return tipos;
 	}
 
 	public void setTipos(List<String> tipos) {
 		this.tipos = tipos;
-	}
-
-	private String desempeñoNivel;
-	private String desempeñoGeneral;
-	
+	}	
 	
 	public String getDesempeñoGeneral() {
 		return desempeñoGeneral;
@@ -49,11 +67,7 @@ public class Nivel {
 
 	public void setDesempeñoMessage(String desempeñoMessage) {
 		this.desempeñoMessage = desempeñoMessage;
-	}
-
-	private String desempeñoMessage;
-	
-	
+	}	
 
 	public static int getDesempeñoAlto() {
 		return DESEMPEÑO_ALTO;
@@ -66,14 +80,7 @@ public class Nivel {
 	public static int getDesempeñoBajo() {
 		return DESEMPEÑO_BAJO;
 	}
-/*
-	public Nivel(int idNivel, String nombreNivel, List<Double> frecuencias) {
-		super();
-		this.idNivel = idNivel;
-		this.nombreNivel = nombreNivel;
-		Frecuencias = frecuencias;
-	}
-*/
+
 	public int getDesempeño() {
 		return desempeño;
 	}
