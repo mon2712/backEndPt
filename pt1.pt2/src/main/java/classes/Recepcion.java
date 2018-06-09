@@ -150,8 +150,6 @@ public class Recepcion {
 		StringWriter swriter = new StringWriter();
 		String finalResult = "";
 		
-		System.out.println("array "+array);
-		
 		JSONObject obj = new JSONObject(array);
 		
 		JSONObject scanned = obj.getJSONObject("scanned");
@@ -159,28 +157,23 @@ public class Recepcion {
 		int id = scanned.getInt("id");
 		String types = scanned.getString("type");
 		
-		System.out.println("id "+id+" tipo "+types);
 		
 		if(types.equals("S")) {
-			System.out.println("alumno");
 			Alumno alumno = new Alumno();
 			
 			String alumnoInfo = alumno.obtenerFichaAlumno(id);
 			
-			System.out.println("alumnoInfo "+ alumnoInfo);
 			
 						
 			Auxiliar aux = new Auxiliar();
 			String asistente = aux.asignarAsistente(alumnoInfo);
 			
-			System.out.println("asistente en setAsistencia: " + asistente);
 
 			JSONObject obj2 = new JSONObject(asistente);
 			
 			JSONObject infoAssistant = obj2.getJSONObject("infoAssistant");
 			
 			if(infoAssistant.getInt("error") == 0 ) {
-				System.out.println("insert");
 				CallableStatement cStmt = conn.prepareCall("{call setAsistencia(?,?,?,?)}");
 				
 	    		    cStmt.setInt(1, id);
@@ -192,21 +185,26 @@ public class Recepcion {
 	    		    
 	    		    if(cStmt.getInt(4) == 0) {
 	    		    		//getRecomendaciones
-	    		    		System.out.println("se agrego");
+	    		    		
+	    		    		if(infoAssistant.getBoolean("missingPayment") == true) {
+	    		    			CallableStatement cStmt2 = conn.prepareCall("{call setNotificacionPago(?)}");
+
+	    		    			cStmt2.setInt(1, id);
+	    		    		    
+	    		    			cStmt2.execute();
+
+	    		    		}
+	    		    		
 	    		    }else {
-	    		    		System.out.println("no se agrego");
+	    		    		finalResult = asistente;
 	    		    }
 	    		    
 			}else {
-				System.out.println("no insert");
+				finalResult = asistente;
 			}
-			
-			//System.out.println("nombre" + infoAssistant.getString("name"));
-			
 			
 			finalResult = alumnoInfo;
 		}else if(types.equals("A")) {
-			System.out.println("asistente");
 			CallableStatement cStmt = conn.prepareCall("{call setAsistencia(?,?,?,?)}");
 			
 		    cStmt.setInt(1, 0);
@@ -223,7 +221,6 @@ public class Recepcion {
 		    				"JOIN Usuario as users JOIN Asistente as asist ON asis.Asistente_Usuario_idUsuario=users.idUsuario AND asist.Usuario_idUsuario=users.idUsuario \r\n" + 
 		    				"WHERE  asis.Asistente_Usuario_idUsuario="+Integer.toString(id)+" AND fecha=CURDATE() AND Alumno_idAlumno is NULL;";
 		    		
-		    		System.out.println("cadena "+ queryAsistentes);
 	
 	        		prepareStat = conn.prepareStatement(queryAsistentes);
 	
@@ -234,13 +231,14 @@ public class Recepcion {
 	        				gen.writeStartObject();
 	        				gen.writeStartObject("student");
 	        					gen.write("code", 0);
+	        					gen.write("type","assistant");
 	    		                	gen.write("id", rsAsistente.getInt(1));
 	    		                	gen.write("name", rsAsistente.getString(2));
 	    		                	gen.write("lastName", ""+rsAsistente.getString(3));
 	    	    	            		gen.write("level", rsAsistente.getString(7));
-	    	    	            		gen.write("tutor", "");
-	    	    	            		gen.write("cellTutor", "");
-	    	    	            		gen.write("missingPayment", "");
+	    	    	            		gen.write("phone", rsAsistente.getString(4));
+	    	    	            		gen.write("entranceTime", rsAsistente.getString(5));
+	    	    	            		gen.write("realEntrance", rsAsistente.getString(6));
 	    	    	            		gen.write("assistances", "");
 	    	    	            		gen.write("nameMom", "");
 	    	    	            		gen.write("lastNameMom", "");
@@ -254,9 +252,6 @@ public class Recepcion {
 	        		    }
 	            }
 	            finalResult = swriter.toString();
-	            System.out.println("cadena final " + finalResult);
-		    }else {
-		    		System.out.println("no se agrego");
 		    }
 		    
 		}else {
@@ -265,6 +260,80 @@ public class Recepcion {
 		
 		return finalResult;
 
+    }
+
+    public static String getNotificacion() throws SQLException {
+    		StringWriter swriter = new StringWriter();
+    
+	    	String qryLlamadas = "SELECT COUNT(*) FROM Notificacion WHERE tipo='llamada' AND fecha IS NULL AND nota IS NULL GROUP BY tipo;";
+	    	String qryPagos = "SELECT * FROM Notificacion as noti JOIN Alumno as alu ON noti.Alumno_idAlumno=alu.idAlumno WHERE fecha=CURDATE() AND tipo='pago';";
+	    	
+	
+		prepareStat = conn.prepareStatement(qryLlamadas);
+	
+	    ResultSet rsLlamadas = prepareStat.executeQuery();
+	    
+		prepareStat = conn.prepareStatement(qryPagos);
+		
+	    ResultSet rsPagos = prepareStat.executeQuery();
+	    
+	    
+	    try (JsonGenerator gen = Json.createGenerator(swriter)) {
+			gen.writeStartObject();
+			gen.writeStartArray("notifications");
+
+		    if(rsLlamadas.first()) {
+		    		//No esta vació
+		    		gen.writeStartObject();
+		    			gen.write("type", "call");
+		    			gen.write("idStudent",0);
+		    			gen.write("title","Hay llamadas de realizar");
+		    			gen.write("button", "Revisar lista");
+		    		gen.writeEnd();
+		    		
+		    }
+		    
+		    if(!rsPagos.isBeforeFirst()) {
+		    		System.out.println("vacio");
+		    }else {
+		    		while(rsPagos.next()) {
+		    			gen.writeStartObject();
+			    			gen.write("type", "student");
+			    			gen.write("idStudent",rsPagos.getInt(2));
+			    			gen.write("name",rsPagos.getString(8));
+			    			gen.write("lastName",rsPagos.getString(7));
+			    			gen.write("nivel",rsPagos.getString(14));
+			    			gen.write("startDate",rsPagos.getString(12));
+			    			gen.write("title", rsPagos.getString(8)+" "+rsPagos.getString(7));
+			    			gen.write("button", "Falta de pago");
+			    		gen.writeEnd();
+		    		}
+		    }
+		    
+		    gen.writeEnd();
+		    gen.writeEnd();
+	    
+	    }
+	    
+	    
+    	
+    		return swriter.toString();
+    }
+    
+    public static String deleteNotificacion(int idAlumno) throws SQLException {
+		
+		String query = "DELETE FROM Notificacion WHERE fecha=CURDATE() AND tipo='pago' AND Alumno_idAlumno= ?";
+	    PreparedStatement preparedStmt = conn.prepareStatement(query);
+	    preparedStmt.setInt(1, idAlumno);
+
+	    preparedStmt.execute();
+		
+		Recepcion recep = new Recepcion();
+		
+		String notificaciones = recep.getNotificacion();
+		
+		return notificaciones;
+		
     }
     
 }

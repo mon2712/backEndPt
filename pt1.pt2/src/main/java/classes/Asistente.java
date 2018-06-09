@@ -32,10 +32,9 @@ public class Asistente {
 	        	gen.writeStartObject();
 	            gen.writeStartArray("allAssistants");
 	            while(rs.next()) {
-	            		System.out.println(rs.getString(1) + " " + rs.getString(3)+" "+rs.getString(2));
 	                gen.writeStartObject();
-	                gen.write("name", ""+rs.getString(4)+ " " + rs.getString(9));
-	                gen.write("idAssistant", ""+rs.getString(2));
+	                		gen.write("name", ""+rs.getString(4)+ " " + rs.getString(9));
+	                		gen.write("idAssistant", ""+rs.getString(2));
 	                gen.writeEnd();
 	            }
 	            gen.writeEnd();
@@ -67,8 +66,6 @@ public class Asistente {
 		        try (JsonGenerator gen = Json.createGenerator(swriter)) {
 		        	gen.writeStartObject();
 		            while(rs.next()) {
-		            		System.out.println(rs.getString(1) + " " + rs.getString(2)+" "+rs.getString(3)+" "+rs.getString(4)+" " +rs.getString(5) + " " + ""+rs.getString(6) + " " + rs.getString(7) + " " + rs.getString(8)+" "+rs.getString(9)+" "+rs.getString(10)+" "+rs.getString(11)+" "+rs.getString(12)+" "+rs.getString(13)+" "+rs.getString(14));
-		                
 		            		
 		            	gen.writeStartObject("assistantInfo");
 		                gen.write("name", ""+rs.getString(4));
@@ -84,7 +81,8 @@ public class Asistente {
 		                gen.write("miercoles", ""+rs.getString(12));
 		                gen.write("jueves", ""+rs.getString(13));
 		                gen.write("sabado", ""+rs.getString(14));
-
+		                gen.write("type", "asistente");
+		                
 		                gen.writeEnd();
 		            }
 		            gen.writeEnd();
@@ -102,7 +100,6 @@ public class Asistente {
      */
     public static String setAssistant(String array) {
 		StringWriter swriter = new StringWriter();
-		System.out.println("llega a la funcion"+array);
 	    try {
 	    		JSONObject obj = new JSONObject(array);
 	    		
@@ -111,12 +108,9 @@ public class Asistente {
 			JSONObject asis = obj.getJSONObject("infoAssistant");
 			
 	    		if(asis.has("idAssistant") ) {
-	    			System.out.println("hola");
 	    			if(asis.getString("idAssistant").length() == 0 ) {
-	    				System.out.println("no existe");
 	    				
 	    				int lunes=0, miercoles=0, jueves=0, sabado=0;
-	    				System.out.println("lunes" +  asis.getInt("lunes"));
 	    				
 	    				if(asis.getString("lunes").length() == 0) lunes=0; else lunes=asis.getInt("lunes");
 	    				if(asis.getString("miercoles").length() == 0) miercoles=0; else miercoles=asis.getInt("miercoles");
@@ -164,7 +158,6 @@ public class Asistente {
 	    		        		gen.writeEnd();
 	    		        }
 	    			}else {
-	    				System.out.println("si existe");
 	    				
 	    				CallableStatement cStmt = conn.prepareCall("{call updateUsuario(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}");
 	    				

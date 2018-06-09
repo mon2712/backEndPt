@@ -71,7 +71,6 @@ public class Auxiliar {
 		int nivelUbicacion=1; //Obtenido del front
 		double frecInicial = 3.4;
 		int dimension = 6 - nivelUbicacion+1;
-		System.out.println("Dimension: " + dimension);
 		Nivel[] niveles = new Nivel[dimension];
 		List<Double> Frec=new ArrayList<Double>();
 		
@@ -240,7 +239,7 @@ public class Auxiliar {
 	}
 	
     public static String asignarAsistente(String alumno) throws SQLException {
-    		String[] niveles = {"3A","2A","A","B","C","D","E","F","G","H","I","J"}; 
+    		String[] niveles = {"7A","6A","5A","4A","3A","2A","A","B","C","D","E","F","G","H","I","J"}; 
     		String asistente = "";
     		JSONObject obj2 = new JSONObject(alumno);
 		JSONObject alumnoIn = obj2.getJSONObject("student");
@@ -248,18 +247,15 @@ public class Auxiliar {
 		
 		String nivel="";
 		nivel=alumnoIn.getString("level");
-		System.out.println("alumno " + alumnoIn.getString("level") + niveles.length);
 		
 		int index=-1;
 		for(int i=0; i<niveles.length; i++) {
 			if(niveles[i].equals(nivel)) {
-				System.out.println("en el if " + niveles[i] + " " + nivel);
 				index=i;
 			}else {
 				System.out.println("no esta en el array");
 			}
 		}
-		System.out.println("index "+ index);
 		
 		String nivelesToCheck="";
 		if(index==-1) {
@@ -275,10 +271,6 @@ public class Auxiliar {
 				}
 			}
 		}
-		
-		
-		//System.out.println("cadena final " + nivelesToCheck);
-		
 			
 			String getQueryStatement = "SELECT pas.Asistente_Usuario_idUsuario, users.nombre, users.apellido, users.telefono, COUNT(pas.Alumno_idAlumno) FROM asistencia as pas JOIN usuario as users JOIN Asistente as asiste\r\n" + 
 					"ON pas.Asistente_Usuario_idUsuario=users.idUsuario AND asiste.Usuario_idUsuario=users.idUsuario \r\n" + 
@@ -292,7 +284,6 @@ public class Auxiliar {
 	        ResultSet rs = prepareStat.executeQuery();
 	
 	        if (!rs.isBeforeFirst()){
-	        		System.out.println("no hay alumnos asignados");
 	        		
 	        		String queryAsistentes = "SELECT asist.Usuario_idUsuario, users.nombre, users.apellido, users.telefono, asist.nivel FROM asistencia as lista JOIN asistente as asist JOIN usuario as users\r\n" + 
 	        				"ON lista.Asistente_Usuario_idUsuario=asist.Usuario_idUsuario  AND asist.usuario_idUsuario=users.idUsuario\r\n" + 
@@ -303,7 +294,6 @@ public class Auxiliar {
 	            ResultSet rsAsistentes = prepareStat.executeQuery();
 	            
 	            if (!rsAsistentes.isBeforeFirst()){
-	            		System.out.println("no hay asistentes calificadas");
 	            		
 	            		String queryNoCalificadas = "SELECT pas.Asistente_Usuario_idUsuario, users.nombre, users.apellido, users.telefono, asist.nivel, COUNT(pas.Alumno_idAlumno) FROM asistencia as pas JOIN usuario as users JOIN Asistente as asist\r\n" + 
 	            				"ON pas.Asistente_Usuario_idUsuario=users.idUsuario AND asist.Usuario_idUsuario=users.idUsuario\r\n" + 
@@ -317,7 +307,6 @@ public class Auxiliar {
 	                ResultSet rsNoCualificados = prepareStat.executeQuery();
 	                
 	                if (!rsNoCualificados.isBeforeFirst()){
-	                		System.out.println(" esta vacio 3 ");
 	                		
 	              		try (JsonGenerator gen = Json.createGenerator(swriter)) {
                 				gen.writeStartObject();
@@ -330,9 +319,7 @@ public class Auxiliar {
 	              		
 	                }else {
 	                		//esta vacio
-	                		System.out.println("no esta vacio");
 	                		if(rsNoCualificados.first()) {
-	                			System.out.println("hola " + rsNoCualificados.getString(2));
 	                			asistente=rsNoCualificados.getString(2) + " " + rsNoCualificados.getString(3);
 	                			
 	                			try (JsonGenerator gen = Json.createGenerator(swriter)) {
@@ -345,7 +332,7 @@ public class Auxiliar {
 		        	    	            		gen.write("level", rsNoCualificados.getString(4));
 		        	    	            		gen.write("tutor", "");
 		        	    	            		gen.write("cellTutor", "");
-		        	    	            		gen.write("missingPayment", "");
+		        	    	            		gen.write("missingPayment", alumnoIn.getString("missingPayment"));
 		        	    	            		gen.write("assistances", "");
 		        	    	            		gen.write("nameMom", "");
 		        	    	            		gen.write("lastNameMom", "");
@@ -366,7 +353,6 @@ public class Auxiliar {
 	            		
 	            }else {
 	            		if(rsAsistentes.first()) {
-	            			System.out.println("asistente nuevo " + rs.getString(2));
 	            			asistente=rsAsistentes.getString(2) + " " + rsAsistentes.getString(3);
 	            			try (JsonGenerator gen = Json.createGenerator(swriter)) {
 	            				gen.writeStartObject();
@@ -378,7 +364,7 @@ public class Auxiliar {
 		    	    	            		gen.write("level", rsAsistentes.getString(4));
 		    	    	            		gen.write("tutor", "");
 		    	    	            		gen.write("cellTutor", "");
-		    	    	            		gen.write("missingPayment", "");
+		    	    	            		gen.write("missingPayment", alumnoIn.getString("missingPayment"));
 		    	    	            		gen.write("assistances", "");
 		    	    	            		gen.write("nameMom", "");
 		    	    	            		gen.write("lastNameMom", "");
@@ -394,9 +380,7 @@ public class Auxiliar {
 	            }
 	        		
 	        }else {
-	        		System.out.println("hay resultado");
 	        		if(rs.first()) {
-	        			System.out.println("asistente " + rs.getString(2));
 	        			asistente=rs.getString(2) + " " + rs.getString(3);
 	        			try (JsonGenerator gen = Json.createGenerator(swriter)) {
 	            			
@@ -409,7 +393,7 @@ public class Auxiliar {
 	    	    	            		gen.write("level", rs.getString(4));
 	    	    	            		gen.write("tutor", "");
 	    	    	            		gen.write("cellTutor", "");
-	    	    	            		gen.write("missingPayment", "");
+	    	    	            		gen.write("missingPayment", alumnoIn.getString("missingPayment"));
 	    	    	            		gen.write("assistances", "");
 	    	    	            		gen.write("nameMom", "");
 	    	    	            		gen.write("lastNameMom", "");
@@ -424,9 +408,6 @@ public class Auxiliar {
 	        		}
 	        		
 	        }
-	        
-            
-            System.out.println("swriter " + swriter.toString());
 	        
 	        return swriter.toString();
 

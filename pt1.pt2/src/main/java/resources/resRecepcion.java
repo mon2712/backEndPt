@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -53,4 +54,21 @@ public class resRecepcion {
     		return recepcion.setAsistencia(array);
     }
 	
+    @GET
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/getNotifications")
+	public String getNotificaciones() throws SQLException {
+    		return recepcion.getNotificacion();
+	}
+    
+    
+    @DELETE
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/{idStudent}")
+	public String delNotificacion(@PathParam("idStudent") int id) throws SQLException {
+    		System.out.println("id Student " + id);
+		return recepcion.deleteNotificacion(id);
+	}
 }

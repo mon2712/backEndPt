@@ -162,14 +162,17 @@ public class Alumno {
 	public void setGrado(String grado) {
 		this.grado = grado;
 		switch (grado) {
-			case "pk1":
+			case "PK1":
 				this.gradoNum=-1;
 			break;
-			case "pk2":
+			case "PK2":
 				this.gradoNum=-2;
 			break;
-			case "pk3":
+			case "PK3":
 				this.gradoNum=-3;
+			break;
+			case "K":
+				this.gradoNum=-4;
 			break;
 			default:
 				this.gradoNum=Integer.parseInt(this.grado);
@@ -374,13 +377,10 @@ public class Alumno {
     		    alumno.setTutorNombre(cStmt.getString(4));
     		    alumno.setCelTutor(cStmt.getString(5));
     		    
-    		    System.out.println("usuario: "+alumno.getNombre() + " " + alumno.getApellidoPaterno() + " " + alumno.getNivelActual()+"telefono"+alumno.getTel());
-    		    
     		    if (alumno.getAdeudo() == 1) debe="true"; else debe="false";
     		    if (alumno.getTel() == null) telefono=""; else telefono=alumno.getTel();
     		    
     		    if(err == 1) {
-    		    		System.out.println("no existe alumno");
     		    		try (JsonGenerator gen = Json.createGenerator(swriter)) {
     	    	            gen.writeStartObject();
     	    	            gen.writeStartObject("student");
@@ -390,11 +390,11 @@ public class Alumno {
     	    	            gen.writeEnd();
     	    	        }
     		    }else if(err == 0) {
-    		    		System.out.println("existe un alumno"+alumno.getNombre());
 	    	        try (JsonGenerator gen = Json.createGenerator(swriter)) {
 	    	            gen.writeStartObject();
 	    	            gen.writeStartObject("student");
 	    	            		gen.write("code", 0);
+	    	            		gen.write("type","student");
 	    	            		gen.write("name", alumno.getNombre());
 	    	            		gen.write("lastName", alumno.getApellidoPaterno());
 	    	            		gen.write("level", alumno.getNivelActual());
@@ -419,7 +419,6 @@ public class Alumno {
     }
     
     public static String getAlumnos(String filter) {
-    		System.out.println("filter en funcion"+filter);
     		StringWriter swriter = new StringWriter();
         try {
             String getQueryStatement = "SELECT * FROM alumno WHERE CONCAT(nombre, ' ',apellido) LIKE '%"+filter+"%';";
@@ -433,7 +432,6 @@ public class Alumno {
             	gen.writeStartObject();
 	            gen.writeStartArray("allStudents");
 	            while(rs.next()) {
-	            		System.out.println(rs.getString(1) + " " + rs.getString(3)+" "+rs.getString(2));
 	                gen.writeStartObject();
 		                gen.write("name", rs.getString(3)+ " " + rs.getString(2));
 		                gen.write("idStudent", rs.getString(1));
@@ -469,7 +467,6 @@ public class Alumno {
 	        	gen.writeStartObject();
 	            gen.writeStartArray("allStudents");
 	            while(rs.next()) {
-	            		System.out.println(rs.getString(1) + " " + rs.getString(3)+" "+rs.getString(2));
 	                gen.writeStartObject();
 		                gen.write("name", rs.getString(3)+ " " + rs.getString(2));
 		                gen.write("idStudent", rs.getString(1));
@@ -502,7 +499,6 @@ public class Alumno {
 	        	gen.writeStartObject();
 	            gen.writeStartArray("allStudents");
 	            while(rs.next()) {
-	            		System.out.println(rs.getString(1) + " " + rs.getString(3)+" "+rs.getString(2));
 	                gen.writeStartObject();
 		                gen.write("name", rs.getString(3)+ " " + rs.getString(2));
 		                gen.write("idStudent", rs.getString(1));
