@@ -1,0 +1,42 @@
+//A continuación escribimos nuestras reglas en un archivo proyeccionNivel.drl
+
+
+package rules
+import classes.Registro;
+
+//---Prog Diaria-----------------------------------------------------------------------------------------------------------------------------------------------
+rule "Evaluacion excelente"
+	salience 0
+	dialect "java"
+    when
+       registroObject: Registro(getNumNoventa()<=4)
+       Registro(getNumCien()>=6)
+    then 
+       registroObject.setEvaluacion("Excelente");
+end
+rule "Evaluacion buena"
+    salience 0
+	dialect "java"
+    when
+       registroObject: Registro(getNumTriangulo() + getNumFlecha()<=4)
+       Registro(getNumCien()>=4)
+       //Registro(getNumOchenta() + getNumNoventa() + getNumSetenta == 10 - getNumTriangulo() + getNumFlecha() + getNumCien())
+    then 
+    	registroObject.setEvaluacion("Buena");
+end
+rule "Evaluacion mala"
+    salience 0
+	dialect "java"
+    when
+       registroObject: Registro((getNumTriangulo() + getNumFlecha())>4)
+    then 
+    	registroObject.setEvaluacion("Mala");
+end
+rule "Disminuir frecuencia"
+    salience 0
+	dialect "java"
+    when
+       registroObject: Registro((getNumTriangulo() + getNumFlecha())>4)
+    then 
+    	registroObject.setEvaluacion("Mala");
+end
