@@ -12,8 +12,9 @@ public class BaseDatos {
 
     public static Connection conectarBD() {
     		Connection conn = null;
-    		//String pass ="dBoy6Ap281015";
-    		String pass = "12345678";
+    		String pass ="dBoy6Ap281015";
+    		//String pass = "12345678";
+
         try {
             Class.forName("com.mysql.jdbc.Driver");
             System.out.print("Congrats - Seems your MySQL JDBC Driver Registered!");
@@ -23,7 +24,7 @@ public class BaseDatos {
         }
 
         try {
-        		conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/db_pt2?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", "root", pass);
+        		conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/db_pt2?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC&useSSL=false", "root", pass);
             
             if (conn != null) {
                 System.out.println("Connection Successful! Enjoy. Now it's time to push data");

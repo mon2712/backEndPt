@@ -107,7 +107,6 @@ public class Test {
 				        	}else {
 			        			for(i=0; i<questions.size(); i++) {
 				        			if(questions.get(i).equals(rs.getString(1))) {
-				        				//System.out.println("agrego nuevo año " + rs.getString(6) + " mando a crear nuevo año");
 				        				
 				        				gen.writeStartObject();
 				        					gen.write("id", rs.getInt(3));

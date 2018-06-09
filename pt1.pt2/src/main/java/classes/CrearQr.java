@@ -13,13 +13,14 @@ import com.google.zxing.qrcode.QRCodeWriter;
 public class CrearQr {
 
 	 public void generateQRCodeImage(String id, String nombre) throws WriterException, IOException {
+		 	System.out.println("id " + id + "nombre "  + nombre);
 		 	int width, height;
 		 	width=350; 
 		 	height=350;
 		 	String filePath=System.getProperty("user.home")+"/Documents/qrImages/"+id+".png";
 	        QRCodeWriter qrCodeWriter = new QRCodeWriter();
 	        
-	        BitMatrix bitMatrix = qrCodeWriter.encode("4", BarcodeFormat.QR_CODE, 350, 350);
+	        BitMatrix bitMatrix = qrCodeWriter.encode(id, BarcodeFormat.QR_CODE, 350, 350);
 	        
 	        
 	        java.nio.file.Path path = FileSystems.getDefault().getPath(filePath);

@@ -4,6 +4,7 @@ import java.io.StringWriter;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 
@@ -17,7 +18,6 @@ public class Personal {
     private static Connection conn = BaseDatos.conectarBD();
     
     public static String iniciarSesion(String username, String password) {
-    		System.out.println("llega a la funcion con: " + username + " passowrd: " + password);
     		String type="", name="";
     		int id;
     		StringWriter swriter = new StringWriter();
@@ -36,9 +36,7 @@ public class Personal {
     		    name = cStmt.getString(4);
     		    id = cStmt.getInt(5);
 
-    		    System.out.println("usuario: "+type + " " + name + " " + id);
     		    if(id == 0) {
-    		    		System.out.println("error en inicio de sesion");
     		    		try (JsonGenerator gen = Json.createGenerator(swriter)) {
     	    	            gen.writeStartObject();
     	    	            gen.writeStartObject("infoLogin");
@@ -66,5 +64,35 @@ public class Personal {
     		
     		return swriter.toString();
     }
+    
+    public static String getPersonal() {
+		StringWriter swriter = new StringWriter();
+	    try {
+	        String getQueryStatement = "SELECT us.idUsuario, us.nombre, us.apellido FROM Usuario as us  JOIN Asistente as asis JOIN Recepcionista as rec  \n" + 
+	        		"ON (us.idUsuario=rec.Usuario_idUsuario) OR (us.idUsuario=asis.Usuario_idUsuario) GROUP BY us.idUsuario;";
+	
+	        prepareStat = conn.prepareStatement(getQueryStatement);
+	
+	        // Execute the Query, and get a java ResultSet
+	        ResultSet rs = prepareStat.executeQuery();
+	
+	        try (JsonGenerator gen = Json.createGenerator(swriter)) {
+	        	gen.writeStartObject();
+	            gen.writeStartArray("allAssistants");
+	            while(rs.next()) {
+		            	gen.writeStartObject();
+		               	gen.write("name", ""+rs.getString(2)+ " " + rs.getString(3));
+		                gen.write("idAssistant", ""+rs.getString(1));
+		            gen.writeEnd();
+	            }
+	            gen.writeEnd();
+	            gen.writeEnd();
+	        }
+	        return swriter.toString();
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	        return null;
+	    }
+	}
 
 }

@@ -49,12 +49,19 @@ public class pruebafecha {
 
 		//Instructor instructor = new Instructor();
 		//instructor.obtenerGafetesAlumnos();	
+		/*
+		Recepcion recepcion = new Recepcion();
+		String alumnosLlamada= recepcion.getAlumnosLlamadas();
+		System.out.print(alumnosLlamada);
+		//recepcion.NotaLlamada(2, "hola", "2018-04-23");
+*/
 		//Recepcion recepcion = new Recepcion();
 		//String alumnosLlamada= recepcion.getAlumnosLlamadas();
 		//System.out.print(alumnosLlamada);
 		//recepcion.NotaLlamada(3, "hola", "23/04/2018");
 
 		Auxiliar aux= new Auxiliar();
+
 		
 		//String fileRules1="../rules/proyeccionNivel.drl";
 		//String fileRules2="../rules/desempeño.drl";
@@ -77,7 +84,6 @@ public class pruebafecha {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}*/
-          
 
 		
 		//Asistente asistente = new Asistente();
@@ -117,6 +123,10 @@ public class pruebafecha {
             gen.writeEnd();
 		}*/
         
+		Recepcion recepcion = new Recepcion();
+		String notificaciones = recepcion.getNotificacion();
+		System.out.println("noti" + notificaciones);
+		
 		
 	}
 

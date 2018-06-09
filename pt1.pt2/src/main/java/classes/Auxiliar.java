@@ -78,9 +78,11 @@ public class Auxiliar {
         System.out.println();
         System.out.println("______________________________________________________________");
 		int dimension = 6 - nivelUbicacion+1;
+
 		//String [] desempeñoNivel = {"malo","malo","malo","malo","malo","malo"};  //obtenidos del front
 		//System.out.println("Examenes desempeños:  "+ Arrays.asList(desempeñosNivel));
 		//System.out.println("Dimension: " + dimension);
+
 		Nivel[] niveles = new Nivel[dimension];
 		
 		//alu.setDesempeño("bueno");
@@ -315,7 +317,7 @@ public class Auxiliar {
 		
 		
 	}
-	public String crearJson() {
+	public String crearJson() {                                                       
 		StringWriter swriter = new StringWriter();
 		String alumno[], testInicial[], desempeñoGral[], puntajeNivel[];
             try (JsonGenerator gen = Json.createGenerator(swriter)) {
@@ -384,4 +386,179 @@ public class Auxiliar {
         return swriter.toString(); 
 	}
 	
+
+    public static String asignarAsistente(String alumno) throws SQLException {
+    		String[] niveles = {"7A","6A","5A","4A","3A","2A","A","B","C","D","E","F","G","H","I","J"}; 
+    		String asistente = "";
+    		JSONObject obj2 = new JSONObject(alumno);
+		JSONObject alumnoIn = obj2.getJSONObject("student");
+		StringWriter swriter = new StringWriter();
+		
+		String nivel="";
+		nivel=alumnoIn.getString("level");
+		
+		int index=-1;
+		for(int i=0; i<niveles.length; i++) {
+			if(niveles[i].equals(nivel)) {
+				index=i;
+			}else {
+				System.out.println("no esta en el array");
+			}
+		}
+		
+		String nivelesToCheck="";
+		if(index==-1) {
+			nivelesToCheck="'J'";
+		}else {
+			for(int i=0; i<niveles.length; i++) {
+				if(i >= index) {
+					if(nivelesToCheck == "") {
+						nivelesToCheck=nivelesToCheck + "'" + niveles[i] +"'";
+					}else if(niveles.length > 1) {
+						nivelesToCheck=nivelesToCheck +",'"+niveles[i] + "'";
+					}
+				}
+			}
+		}
+			
+			String getQueryStatement = "SELECT pas.Asistente_Usuario_idUsuario, users.nombre, users.apellido, users.telefono, COUNT(pas.Alumno_idAlumno) FROM asistencia as pas JOIN usuario as users JOIN Asistente as asiste\r\n" + 
+					"ON pas.Asistente_Usuario_idUsuario=users.idUsuario AND asiste.Usuario_idUsuario=users.idUsuario \r\n" + 
+					"WHERE fecha=CURDATE() AND Asistente_Usuario_idUsuario IN (\r\n" + 
+					"	SELECT asist.Usuario_idUsuario FROM asistencia as lista JOIN asistente as asist ON lista.Asistente_Usuario_idUsuario=asist.Usuario_idUsuario \r\n" + 
+					"	WHERE fecha=CURDATE() AND horaSalida='00:00:00' AND asist.nivel IN ("+nivelesToCheck+") )\r\n" + 
+					"GROUP BY pas.Asistente_Usuario_idUsuario ORDER BY COUNT(pas.Alumno_idAlumno);";
+	
+	        prepareStat = conn.prepareStatement(getQueryStatement);
+	
+	        ResultSet rs = prepareStat.executeQuery();
+	
+	        if (!rs.isBeforeFirst()){
+	        		
+	        		String queryAsistentes = "SELECT asist.Usuario_idUsuario, users.nombre, users.apellido, users.telefono, asist.nivel FROM asistencia as lista JOIN asistente as asist JOIN usuario as users\r\n" + 
+	        				"ON lista.Asistente_Usuario_idUsuario=asist.Usuario_idUsuario  AND asist.usuario_idUsuario=users.idUsuario\r\n" + 
+	        				"WHERE fecha=CURDATE() AND horaSalida='00:00:00' AND asist.nivel IN ("+nivelesToCheck+") GROUP BY asist.Usuario_idUsuario;";
+	
+	        		prepareStat = conn.prepareStatement(queryAsistentes);
+	
+	            ResultSet rsAsistentes = prepareStat.executeQuery();
+	            
+	            if (!rsAsistentes.isBeforeFirst()){
+	            		
+	            		String queryNoCalificadas = "SELECT pas.Asistente_Usuario_idUsuario, users.nombre, users.apellido, users.telefono, asist.nivel, COUNT(pas.Alumno_idAlumno) FROM asistencia as pas JOIN usuario as users JOIN Asistente as asist\r\n" + 
+	            				"ON pas.Asistente_Usuario_idUsuario=users.idUsuario AND asist.Usuario_idUsuario=users.idUsuario\r\n" + 
+	            				"WHERE  fecha=CURDATE() AND horaSalida='00:00:00' AND Asistente_Usuario_idUsuario IN (\r\n" + 
+	            				"	SELECT asist.Usuario_idUsuario FROM asistencia as lista JOIN asistente as asist ON lista.Asistente_Usuario_idUsuario=asist.Usuario_idUsuario \r\n" + 
+	            				"	WHERE fecha=CURDATE()  )\r\n" + 
+	            				"GROUP BY pas.Asistente_Usuario_idUsuario ORDER BY asist.nivel DESC;";
+	
+	            		prepareStat = conn.prepareStatement(queryNoCalificadas);
+	
+	                ResultSet rsNoCualificados = prepareStat.executeQuery();
+	                
+	                if (!rsNoCualificados.isBeforeFirst()){
+	                		
+	              		try (JsonGenerator gen = Json.createGenerator(swriter)) {
+                				gen.writeStartObject();
+                				gen.writeStartObject("infoAssistant");
+                					gen.write("error", 1);
+            		                gen.write("message", "No hay asistentes en el centro.");
+            		            gen.writeEnd();
+                    	        gen.writeEnd();
+                			}
+	              		
+	                }else {
+	                		//esta vacio
+	                		if(rsNoCualificados.first()) {
+	                			asistente=rsNoCualificados.getString(2) + " " + rsNoCualificados.getString(3);
+	                			
+	                			try (JsonGenerator gen = Json.createGenerator(swriter)) {
+	                				gen.writeStartObject();
+	                				gen.writeStartObject("infoAssistant");
+	                					gen.write("error", 0);
+	            		                	gen.write("id", rsNoCualificados.getInt(1));
+	            		                	gen.write("name", rsNoCualificados.getString(2));
+	            		                	gen.write("lastName", ""+rsNoCualificados.getString(3));
+		        	    	            		gen.write("level", rsNoCualificados.getString(4));
+		        	    	            		gen.write("tutor", "");
+		        	    	            		gen.write("cellTutor", "");
+		        	    	            		gen.write("missingPayment", alumnoIn.getString("missingPayment"));
+		        	    	            		gen.write("assistances", "");
+		        	    	            		gen.write("nameMom", "");
+		        	    	            		gen.write("lastNameMom", "");
+		        	    	            		gen.write("phoneHouse","");
+		        	    	            		gen.write("cellMom", "");
+	            		            gen.writeEnd();
+	                    	        gen.writeEnd();
+	                			} catch (SQLException e) {
+	                		        e.printStackTrace();
+	                		        return null;
+	                		    }
+	                			
+	                		}
+
+	                }
+	                
+	                
+	            		
+	            }else {
+	            		if(rsAsistentes.first()) {
+	            			asistente=rsAsistentes.getString(2) + " " + rsAsistentes.getString(3);
+	            			try (JsonGenerator gen = Json.createGenerator(swriter)) {
+	            				gen.writeStartObject();
+	            				gen.writeStartObject("infoAssistant");
+	            					gen.write("error", 0);
+            		                gen.write("id", rsAsistentes.getInt(1));
+            		                gen.write("name", rsAsistentes.getString(2));
+            		                gen.write("lastName", ""+rsAsistentes.getString(3));
+		    	    	            		gen.write("level", rsAsistentes.getString(4));
+		    	    	            		gen.write("tutor", "");
+		    	    	            		gen.write("cellTutor", "");
+		    	    	            		gen.write("missingPayment", alumnoIn.getString("missingPayment"));
+		    	    	            		gen.write("assistances", "");
+		    	    	            		gen.write("nameMom", "");
+		    	    	            		gen.write("lastNameMom", "");
+		    	    	            		gen.write("phoneHouse","");
+		    	    	            		gen.write("cellMom", "");
+            		            gen.writeEnd();
+            		            gen.writeEnd();
+	            			} catch (SQLException e) {
+                		        e.printStackTrace();
+                		        return null;
+                		    }
+	            		}
+	            }
+	        		
+	        }else {
+	        		if(rs.first()) {
+	        			asistente=rs.getString(2) + " " + rs.getString(3);
+	        			try (JsonGenerator gen = Json.createGenerator(swriter)) {
+	            			
+		        			gen.writeStartObject();
+	            			gen.writeStartObject("infoAssistant");
+	            				gen.write("error", 0);
+	        		            	gen.write("id", rs.getInt(1));
+	        		            	gen.write("name", rs.getString(2));
+	        		            	gen.write("lastName", ""+rs.getString(3));
+	    	    	            		gen.write("level", rs.getString(4));
+	    	    	            		gen.write("tutor", "");
+	    	    	            		gen.write("cellTutor", "");
+	    	    	            		gen.write("missingPayment", alumnoIn.getString("missingPayment"));
+	    	    	            		gen.write("assistances", "");
+	    	    	            		gen.write("nameMom", "");
+	    	    	            		gen.write("lastNameMom", "");
+	    	    	            		gen.write("phoneHouse","");
+	    	    	            		gen.write("cellMom", "");
+	        	            gen.writeEnd();
+	        	            gen.writeEnd();
+		        		} catch (SQLException e) {
+	        		        e.printStackTrace();
+	        		        return null;
+	        		    }
+	        		}
+	        		
+	        }
+	        
+	        return swriter.toString();
+
+    }
 }
