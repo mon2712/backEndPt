@@ -33,7 +33,7 @@ public class Centro {
         try {
         	int totalR=0, totalC=0, n=0;
         	String getQueryStatement = "CALL jsonStudentsAtCenter('"+filter+"')";
-        	//System.out.println("fileter: " + filter);
+        	
             prepareStat = conn.prepareStatement(getQueryStatement);
             ResultSet rs = prepareStat.executeQuery();
             try (JsonGenerator gen = Json.createGenerator(swriter)) {
@@ -106,14 +106,11 @@ public class Centro {
 	            int bandera=0;
 	            if (!rs.isBeforeFirst()){
 	            		//ResultSet is empty
-	            		System.out.println("esta vacio de alumnos");
 	            		
 	            		if(!rsEmptyAssistants.isBeforeFirst()) {
 	    					System.out.println("esta vacio en el segundo rs");
 	    				}else {
-	    					System.out.println("no esta vacio en el segundo rs");
 	    					while(rsEmptyAssistants.next()){
-	    						System.out.println("asistente " + rsEmptyAssistants.getString(2));
 	    						
 	    						if(rsEmptyAssistants.getInt(5) == 0) {
 	    							gen.writeStartObject();
@@ -136,7 +133,6 @@ public class Centro {
 	    				gen.writeEnd();
 	            	}else {
 			        while(rs.next()) {
-			        		System.out.println("hola"+rs.getString(1) + " "+rs.getString(2)+" "+rs.getString(3)+" "+rs.getString(4) + " " +rs.getString(5) + " " + rs.getString(6) +" " + rs.getString(7) + " " + rs.getString(8) + " " + rs.getString(9));
 			        		
 			        		if(asistentes.isEmpty()) {
 			        			asistentes.add(rs.getString(7));
@@ -155,12 +151,9 @@ public class Centro {
 					        				gen.write("timeAtCenter", rs.getString(6));
 					        				gen.write("timeReduced", ""+ rs.getString(10));
 					        			gen.writeEnd(); //Cierra el objeto de 1 alumno
-					        		//gen.writeEnd(); //Cierra el array de alumnos
-			        			//gen.writeEnd();//cierra el objeto de asistente
 			        		}else {
 			        			for(i=0; i<asistentes.size(); i++) {
 				        			if(asistentes.get(i).equals(rs.getString(7))) {
-				        				System.out.println("agrego alumno " + rs.getString(1) + " mando a crear alumno nuevo");
 				        				
 				        				gen.writeStartObject();
 					        				gen.write("idStudent", rs.getString(1));
@@ -178,7 +171,6 @@ public class Centro {
 				        			}
 				        		}
 			        			if(bandera==1) {
-			        				System.out.println("si agrego");
 			        				gen.writeEnd();
 			        				gen.writeEnd();
 			        				
@@ -203,10 +195,6 @@ public class Centro {
 			        			}
 			        		}
 			       }
-		        
-		        for(i=0; i<asistentes.size(); i++) {
-		        		System.out.println(asistentes.get(i));
-		        }
 
 				gen.writeEnd();
 				gen.writeEnd();
@@ -214,9 +202,7 @@ public class Centro {
 				if(!rsEmptyAssistants.isBeforeFirst()) {
 					System.out.println("esta vacio en el segundo rs");
 				}else {
-					System.out.println("no esta vacio en el segundo rs");
 					while(rsEmptyAssistants.next()){
-						System.out.println("asistente " + rsEmptyAssistants.getString(2));
 						
 						if(rsEmptyAssistants.getInt(5) == 0) {
 							gen.writeStartObject();

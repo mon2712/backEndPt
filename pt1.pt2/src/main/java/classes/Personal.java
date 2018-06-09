@@ -18,7 +18,6 @@ public class Personal {
     private static Connection conn = BaseDatos.conectarBD();
     
     public static String iniciarSesion(String username, String password) {
-    		System.out.println("llega a la funcion con: " + username + " passowrd: " + password);
     		String type="", name="";
     		int id;
     		StringWriter swriter = new StringWriter();
@@ -37,9 +36,7 @@ public class Personal {
     		    name = cStmt.getString(4);
     		    id = cStmt.getInt(5);
 
-    		    System.out.println("usuario: "+type + " " + name + " " + id);
     		    if(id == 0) {
-    		    		System.out.println("error en inicio de sesion");
     		    		try (JsonGenerator gen = Json.createGenerator(swriter)) {
     	    	            gen.writeStartObject();
     	    	            gen.writeStartObject("infoLogin");
@@ -83,7 +80,6 @@ public class Personal {
 	        	gen.writeStartObject();
 	            gen.writeStartArray("allAssistants");
 	            while(rs.next()) {
-	            		//System.out.println(rs.getString(1) + " " + rs.getString(3)+" "+rs.getString(2));
 		            	gen.writeStartObject();
 		               	gen.write("name", ""+rs.getString(2)+ " " + rs.getString(3));
 		                gen.write("idAssistant", ""+rs.getString(1));

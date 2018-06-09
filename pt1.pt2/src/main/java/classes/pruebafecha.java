@@ -45,7 +45,6 @@ public class pruebafecha {
 		//Instructor instructor = new Instructor();
 		//String pagos = instructor.getPagosAlumno();
 		//System.out.println(pagos);
-		
 
 		//Instructor instructor = new Instructor();
 		//instructor.obtenerGafetesAlumnos();	

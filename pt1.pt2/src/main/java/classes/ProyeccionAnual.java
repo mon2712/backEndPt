@@ -86,7 +86,6 @@ public class ProyeccionAnual {
 	}
 	
 	public static String obtenerProyeccionAnual(int idAlumno) throws SQLException {
-		System.out.println("id "+idAlumno);
 		StringWriter swriter = new StringWriter();
 		
 		String getQueryStatement = "SELECT pa.idProyeccionAnual, niv.nombre, pn.frecuenciaEstudio, pn.tipo, pn.hojasTotales, pn.hojasMes, pn.cantidadMeses, pn.hojasDiarias, niv.minTime, niv.maxTime, (niv.minTime*pn.hojasDiarias) as tiemMin, (niv.maxTime*pn.hojasDiarias) as tiemMax FROM ProyeccionAnual as pa JOIN ProyeccionAnual_has_ProyeccionNivel as pa_h_pn JOIN ProyeccionNivel as pn JOIN Nivel as niv\n" + 
@@ -177,8 +176,8 @@ public class ProyeccionAnual {
 		System.out.println("para frecuencia inicial" + frecuenciaIncial.toString());
 		
 		
-		//String proyeccion = obtenerProyeccionAnual(infoStudent.getInt("idStudent")); //Obtiene la proyeccion despues de la insercion
-		String proyeccion = obtenerProyeccionAnual(3); //Obtiene la proyeccion despues de la insercion
+		String proyeccion = obtenerProyeccionAnual(infoStudent.getInt("idStudent")); //Obtiene la proyeccion despues de la insercion
+		//String proyeccion = obtenerProyeccionAnual(3); //Obtiene la proyeccion despues de la insercion
 		return proyeccion;
 	}
 
