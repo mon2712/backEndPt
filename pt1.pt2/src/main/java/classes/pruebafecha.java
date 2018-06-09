@@ -45,9 +45,16 @@ public class pruebafecha {
 		//Instructor instructor = new Instructor();
 		//String pagos = instructor.getPagosAlumno();
 		//System.out.println(pagos);
+		
 
 		//Instructor instructor = new Instructor();
 		//instructor.obtenerGafetesAlumnos();	
+		/*
+		Recepcion recepcion = new Recepcion();
+		String alumnosLlamada= recepcion.getAlumnosLlamadas();
+		System.out.print(alumnosLlamada);
+		//recepcion.NotaLlamada(2, "hola", "2018-04-23");
+*/
 		//Recepcion recepcion = new Recepcion();
 		//String alumnosLlamada= recepcion.getAlumnosLlamadas();
 		//System.out.print(alumnosLlamada);
@@ -69,7 +76,6 @@ public class pruebafecha {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}*/
-          
 
 		
 		//Asistente asistente = new Asistente();
