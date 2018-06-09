@@ -16,6 +16,8 @@ import java.util.List;
 import javax.json.Json;
 import javax.json.stream.JsonGenerator;
 
+import org.json.JSONObject;
+
 public class Recepcion {
 	static PreparedStatement prepareStat = null;
     static Connection conn = BaseDatos.conectarBD();
@@ -220,6 +222,196 @@ public class Recepcion {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
+    }
+    
+    public static String setAsistencia(String array) throws SQLException {
+		StringWriter swriter = new StringWriter();
+		String finalResult = "";
+		
+		JSONObject obj = new JSONObject(array);
+		
+		JSONObject scanned = obj.getJSONObject("scanned");
+		
+		int id = scanned.getInt("id");
+		String types = scanned.getString("type");
+		
+		
+		if(types.equals("S")) {
+			Alumno alumno = new Alumno();
+			
+			String alumnoInfo = alumno.obtenerFichaAlumno(id);
+			
+			
+						
+			Auxiliar aux = new Auxiliar();
+			String asistente = aux.asignarAsistente(alumnoInfo);
+			
+
+			JSONObject obj2 = new JSONObject(asistente);
+			
+			JSONObject infoAssistant = obj2.getJSONObject("infoAssistant");
+			
+			if(infoAssistant.getInt("error") == 0 ) {
+				CallableStatement cStmt = conn.prepareCall("{call setAsistencia(?,?,?,?)}");
+				
+	    		    cStmt.setInt(1, id);
+	    		    cStmt.setInt(2, infoAssistant.getInt("id"));
+	    		    cStmt.setString(3, "student");
+	    		    cStmt.registerOutParameter(4, Types.INTEGER);
+	    		    
+	    		    cStmt.execute();  
+	    		    
+	    		    if(cStmt.getInt(4) == 0) {
+	    		    		//getRecomendaciones
+	    		    		
+	    		    		if(infoAssistant.getBoolean("missingPayment") == true) {
+	    		    			CallableStatement cStmt2 = conn.prepareCall("{call setNotificacionPago(?)}");
+
+	    		    			cStmt2.setInt(1, id);
+	    		    		    
+	    		    			cStmt2.execute();
+
+	    		    		}
+	    		    		
+	    		    }else {
+	    		    		finalResult = asistente;
+	    		    }
+	    		    
+			}else {
+				finalResult = asistente;
+			}
+			
+			finalResult = alumnoInfo;
+		}else if(types.equals("A")) {
+			CallableStatement cStmt = conn.prepareCall("{call setAsistencia(?,?,?,?)}");
+			
+		    cStmt.setInt(1, 0);
+		    cStmt.setInt(2, id);
+		    cStmt.setString(3, "assistant");
+		    cStmt.registerOutParameter(4, Types.INTEGER);
+		    
+		    cStmt.execute();  
+		    
+		    if(cStmt.getInt(4) == 0) {
+		    		//getRecomendaciones
+		    		System.out.println("se agrego");
+		    		String queryAsistentes = "SELECT asis.Asistente_Usuario_idUsuario, users.nombre, users.apellido, users.telefono, asis.horaEntrada, users.horaLlegada, asist.nivel FROM Asistencia as asis \r\n" + 
+		    				"JOIN Usuario as users JOIN Asistente as asist ON asis.Asistente_Usuario_idUsuario=users.idUsuario AND asist.Usuario_idUsuario=users.idUsuario \r\n" + 
+		    				"WHERE  asis.Asistente_Usuario_idUsuario="+Integer.toString(id)+" AND fecha=CURDATE() AND Alumno_idAlumno is NULL;";
+		    		
+	
+	        		prepareStat = conn.prepareStatement(queryAsistentes);
+	
+	            ResultSet rsAsistente = prepareStat.executeQuery();
+	            
+	            if(rsAsistente.first()) {
+		            	try (JsonGenerator gen = Json.createGenerator(swriter)) {
+	        				gen.writeStartObject();
+	        				gen.writeStartObject("student");
+	        					gen.write("code", 0);
+	        					gen.write("type","assistant");
+	    		                	gen.write("id", rsAsistente.getInt(1));
+	    		                	gen.write("name", rsAsistente.getString(2));
+	    		                	gen.write("lastName", ""+rsAsistente.getString(3));
+	    	    	            		gen.write("level", rsAsistente.getString(7));
+	    	    	            		gen.write("phone", rsAsistente.getString(4));
+	    	    	            		gen.write("entranceTime", rsAsistente.getString(5));
+	    	    	            		gen.write("realEntrance", rsAsistente.getString(6));
+	    	    	            		gen.write("assistances", "");
+	    	    	            		gen.write("nameMom", "");
+	    	    	            		gen.write("lastNameMom", "");
+	    	    	            		gen.write("phoneHouse","");
+	    	    	            		gen.write("cellMom", "");
+	    		            gen.writeEnd();
+	            	        gen.writeEnd();
+	        			} catch (SQLException e) {
+	        		        e.printStackTrace();
+	        		        return null;
+	        		    }
+	            }
+	            finalResult = swriter.toString();
+		    }
+		    
+		}else {
+			System.out.println("error");
+		}
+		
+		return finalResult;
+
+    }
+
+    public static String getNotificacion() throws SQLException {
+    		StringWriter swriter = new StringWriter();
+    
+	    	String qryLlamadas = "SELECT COUNT(*) FROM Notificacion WHERE tipo='llamada' AND fecha IS NULL AND nota IS NULL GROUP BY tipo;";
+	    	String qryPagos = "SELECT * FROM Notificacion as noti JOIN Alumno as alu ON noti.Alumno_idAlumno=alu.idAlumno WHERE fecha=CURDATE() AND tipo='pago';";
+	    	
+	
+		prepareStat = conn.prepareStatement(qryLlamadas);
+	
+	    ResultSet rsLlamadas = prepareStat.executeQuery();
+	    
+		prepareStat = conn.prepareStatement(qryPagos);
+		
+	    ResultSet rsPagos = prepareStat.executeQuery();
+	    
+	    
+	    try (JsonGenerator gen = Json.createGenerator(swriter)) {
+			gen.writeStartObject();
+			gen.writeStartArray("notifications");
+
+		    if(rsLlamadas.first()) {
+		    		//No esta vació
+		    		gen.writeStartObject();
+		    			gen.write("type", "call");
+		    			gen.write("idStudent",0);
+		    			gen.write("title","Hay llamadas de realizar");
+		    			gen.write("button", "Revisar lista");
+		    		gen.writeEnd();
+		    		
+		    }
+		    
+		    if(!rsPagos.isBeforeFirst()) {
+		    		System.out.println("vacio");
+		    }else {
+		    		while(rsPagos.next()) {
+		    			gen.writeStartObject();
+			    			gen.write("type", "student");
+			    			gen.write("idStudent",rsPagos.getInt(2));
+			    			gen.write("name",rsPagos.getString(8));
+			    			gen.write("lastName",rsPagos.getString(7));
+			    			gen.write("nivel",rsPagos.getString(14));
+			    			gen.write("startDate",rsPagos.getString(12));
+			    			gen.write("title", rsPagos.getString(8)+" "+rsPagos.getString(7));
+			    			gen.write("button", "Falta de pago");
+			    		gen.writeEnd();
+		    		}
+		    }
+		    
+		    gen.writeEnd();
+		    gen.writeEnd();
+	    
+	    }
+	    
+	    
+    	
+    		return swriter.toString();
+    }
+    
+    public static String deleteNotificacion(int idAlumno) throws SQLException {
+		
+		String query = "DELETE FROM Notificacion WHERE fecha=CURDATE() AND tipo='pago' AND Alumno_idAlumno= ?";
+	    PreparedStatement preparedStmt = conn.prepareStatement(query);
+	    preparedStmt.setInt(1, idAlumno);
+
+	    preparedStmt.execute();
+		
+		Recepcion recep = new Recepcion();
+		
+		String notificaciones = recep.getNotificacion();
+		
+		return notificaciones;
+		
     }
     
 }

@@ -45,7 +45,6 @@ public class pruebafecha {
 		//Instructor instructor = new Instructor();
 		//String pagos = instructor.getPagosAlumno();
 		//System.out.println(pagos);
-		
 
 		//Instructor instructor = new Instructor();
 		//instructor.obtenerGafetesAlumnos();	
@@ -60,9 +59,9 @@ public class pruebafecha {
 		//System.out.print(alumnosLlamada);
 		//recepcion.NotaLlamada(3, "hola", "23/04/2018");
 
-		Auxiliar aux= new Auxiliar();
+		/*Auxiliar aux= new Auxiliar();
 		WorkingMemory wk=aux.conexionDrools();
-		aux.executeFrecInicial(wk);
+		aux.executeFrecuencias(wk);*/
 		
 		/*pruebaDSL prueba = new pruebaDSL();
 		
@@ -115,6 +114,10 @@ public class pruebafecha {
             gen.writeEnd();
 		}*/
         
+		Recepcion recepcion = new Recepcion();
+		String notificaciones = recepcion.getNotificacion();
+		System.out.println("noti" + notificaciones);
+		
 		
 	}
 

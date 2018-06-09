@@ -95,7 +95,6 @@ public class Instructor {
 	    	    LineStyle thinline = new LineStyle(Color.WHITE, 0.75f);
             
             while (rs.next()) {
-            		System.out.println(rs.getInt(1)+ " "+rs.getString(2));
             		
             		crearqr.generateQRCodeImage(rs.getString(1),rs.getString(2)); //mandamos a crear el qr con el id
             		
@@ -126,8 +125,9 @@ public class Instructor {
 
     }
     
-    public static void obtenerCredenciales(String array) throws WriterException, IOException, SQLException{
-    				
+    public static String obtenerCredenciales(String array) throws WriterException, IOException, SQLException{
+    		StringWriter swriter = new StringWriter();
+    		
 		JSONObject obj = new JSONObject(array);
 		JSONArray selectedPeople = obj.getJSONArray("selectedPeople");
 		
@@ -178,25 +178,20 @@ public class Instructor {
 				if(person.has("idAssistant")) {
 					String id=person.getString("idAssistant");
 					String nombre = person.getString("name");
-					System.out.println("id: "+ id);
-					System.out.println("nombre: " + nombre);
 					
-					crearqr.generateQRCodeImage(id+"A", nombre);
+					crearqr.generateQRCodeImage(id+"-A-F", nombre);
 							
-					String filePath="/"+id+"A.png";
-					System.out.println(filePath);
+					String filePath="/"+id+"-A-F.png";
 					Image image = new Image(ImageIO.read(new File(System.getProperty("user.home")+"/Documents/qrImages"+filePath)));
-					//System.out.println(System.getProperty("user.home"));
-					//image = image.scaleByWidth(imageWidth);
+					
+					image = image.scaleByWidth(imageWidth);
 								
 					Row<PDPage> row = table.createRow(12);
-							    
-							    
-					//cell = row.createImageCell(10 , image);
+							        
+					cell = row.createImageCell(10 , image);
 					cell.setRightBorderStyle(thinline);
 					cell = row.createCell(15, nombre, HorizontalAlignment.CENTER, VerticalAlignment.MIDDLE);
 					cell = row.createCell(25, "Asistente", HorizontalAlignment.CENTER, VerticalAlignment.MIDDLE);
-					cell = row.createCell(10, "Asistente", HorizontalAlignment.CENTER, VerticalAlignment.MIDDLE);
 				}
 			}
 		}
@@ -209,11 +204,23 @@ public class Instructor {
 		File file = new File(pdfPath);
 		document.save(file);
 		document.close();
+		
+		try (JsonGenerator gen = Json.createGenerator(swriter)) {
+			gen.writeStartObject();
+			gen.writeStartObject("response");
+				gen.write("error", 0);
+                gen.write("message", "Encuentre su documento en la siguiente ruta: " + pdfPath);
+            gen.writeEnd();
+	        gen.writeEnd();
+		}
+
+		return swriter.toString();
 
     }
     
-    public static void obtenerEtiquetas(String array) throws WriterException, IOException, SQLException{
-    		
+    public static String obtenerEtiquetas(String array) throws WriterException, IOException, SQLException{
+    		StringWriter swriter = new StringWriter();
+    	
 		JSONObject obj = new JSONObject(array);
 		JSONArray selectedPeople = obj.getJSONArray("selectedPeople");
 		
@@ -264,12 +271,12 @@ public class Instructor {
 					String id=person.getString("idStudent");
 					String nombre = person.getString("name");
 					
-					crearqr.generateQRCodeImage(id+"S", nombre);
+					crearqr.generateQRCodeImage(id+"-S-F", nombre);
 							
-					String filePath="/"+id+"S.png";
+					String filePath="/"+id+"-S-F.png";
 					Image image = new Image(ImageIO.read(new File(System.getProperty("user.home")+"/Documents/qrImages"+filePath)));
 					image = image.scaleByWidth(imageWidth);
-					System.out.println(System.getProperty("user.home"));		
+						
 					Row<PDPage> row = table.createRow(12);
 							    
 							    
@@ -289,6 +296,18 @@ public class Instructor {
 		File file = new File(pdfPath);
 		document.save(file);
 		document.close();
+		
+		
+		try (JsonGenerator gen = Json.createGenerator(swriter)) {
+			gen.writeStartObject();
+			gen.writeStartObject("response");
+				gen.write("error", 0);
+                gen.write("message", "Encuentre su documento en la siguiente ruta: " + pdfPath);
+            gen.writeEnd();
+	        gen.writeEnd();
+		}
+
+		return swriter.toString();
 
     }
     
@@ -307,7 +326,6 @@ public class Instructor {
 	        	gen.writeStartObject();
 	            gen.writeStartArray("studentMissingPayment");
 	            while(rs.next()) {
-	            		System.out.println(rs.getString(1) + " " + rs.getString(3)+" "+rs.getString(2));
 	                gen.writeStartObject();
 		                gen.write("name", ""+rs.getString(3)+ " " + rs.getString(2));
 		                gen.write("idStudent", ""+rs.getString(1));
@@ -328,7 +346,6 @@ public class Instructor {
     
     public static String getPagosAlumno(String idStudent) {
 		StringWriter swriter = new StringWriter();
-		System.out.println("idStudent"+ idStudent);
 	    try {
 	        String getQueryStatement = "Select * from colegiatura where Alumno_idAlumno='"+idStudent+"' order by año ASC , mes ASC;";
 	
@@ -345,7 +362,7 @@ public class Instructor {
 		        int bandera=0;
 		            if (!rs.isBeforeFirst()){
 		            		//ResultSet is empty
-		            		System.out.println("is empty");
+		            		
 		            		gen.writeStartObject();
 			        		gen.write("err", 1);
 			        		gen.write("messageError", "No tiene pagos registrados");
@@ -373,7 +390,6 @@ public class Instructor {
 					        	}else {
 				        			for(i=0; i<payments.size(); i++) {
 					        			if(payments.get(i).equals(rs.getString(6))) {
-					        				//System.out.println("agrego nuevo año " + rs.getString(6) + " mando a crear nuevo año");
 					        				
 					        				gen.writeStartObject();
 					        					gen.write("idPayment", rs.getString(1));
@@ -391,7 +407,6 @@ public class Instructor {
 				        			}
 				        			
 				        			if(bandera==1) {
-				        				//System.out.println("si agrego");
 				        				
 				        				gen.writeEnd();
 				        				gen.writeEnd();
@@ -428,7 +443,6 @@ public class Instructor {
     
     public static String setColegiatura(String array) {
 		StringWriter swriter = new StringWriter();
-		System.out.println("llega a pagar colegiatura"+array);
 		
 	    try {
 	    		JSONObject obj = new JSONObject(array);
