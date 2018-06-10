@@ -28,17 +28,17 @@ public class resIntructor {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/createIds")
-	public void createIDs(String array) throws WriterException, IOException, SQLException {
-    	System.out.println(array);	
-    	instructor.obtenerCredenciales(array);
+	public String createIDs(String array) throws WriterException, IOException, SQLException {
+    		//System.out.println(array);	
+    		return instructor.obtenerCredenciales(array);
     }
     
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/createStampsStudents")
-	public void crearEtiquetasAlumnos(String array) throws WriterException, IOException, SQLException {
-    		instructor.obtenerEtiquetas(array);
+	public String crearEtiquetasAlumnos(String array) throws WriterException, IOException, SQLException {
+    		return instructor.obtenerEtiquetas(array);
     }
     
 	@GET

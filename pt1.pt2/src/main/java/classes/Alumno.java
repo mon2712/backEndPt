@@ -55,6 +55,8 @@ public class Alumno {
 	private String ultimaAusencia;
 	private String statusAnterior;
 	private String statusActual;
+	private int adeudo;
+	private int asistencias;
 	private int set;
 	private int numHojas;
 	private int gradoNum;
@@ -72,6 +74,7 @@ public class Alumno {
 	private int puntajeDesempeño;
 	private String desempeño;
 	
+<<<<<<< HEAD
 	
 	public String getDesempeño() {
 		return desempeño;
@@ -85,6 +88,8 @@ public class Alumno {
 	public void setPuntajeDesempeño(int puntajeDesempeño) {
 		this.puntajeDesempeño = puntajeDesempeño;
 	}
+=======
+>>>>>>> refs/heads/dev
 	public int getAnteSuc() {
 		return anteSuc;
 	}
@@ -194,6 +199,9 @@ public class Alumno {
 			break;
 			case "PK3":
 				this.gradoNum=-3;
+			break;
+			case "K":
+				this.gradoNum=-4;
 			break;
 			default:
 				this.gradoNum=Integer.parseInt(this.grado);
@@ -337,6 +345,18 @@ public class Alumno {
 			
 		}
 	}
+	public int getAdeudo() {
+		return adeudo;
+	}
+	public void setAdeudo(int adeudo) {
+		this.adeudo = adeudo;
+	}
+	public int getAsistencias() {
+		return asistencias;
+	}
+	public void setAsistencias(int asistencias) {
+		this.asistencias = asistencias;
+	}
 
 
 	static PreparedStatement prepareStat = null;
@@ -346,7 +366,7 @@ public class Alumno {
     		
     		StringWriter swriter = new StringWriter();
     		try {
-    		    CallableStatement cStmt = conn.prepareCall("{call getStudentFile(?,?,?,?,?,?,?,?,?)}");
+    		    CallableStatement cStmt = conn.prepareCall("{call getFichaAlumno(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}");
 	
     		    cStmt.setInt(1, idAlumno);
     		    cStmt.registerOutParameter(2, Types.INTEGER);
@@ -357,47 +377,64 @@ public class Alumno {
     		    cStmt.registerOutParameter(7, Types.VARCHAR);
     		    cStmt.registerOutParameter(8, Types.VARCHAR);
     		    cStmt.registerOutParameter(9, Types.INTEGER);
+    		    cStmt.registerOutParameter(10, Types.VARCHAR);
+    		    cStmt.registerOutParameter(11, Types.VARCHAR);
+    		    cStmt.registerOutParameter(12, Types.VARCHAR);
+    		    cStmt.registerOutParameter(13, Types.VARCHAR);
+    		    cStmt.registerOutParameter(14, Types.INTEGER);
+    		    cStmt.registerOutParameter(15, Types.INTEGER);
     		    cStmt.execute();    
     		    
-    		    int err, debeColegiatura, asistencias;
-    		    String nombre, tutor, telefono, apellido, nivel,debe;
-    		    err=cStmt.getInt(9);
-    		    debeColegiatura=cStmt.getInt(2);
-    		    asistencias=cStmt.getInt(3);
-    		    nombre = cStmt.getString(5);
-    		    apellido = cStmt.getString(6);
-    		    nivel = cStmt.getString(7);
-    		    telefono = cStmt.getString(8);
-    		    tutor=cStmt.getString(4);
+    		    int err, debeColegiatura;
+    		    String telefono="",debe;
     		    
-    		    System.out.println("usuario: "+nombre + " " + apellido + " " + nivel+"telefono"+telefono);
-    		    if (debeColegiatura == 1) debe="true"; else debe="false";
-    		    if (telefono == null) telefono="";
+    		    err=cStmt.getInt(15);
+    		    debeColegiatura=cStmt.getInt(2);
+    		    
+    		    Alumno alumno = new Alumno();
+    		    
+    		    
+    		    alumno.setNombre(cStmt.getString(11));
+    		    alumno.setApellidoPaterno(cStmt.getString(12));
+    		    alumno.setNivelActual(cStmt.getString(13));
+    		    alumno.setTel(cStmt.getString(8));
+    		    alumno.setNombreMadre(cStmt.getString(6));
+    		    alumno.setApellidoMadre(cStmt.getString(7));
+    		    alumno.setCelMadre(cStmt.getString(9));
+    		    alumno.setAdeudo(cStmt.getInt(10));
+    		    alumno.setAsistencias(cStmt.getInt(3));
+    		    alumno.setTutorNombre(cStmt.getString(4));
+    		    alumno.setCelTutor(cStmt.getString(5));
+    		    
+    		    if (alumno.getAdeudo() == 1) debe="true"; else debe="false";
+    		    if (alumno.getTel() == null) telefono=""; else telefono=alumno.getTel();
     		    
     		    if(err == 1) {
-    		    		System.out.println("no existe alumno");
     		    		try (JsonGenerator gen = Json.createGenerator(swriter)) {
     	    	            gen.writeStartObject();
     	    	            gen.writeStartObject("student");
-    	    	            gen.write("code", 1);
-    	    	            gen.write("type", "No existen alumnos con ese id");
+    	    	            		gen.write("code", 1);
+    	    	            		gen.write("type", "No existe alumno con ese id");
     	    	            gen.writeEnd();
     	    	            gen.writeEnd();
     	    	        }
     		    }else if(err == 0) {
-    		    		System.out.println("existe un alumno"+nombre);
 	    	        try (JsonGenerator gen = Json.createGenerator(swriter)) {
 	    	            gen.writeStartObject();
 	    	            gen.writeStartObject("student");
-	    	            gen.write("code", 0);
-	    	            gen.write("name", nombre);
-	    	            gen.write("lastName", apellido);
-	    	            gen.write("level", nivel);
-	    	            gen.write("tutor", tutor);
-	    	            gen.write("phone", telefono);
-	    	            gen.write("cellphone", "5564555656");
-	    	            gen.write("missingPayment", debe);
-	    	            gen.write("assistances", asistencias);
+	    	            		gen.write("code", 0);
+	    	            		gen.write("type","student");
+	    	            		gen.write("name", alumno.getNombre());
+	    	            		gen.write("lastName", alumno.getApellidoPaterno());
+	    	            		gen.write("level", alumno.getNivelActual());
+	    	            		gen.write("tutor", alumno.getTutorNombre());
+	    	            		gen.write("cellTutor", alumno.getCelTutor());
+	    	            		gen.write("missingPayment", debe);
+	    	            		gen.write("assistances", alumno.getAsistencias());
+	    	            		gen.write("nameMom", ""+alumno.getNombreMadre());
+	    	            		gen.write("lastNameMom", ""+alumno.getApellidoMadre());
+	    	            		gen.write("phoneHouse", telefono);
+	    	            		gen.write("cellMom", alumno.getCelMadre());
 	    	            gen.writeEnd();
 	    	            gen.writeEnd();
 	    	        }
@@ -411,7 +448,6 @@ public class Alumno {
     }
     
     public static String getAlumnos(String filter) {
-    		System.out.println("filter en funcion"+filter);
     		StringWriter swriter = new StringWriter();
         try {
             String getQueryStatement = "SELECT * FROM alumno WHERE CONCAT(nombre, ' ',apellido) LIKE '%"+filter+"%';";
@@ -425,7 +461,6 @@ public class Alumno {
             	gen.writeStartObject();
 	            gen.writeStartArray("allStudents");
 	            while(rs.next()) {
-	            		System.out.println(rs.getString(1) + " " + rs.getString(3)+" "+rs.getString(2));
 	                gen.writeStartObject();
 		                gen.write("name", rs.getString(3)+ " " + rs.getString(2));
 		                gen.write("idStudent", rs.getString(1));
@@ -461,7 +496,6 @@ public class Alumno {
 	        	gen.writeStartObject();
 	            gen.writeStartArray("allStudents");
 	            while(rs.next()) {
-	            		System.out.println(rs.getString(1) + " " + rs.getString(3)+" "+rs.getString(2));
 	                gen.writeStartObject();
 		                gen.write("name", rs.getString(3)+ " " + rs.getString(2));
 		                gen.write("idStudent", rs.getString(1));
@@ -494,7 +528,6 @@ public class Alumno {
 	        	gen.writeStartObject();
 	            gen.writeStartArray("allStudents");
 	            while(rs.next()) {
-	            		System.out.println(rs.getString(1) + " " + rs.getString(3)+" "+rs.getString(2));
 	                gen.writeStartObject();
 		                gen.write("name", rs.getString(3)+ " " + rs.getString(2));
 		                gen.write("idStudent", rs.getString(1));

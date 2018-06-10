@@ -90,7 +90,6 @@ public class ProyeccionAnual {
 
 	
 	public static String obtenerProyeccionAnual(int idAlumno) throws SQLException {
-		System.out.println("id "+idAlumno);
 		StringWriter swriter = new StringWriter();
 		
 		String getQueryStatement = "SELECT pa.idProyeccionAnual, niv.nombre, pn.frecuenciaEstudio, pn.tipo, pn.hojasTotales, pn.hojasMes, pn.cantidadMeses, pn.hojasDiarias, niv.minTime, niv.maxTime, (niv.minTime*pn.hojasDiarias) as tiemMin, (niv.maxTime*pn.hojasDiarias) as tiemMax FROM ProyeccionAnual as pa JOIN ProyeccionAnual_has_ProyeccionNivel as pa_h_pn JOIN ProyeccionNivel as pn JOIN Nivel as niv\n" + 
@@ -152,6 +151,7 @@ public class ProyeccionAnual {
 	public static String crearProyeccionAnual(String array) throws JSONException, SQLException, IOException {
 		
 		Auxiliar aux= new Auxiliar();
+<<<<<<< HEAD
 				WorkingMemory wk;
 				try {
 					wk = aux.conexionDrools();
@@ -164,6 +164,22 @@ public class ProyeccionAnual {
 					e.printStackTrace();
 				}
 	      JSONObject obj = new JSONObject(array);
+=======
+		WorkingMemory wk;
+		try {
+			wk = aux.conexionDrools();
+			aux.executeFrecuencias(wk);
+		} catch (DroolsParserException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
+		JSONObject obj = new JSONObject(array);
+>>>>>>> refs/heads/dev
 		
 		JSONObject results = obj.getJSONObject("resultsTest");
 		
@@ -178,8 +194,14 @@ public class ProyeccionAnual {
 		System.out.println("infoStudent" +infoStudent.toString());
 		System.out.println("para frecuencia inicial" + frecuenciaIncial.toString());
 		
+<<<<<<< HEAD
 		//String proyeccion = obtenerProyeccionAnual(infoStudent.getInt("idStudent")); //Obtiene la proyeccion despues de la insercion
 		String proyeccion = obtenerProyeccionAnual(Integer.parseInt(idStudent)); //Obtiene la proyeccion despues de la insercion
+=======
+		
+		String proyeccion = obtenerProyeccionAnual(infoStudent.getInt("idStudent")); //Obtiene la proyeccion despues de la insercion
+		//String proyeccion = obtenerProyeccionAnual(3); //Obtiene la proyeccion despues de la insercion
+>>>>>>> refs/heads/dev
 		return proyeccion;
 	}
 
