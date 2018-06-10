@@ -28,7 +28,7 @@ public class Recepcion {
 		try {
 			String getQueryStatement = "CALL alumnosConFalta();";
 			CallableStatement cStmt = conn.prepareCall("{call listaNuevasLlamadas(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)}");
-			String getQueryStatement2 = "call getLlamadasEnNotifiaciones();";
+			String getQueryStatement2 = "call getLlamadasEnNotificaciones();";
 
 		    prepareStat = conn.prepareStatement(getQueryStatement);
             ResultSet rs = prepareStat.executeQuery(); //devuelbe nombre, apellido, idAlumno, lunes, miercoles, jueves, sabado
