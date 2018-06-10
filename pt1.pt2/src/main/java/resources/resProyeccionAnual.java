@@ -11,6 +11,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
+import org.drools.compiler.compiler.DroolsParserException;
 import org.json.JSONException;
 
 import com.google.zxing.WriterException;
@@ -34,7 +35,7 @@ public class resProyeccionAnual {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/setAnnualPlan")
-	public String setProyeccionAnual(String array) throws WriterException, IOException, JSONException, SQLException {
+	public String setProyeccionAnual(String array) throws WriterException, IOException, JSONException, SQLException, DroolsParserException {
     		return proyeccionAnual.crearProyeccionAnual(array);
     }
 }

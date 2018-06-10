@@ -4,7 +4,9 @@
 package rules
 
 import classes.Nivel;
+import classes.Alumno;
 import classes.ProyeccionNivel;
+import classes.ProyeccionAnual;
 
 //---Nivel3A-----------------------------------------------------------------------------------------------------------------------------------------------
 rule "Frecuencia 3A 1.0a"
@@ -20,7 +22,7 @@ rule "Frecuencia 3A 1.0a"
     then 
         proyeccionNivelObject.setFrecuenciaEstudio(1.0);
     	proyeccionNivelObject.setFrecuenciaInciso("a");
-        System.out.println("La frecuencia es: " + proyeccionNivelObject.getFrecuenciaEstudio() + " " + proyeccionNivelObject.getFrecuenciaInciso() );
+        System.out.println("La frecuencia del nivel: " + proyeccionNivelObject.getAlumno().getNivelActual() + " es: " + proyeccionNivelObject.getFrecuenciaEstudio() + " " + proyeccionNivelObject.getFrecuenciaInciso() );
         
 end
 rule "Frecuencia 3A 1.5a"
@@ -36,7 +38,7 @@ rule "Frecuencia 3A 1.5a"
     then 
         proyeccionNivelObject.setFrecuenciaEstudio(1.5);
     	proyeccionNivelObject.setFrecuenciaInciso("a");
-        System.out.println("La frecuencia es: " + proyeccionNivelObject.getFrecuenciaEstudio() + " " + proyeccionNivelObject.getFrecuenciaInciso() );
+        System.out.println("La frecuencia del nivel: " + proyeccionNivelObject.getAlumno().getNivelActual() + " es: " + proyeccionNivelObject.getFrecuenciaEstudio() + " " + proyeccionNivelObject.getFrecuenciaInciso() );
         
 end
 rule "Frecuencia 3A 2.0a"
@@ -51,7 +53,7 @@ rule "Frecuencia 3A 2.0a"
     then 
         proyeccionNivelObject.setFrecuenciaEstudio(2.0);
     	proyeccionNivelObject.setFrecuenciaInciso("a");
-        System.out.println("La frecuencia es: " + proyeccionNivelObject.getFrecuenciaEstudio() + " " + proyeccionNivelObject.getFrecuenciaInciso() );
+        System.out.println("La frecuencia del nivel: " + proyeccionNivelObject.getAlumno().getNivelActual() + " es: " + proyeccionNivelObject.getFrecuenciaEstudio() + " " + proyeccionNivelObject.getFrecuenciaInciso() );
         
 end
 rule "Frecuencia 3A 1.7a"
@@ -67,7 +69,7 @@ rule "Frecuencia 3A 1.7a"
     then 
         proyeccionNivelObject.setFrecuenciaEstudio(1.7);
     	proyeccionNivelObject.setFrecuenciaInciso("a");
-        System.out.println("La frecuencia es: " + proyeccionNivelObject.getFrecuenciaEstudio() + " " + proyeccionNivelObject.getFrecuenciaInciso() );
+        System.out.println("La frecuencia del nivel: " + proyeccionNivelObject.getAlumno().getNivelActual() + " es: " + proyeccionNivelObject.getFrecuenciaEstudio() + " " + proyeccionNivelObject.getFrecuenciaInciso() );
         
 end
 rule "Frecuencia 3A 1.2a"
@@ -83,7 +85,7 @@ rule "Frecuencia 3A 1.2a"
     then 
         proyeccionNivelObject.setFrecuenciaEstudio(1.2);
     	proyeccionNivelObject.setFrecuenciaInciso("a");
-        System.out.println("La frecuencia es: " + proyeccionNivelObject.getFrecuenciaEstudio() + " " + proyeccionNivelObject.getFrecuenciaInciso() );
+        System.out.println("La frecuencia del nivel: " + proyeccionNivelObject.getAlumno().getNivelActual() + " es: " + proyeccionNivelObject.getFrecuenciaEstudio() + " " + proyeccionNivelObject.getFrecuenciaInciso() );
         
 end
 rule "Frecuencia 3A 2.2a"
@@ -98,7 +100,7 @@ rule "Frecuencia 3A 2.2a"
     then 
         proyeccionNivelObject.setFrecuenciaEstudio(2.2);
     	proyeccionNivelObject.setFrecuenciaInciso("a");
-        System.out.println("La frecuencia es: " + proyeccionNivelObject.getFrecuenciaEstudio() + " " + proyeccionNivelObject.getFrecuenciaInciso() );
+        System.out.println("La frecuencia del nivel: " + proyeccionNivelObject.getAlumno().getNivelActual() + " es: " + proyeccionNivelObject.getFrecuenciaEstudio() + " " + proyeccionNivelObject.getFrecuenciaInciso() );
         
 end
 rule "Frecuencia 3A 1.5a2"
@@ -114,7 +116,7 @@ rule "Frecuencia 3A 1.5a2"
     then 
         proyeccionNivelObject.setFrecuenciaEstudio(1.5);
     	proyeccionNivelObject.setFrecuenciaInciso("a");
-        System.out.println("La frecuencia es: " + proyeccionNivelObject.getFrecuenciaEstudio() + " " + proyeccionNivelObject.getFrecuenciaInciso() );
+        System.out.println("La frecuencia del nivel: " + proyeccionNivelObject.getAlumno().getNivelActual() + " es: " + proyeccionNivelObject.getFrecuenciaEstudio() + " " + proyeccionNivelObject.getFrecuenciaInciso() );
         
 end
 rule "Frecuencia 3A 1.6a"
@@ -130,7 +132,7 @@ rule "Frecuencia 3A 1.6a"
     then 
         proyeccionNivelObject.setFrecuenciaEstudio(1.6);
     	proyeccionNivelObject.setFrecuenciaInciso("a");
-        System.out.println("La frecuencia es: " + proyeccionNivelObject.getFrecuenciaEstudio() + " " + proyeccionNivelObject.getFrecuenciaInciso() );
+        System.out.println("La frecuencia del nivel: " + proyeccionNivelObject.getAlumno().getNivelActual() + " es: " + proyeccionNivelObject.getFrecuenciaEstudio() + " " + proyeccionNivelObject.getFrecuenciaInciso() );
         
 end
 rule "Frecuencia 3A 2.2a2"
@@ -145,7 +147,7 @@ rule "Frecuencia 3A 2.2a2"
     then 
         proyeccionNivelObject.setFrecuenciaEstudio(2.2);
     	proyeccionNivelObject.setFrecuenciaInciso("a");
-        System.out.println("La frecuencia es: " + proyeccionNivelObject.getFrecuenciaEstudio() + " " + proyeccionNivelObject.getFrecuenciaInciso() );
+        System.out.println("La frecuencia del nivel: " + proyeccionNivelObject.getAlumno().getNivelActual() + " es: " + proyeccionNivelObject.getFrecuenciaEstudio() + " " + proyeccionNivelObject.getFrecuenciaInciso() );
         
 end
 rule "Frecuencia 3A 2.0b"
@@ -161,7 +163,7 @@ rule "Frecuencia 3A 2.0b"
     then 
         proyeccionNivelObject.setFrecuenciaEstudio(2.0);
     	proyeccionNivelObject.setFrecuenciaInciso("b");
-        System.out.println("La frecuencia es: " + proyeccionNivelObject.getFrecuenciaEstudio() + " " + proyeccionNivelObject.getFrecuenciaInciso() );    
+        System.out.println("La frecuencia del nivel: " + proyeccionNivelObject.getAlumno().getNivelActual() + " es: " + proyeccionNivelObject.getFrecuenciaEstudio() + " " + proyeccionNivelObject.getFrecuenciaInciso() );    
 end
 rule "Frecuencia 3A 1.5a3"
 	salience 0
@@ -176,7 +178,7 @@ rule "Frecuencia 3A 1.5a3"
     then 
         proyeccionNivelObject.setFrecuenciaEstudio(1.5);
     	proyeccionNivelObject.setFrecuenciaInciso("a");
-        System.out.println("La frecuencia es: " + proyeccionNivelObject.getFrecuenciaEstudio() + " " + proyeccionNivelObject.getFrecuenciaInciso() );    
+        System.out.println("La frecuencia del nivel: " + proyeccionNivelObject.getAlumno().getNivelActual() + " es: " + proyeccionNivelObject.getFrecuenciaEstudio() + " " + proyeccionNivelObject.getFrecuenciaInciso() );    
 end
 rule "Frecuencia 3A 2.2b"
 	salience 0
@@ -190,7 +192,7 @@ rule "Frecuencia 3A 2.2b"
     then 
         proyeccionNivelObject.setFrecuenciaEstudio(2.2);
     	proyeccionNivelObject.setFrecuenciaInciso("b");
-        System.out.println("La frecuencia es: " + proyeccionNivelObject.getFrecuenciaEstudio() + " " + proyeccionNivelObject.getFrecuenciaInciso() );    
+        System.out.println("La frecuencia del nivel: " + proyeccionNivelObject.getAlumno().getNivelActual() + " es: " + proyeccionNivelObject.getFrecuenciaEstudio() + " " + proyeccionNivelObject.getFrecuenciaInciso() );    
 end
 rule "Frecuencia 3A 1.4a"
 	salience 0
@@ -204,7 +206,7 @@ rule "Frecuencia 3A 1.4a"
     then 
         proyeccionNivelObject.setFrecuenciaEstudio(1.4);
     	proyeccionNivelObject.setFrecuenciaInciso("a");
-        System.out.println("La frecuencia es: " + proyeccionNivelObject.getFrecuenciaEstudio() + " " + proyeccionNivelObject.getFrecuenciaInciso() );    
+        System.out.println("La frecuencia del nivel: " + proyeccionNivelObject.getAlumno().getNivelActual() + " es: " + proyeccionNivelObject.getFrecuenciaEstudio() + " " + proyeccionNivelObject.getFrecuenciaInciso() );    
 end
 rule "Frecuencia 3A 1.0a2"
 	salience 0
@@ -218,7 +220,7 @@ rule "Frecuencia 3A 1.0a2"
     then 
         proyeccionNivelObject.setFrecuenciaEstudio(1.0);
     	proyeccionNivelObject.setFrecuenciaInciso("a");
-        System.out.println("La frecuencia es: " + proyeccionNivelObject.getFrecuenciaEstudio() + " " + proyeccionNivelObject.getFrecuenciaInciso() );    
+        System.out.println("La frecuencia del nivel: " + proyeccionNivelObject.getAlumno().getNivelActual() + " es: " + proyeccionNivelObject.getFrecuenciaEstudio() + " " + proyeccionNivelObject.getFrecuenciaInciso() );    
 end
 rule "Frecuencia 3A 1.5b"
 	salience 0
@@ -232,7 +234,7 @@ rule "Frecuencia 3A 1.5b"
     then 
         proyeccionNivelObject.setFrecuenciaEstudio(1.5);
     	proyeccionNivelObject.setFrecuenciaInciso("b");
-        System.out.println("La frecuencia es: " + proyeccionNivelObject.getFrecuenciaEstudio() + " " + proyeccionNivelObject.getFrecuenciaInciso() );    
+        System.out.println("La frecuencia del nivel: " + proyeccionNivelObject.getAlumno().getNivelActual() + " es: " + proyeccionNivelObject.getFrecuenciaEstudio() + " " + proyeccionNivelObject.getFrecuenciaInciso() );    
 end
 rule "Frecuencia 3A 1.2a2"
 	salience 0
@@ -246,7 +248,7 @@ rule "Frecuencia 3A 1.2a2"
     then 
         proyeccionNivelObject.setFrecuenciaEstudio(1.2);
     	proyeccionNivelObject.setFrecuenciaInciso("a");
-        System.out.println("La frecuencia es: " + proyeccionNivelObject.getFrecuenciaEstudio() + " " + proyeccionNivelObject.getFrecuenciaInciso() );    
+        System.out.println("La frecuencia del nivel: " + proyeccionNivelObject.getAlumno().getNivelActual() + " es: " + proyeccionNivelObject.getFrecuenciaEstudio() + " " + proyeccionNivelObject.getFrecuenciaInciso() );    
 end
 rule "Frecuencia 3A 1.7a2"
 	salience 0
@@ -260,7 +262,7 @@ rule "Frecuencia 3A 1.7a2"
     then 
         proyeccionNivelObject.setFrecuenciaEstudio(1.7);
     	proyeccionNivelObject.setFrecuenciaInciso("a");
-        System.out.println("La frecuencia es: " + proyeccionNivelObject.getFrecuenciaEstudio() + " " + proyeccionNivelObject.getFrecuenciaInciso() );    
+        System.out.println("La frecuencia del nivel: " + proyeccionNivelObject.getAlumno().getNivelActual() + " es: " + proyeccionNivelObject.getFrecuenciaEstudio() + " " + proyeccionNivelObject.getFrecuenciaInciso() );    
 end
 rule "Frecuencia 3A 1.1a"
 	salience 0
@@ -274,7 +276,7 @@ rule "Frecuencia 3A 1.1a"
     then 
         proyeccionNivelObject.setFrecuenciaEstudio(1.1);
     	proyeccionNivelObject.setFrecuenciaInciso("a");
-        System.out.println("La frecuencia es: " + proyeccionNivelObject.getFrecuenciaEstudio() + " " + proyeccionNivelObject.getFrecuenciaInciso() );    
+        System.out.println("La frecuencia del nivel: " + proyeccionNivelObject.getAlumno().getNivelActual() + " es: " + proyeccionNivelObject.getFrecuenciaEstudio() + " " + proyeccionNivelObject.getFrecuenciaInciso() );    
 end
 rule "Frecuencia 3A 1.8a"
 	salience 0
@@ -288,7 +290,7 @@ rule "Frecuencia 3A 1.8a"
     then 
         proyeccionNivelObject.setFrecuenciaEstudio(1.8);
     	proyeccionNivelObject.setFrecuenciaInciso("a");
-        System.out.println("La frecuencia es: " + proyeccionNivelObject.getFrecuenciaEstudio() + " " + proyeccionNivelObject.getFrecuenciaInciso() );    
+        System.out.println("La frecuencia del nivel: " + proyeccionNivelObject.getAlumno().getNivelActual() + " es: " + proyeccionNivelObject.getFrecuenciaEstudio() + " " + proyeccionNivelObject.getFrecuenciaInciso() );    
 end
 rule "Frecuencia 3A 1.4b"
 	salience 0
@@ -302,7 +304,7 @@ rule "Frecuencia 3A 1.4b"
     then 
         proyeccionNivelObject.setFrecuenciaEstudio(1.4);
     	proyeccionNivelObject.setFrecuenciaInciso("b");
-        System.out.println("La frecuencia es: " + proyeccionNivelObject.getFrecuenciaEstudio() + " " + proyeccionNivelObject.getFrecuenciaInciso() );    
+        System.out.println("La frecuencia del nivel: " + proyeccionNivelObject.getAlumno().getNivelActual() + " es: " + proyeccionNivelObject.getFrecuenciaEstudio() + " " + proyeccionNivelObject.getFrecuenciaInciso() );    
 end
 //-----------------------------------------------------------------------------------------------------------------------------------------------------------------
 //---Nivel2A-----------------------------------------------------------------------------------------------------------------------------------------------
@@ -318,7 +320,7 @@ rule "Frecuencia 2A 1.0a"
     then 
         proyeccionNivelObject.setFrecuenciaEstudio(1.0);
     	proyeccionNivelObject.setFrecuenciaInciso("a");
-        System.out.println("La frecuencia es: " + proyeccionNivelObject.getFrecuenciaEstudio() + " " + proyeccionNivelObject.getFrecuenciaInciso() );
+        System.out.println("La frecuencia del nivel: " + proyeccionNivelObject.getAlumno().getNivelActual() + " es: " + proyeccionNivelObject.getFrecuenciaEstudio() + " " + proyeccionNivelObject.getFrecuenciaInciso() );
         
 end
 rule "Frecuencia 2A 1.6a"
@@ -333,7 +335,7 @@ rule "Frecuencia 2A 1.6a"
     then 
         proyeccionNivelObject.setFrecuenciaEstudio(1.6);
     	proyeccionNivelObject.setFrecuenciaInciso("a");
-        System.out.println("La frecuencia es: " + proyeccionNivelObject.getFrecuenciaEstudio() + " " + proyeccionNivelObject.getFrecuenciaInciso() );
+        System.out.println("La frecuencia del nivel: " + proyeccionNivelObject.getAlumno().getNivelActual() + " es: " + proyeccionNivelObject.getFrecuenciaEstudio() + " " + proyeccionNivelObject.getFrecuenciaInciso() );
         
 end
 rule "Frecuencia 2A 1.6a2"
@@ -348,7 +350,7 @@ rule "Frecuencia 2A 1.6a2"
     then 
         proyeccionNivelObject.setFrecuenciaEstudio(1.6);
     	proyeccionNivelObject.setFrecuenciaInciso("a");
-        System.out.println("La frecuencia es: " + proyeccionNivelObject.getFrecuenciaEstudio() + " " + proyeccionNivelObject.getFrecuenciaInciso() );
+        System.out.println("La frecuencia del nivel: " + proyeccionNivelObject.getAlumno().getNivelActual() + " es: " + proyeccionNivelObject.getFrecuenciaEstudio() + " " + proyeccionNivelObject.getFrecuenciaInciso() );
         
 end
 rule "Frecuencia 2A 2.0b"
@@ -363,7 +365,7 @@ rule "Frecuencia 2A 2.0b"
     then 
         proyeccionNivelObject.setFrecuenciaEstudio(2.0);
     	proyeccionNivelObject.setFrecuenciaInciso("b");
-        System.out.println("La frecuencia es: " + proyeccionNivelObject.getFrecuenciaEstudio() + " " + proyeccionNivelObject.getFrecuenciaInciso() );
+        System.out.println("La frecuencia del nivel: " + proyeccionNivelObject.getAlumno().getNivelActual() + " es: " + proyeccionNivelObject.getFrecuenciaEstudio() + " " + proyeccionNivelObject.getFrecuenciaInciso() );
         
 end
 rule "Frecuencia 2A 1.6b"
@@ -378,7 +380,7 @@ rule "Frecuencia 2A 1.6b"
     then 
         proyeccionNivelObject.setFrecuenciaEstudio(1.6);
     	proyeccionNivelObject.setFrecuenciaInciso("b");
-        System.out.println("La frecuencia es: " + proyeccionNivelObject.getFrecuenciaEstudio() + " " + proyeccionNivelObject.getFrecuenciaInciso() );
+        System.out.println("La frecuencia del nivel: " + proyeccionNivelObject.getAlumno().getNivelActual() + " es: " + proyeccionNivelObject.getFrecuenciaEstudio() + " " + proyeccionNivelObject.getFrecuenciaInciso() );
         
 end
 rule "Frecuencia 2A 2.0b2"
@@ -393,7 +395,7 @@ rule "Frecuencia 2A 2.0b2"
     then 
         proyeccionNivelObject.setFrecuenciaEstudio(2.0);
     	proyeccionNivelObject.setFrecuenciaInciso("b");
-        System.out.println("La frecuencia es: " + proyeccionNivelObject.getFrecuenciaEstudio() + " " + proyeccionNivelObject.getFrecuenciaInciso() );
+        System.out.println("La frecuencia del nivel: " + proyeccionNivelObject.getAlumno().getNivelActual() + " es: " + proyeccionNivelObject.getFrecuenciaEstudio() + " " + proyeccionNivelObject.getFrecuenciaInciso() );
         
 end
 rule "Frecuencia 2A 1.6a3"
@@ -408,7 +410,7 @@ rule "Frecuencia 2A 1.6a3"
     then 
         proyeccionNivelObject.setFrecuenciaEstudio(1.6);
     	proyeccionNivelObject.setFrecuenciaInciso("a");
-        System.out.println("La frecuencia es: " + proyeccionNivelObject.getFrecuenciaEstudio() + " " + proyeccionNivelObject.getFrecuenciaInciso() );
+        System.out.println("La frecuencia del nivel: " + proyeccionNivelObject.getAlumno().getNivelActual() + " es: " + proyeccionNivelObject.getFrecuenciaEstudio() + " " + proyeccionNivelObject.getFrecuenciaInciso() );
         
 end
 rule "Frecuencia 2A 2.0b3"
@@ -423,7 +425,7 @@ rule "Frecuencia 2A 2.0b3"
     then 
         proyeccionNivelObject.setFrecuenciaEstudio(2.0);
     	proyeccionNivelObject.setFrecuenciaInciso("b");
-        System.out.println("La frecuencia es: " + proyeccionNivelObject.getFrecuenciaEstudio() + " " + proyeccionNivelObject.getFrecuenciaInciso() );
+        System.out.println("La frecuencia del nivel: " + proyeccionNivelObject.getAlumno().getNivelActual() + " es: " + proyeccionNivelObject.getFrecuenciaEstudio() + " " + proyeccionNivelObject.getFrecuenciaInciso() );
         
 end
 rule "Frecuencia 2A 1.0a2"
@@ -438,7 +440,7 @@ rule "Frecuencia 2A 1.0a2"
     then 
         proyeccionNivelObject.setFrecuenciaEstudio(1.0);
     	proyeccionNivelObject.setFrecuenciaInciso("a");
-        System.out.println("La frecuencia es: " + proyeccionNivelObject.getFrecuenciaEstudio() + " " + proyeccionNivelObject.getFrecuenciaInciso() );
+        System.out.println("La frecuencia del nivel: " + proyeccionNivelObject.getAlumno().getNivelActual() + " es: " + proyeccionNivelObject.getFrecuenciaEstudio() + " " + proyeccionNivelObject.getFrecuenciaInciso() );
         
 end
 rule "Frecuencia 2A 1.6a4"
@@ -453,7 +455,7 @@ rule "Frecuencia 2A 1.6a4"
     then 
         proyeccionNivelObject.setFrecuenciaEstudio(1.6);
     	proyeccionNivelObject.setFrecuenciaInciso("a");
-        System.out.println("La frecuencia es: " + proyeccionNivelObject.getFrecuenciaEstudio() + " " + proyeccionNivelObject.getFrecuenciaInciso() );
+        System.out.println("La frecuencia del nivel: " + proyeccionNivelObject.getAlumno().getNivelActual() + " es: " + proyeccionNivelObject.getFrecuenciaEstudio() + " " + proyeccionNivelObject.getFrecuenciaInciso() );
         
 end
 rule "Frecuencia 2A 1.0a3"
@@ -468,7 +470,7 @@ rule "Frecuencia 2A 1.0a3"
     then 
         proyeccionNivelObject.setFrecuenciaEstudio(1.0);
     	proyeccionNivelObject.setFrecuenciaInciso("a");
-        System.out.println("La frecuencia es: " + proyeccionNivelObject.getFrecuenciaEstudio() + " " + proyeccionNivelObject.getFrecuenciaInciso() );
+        System.out.println("La frecuencia del nivel: " + proyeccionNivelObject.getAlumno().getNivelActual() + " es: " + proyeccionNivelObject.getFrecuenciaEstudio() + " " + proyeccionNivelObject.getFrecuenciaInciso() );
         
 end
 rule "Frecuencia 2A 2.0b4"
@@ -483,7 +485,7 @@ rule "Frecuencia 2A 2.0b4"
     then 
         proyeccionNivelObject.setFrecuenciaEstudio(2.0);
     	proyeccionNivelObject.setFrecuenciaInciso("b");
-        System.out.println("La frecuencia es: " + proyeccionNivelObject.getFrecuenciaEstudio() + " " + proyeccionNivelObject.getFrecuenciaInciso() );
+        System.out.println("La frecuencia del nivel: " + proyeccionNivelObject.getAlumno().getNivelActual() + " es: " + proyeccionNivelObject.getFrecuenciaEstudio() + " " + proyeccionNivelObject.getFrecuenciaInciso() );
         
 end
 rule "Frecuencia 2A 1.2a"
@@ -498,7 +500,7 @@ rule "Frecuencia 2A 1.2a"
     then 
         proyeccionNivelObject.setFrecuenciaEstudio(1.2);
     	proyeccionNivelObject.setFrecuenciaInciso("a");
-        System.out.println("La frecuencia es: " + proyeccionNivelObject.getFrecuenciaEstudio() + " " + proyeccionNivelObject.getFrecuenciaInciso() );
+        System.out.println("La frecuencia del nivel: " + proyeccionNivelObject.getAlumno().getNivelActual() + " es: " + proyeccionNivelObject.getFrecuenciaEstudio() + " " + proyeccionNivelObject.getFrecuenciaInciso() );
         
 end
 rule "Frecuencia 2A 1.6b2"
@@ -513,7 +515,7 @@ rule "Frecuencia 2A 1.6b2"
     then 
         proyeccionNivelObject.setFrecuenciaEstudio(1.6);
     	proyeccionNivelObject.setFrecuenciaInciso("b");
-        System.out.println("La frecuencia es: " + proyeccionNivelObject.getFrecuenciaEstudio() + " " + proyeccionNivelObject.getFrecuenciaInciso() );
+        System.out.println("La frecuencia del nivel: " + proyeccionNivelObject.getAlumno().getNivelActual() + " es: " + proyeccionNivelObject.getFrecuenciaEstudio() + " " + proyeccionNivelObject.getFrecuenciaInciso() );
         
 end
 rule "Frecuencia 2A 1.6a5"
@@ -528,7 +530,7 @@ rule "Frecuencia 2A 1.6a5"
     then 
         proyeccionNivelObject.setFrecuenciaEstudio(1.6);
     	proyeccionNivelObject.setFrecuenciaInciso("a");
-        System.out.println("La frecuencia es: " + proyeccionNivelObject.getFrecuenciaEstudio() + " " + proyeccionNivelObject.getFrecuenciaInciso() );
+        System.out.println("La frecuencia del nivel: " + proyeccionNivelObject.getAlumno().getNivelActual() + " es: " + proyeccionNivelObject.getFrecuenciaEstudio() + " " + proyeccionNivelObject.getFrecuenciaInciso() );
         
 end
 rule "Frecuencia 2A 2.0b5"
@@ -543,7 +545,7 @@ rule "Frecuencia 2A 2.0b5"
     then 
         proyeccionNivelObject.setFrecuenciaEstudio(2.0);
     	proyeccionNivelObject.setFrecuenciaInciso("b");
-        System.out.println("La frecuencia es: " + proyeccionNivelObject.getFrecuenciaEstudio() + " " + proyeccionNivelObject.getFrecuenciaInciso() );
+        System.out.println("La frecuencia del nivel: " + proyeccionNivelObject.getAlumno().getNivelActual() + " es: " + proyeccionNivelObject.getFrecuenciaEstudio() + " " + proyeccionNivelObject.getFrecuenciaInciso() );
         
 end
 //-----------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -555,13 +557,13 @@ rule "Frecuencia A 1"
     when
        proyeccionNivelObject: ProyeccionNivel(getAlumno().getNivelActual() == "A")
        ProyeccionNivel(getAlumno().getGradoNum() <=6)
-       ProyeccionNivel(getAlumno().getFluidezResta() == 1)
+       ProyeccionNivel(getAlumno().getFluidez() == 1)
        ProyeccionNivel(getAlumno().getTrabajoB() == 1)
        ProyeccionNivel(getAlumno().getConcentracion() == 1)
     then 
         proyeccionNivelObject.setFrecuenciaEstudio(1.0);
     	proyeccionNivelObject.setFrecuenciaInciso("a");
-        System.out.println("La frecuencia es: " + proyeccionNivelObject.getFrecuenciaEstudio() + " " + proyeccionNivelObject.getFrecuenciaInciso() );
+        System.out.println("La frecuencia del nivel: " + proyeccionNivelObject.getAlumno().getNivelActual() + " es: " + proyeccionNivelObject.getFrecuenciaEstudio() + " " + proyeccionNivelObject.getFrecuenciaInciso() );
         
 end
 rule "Frecuencia A 1.4"
@@ -570,13 +572,13 @@ rule "Frecuencia A 1.4"
     when
        proyeccionNivelObject: ProyeccionNivel(getAlumno().getNivelActual() == "A")
        ProyeccionNivel(getAlumno().getGradoNum() <=6)
-       ProyeccionNivel(getAlumno().getFluidezResta() == 1)
+       ProyeccionNivel(getAlumno().getFluidez() == 1)
        ProyeccionNivel(getAlumno().getTrabajoB() == 1)
        ProyeccionNivel(getAlumno().getConcentracion() == 0)
     then 
    		proyeccionNivelObject.setFrecuenciaEstudio(1.4);
     	proyeccionNivelObject.setFrecuenciaInciso("a");
-        System.out.println("La frecuencia es: " + proyeccionNivelObject.getFrecuenciaEstudio() + " " + proyeccionNivelObject.getFrecuenciaInciso() );
+        System.out.println("La frecuencia del nivel: " + proyeccionNivelObject.getAlumno().getNivelActual() + " es: " + proyeccionNivelObject.getFrecuenciaEstudio() + " " + proyeccionNivelObject.getFrecuenciaInciso() );
 
 end
 rule "Frecuencia A 1.5a"
@@ -585,13 +587,13 @@ rule "Frecuencia A 1.5a"
     when
        proyeccionNivelObject: ProyeccionNivel(getAlumno().getNivelActual() == "A")
        ProyeccionNivel(getAlumno().getGradoNum() <=6)
-       ProyeccionNivel(getAlumno().getFluidezResta() == 1)
+       ProyeccionNivel(getAlumno().getFluidez() == 1)
        ProyeccionNivel(getAlumno().getTrabajoB() == 0)
        ProyeccionNivel(getAlumno().getConcentracion() == 1)
     then 
     	proyeccionNivelObject.setFrecuenciaEstudio(1.5);
     	proyeccionNivelObject.setFrecuenciaInciso("a");
-        System.out.println("La frecuencia es: " + proyeccionNivelObject.getFrecuenciaEstudio() + " " + proyeccionNivelObject.getFrecuenciaInciso() );
+        System.out.println("La frecuencia del nivel: " + proyeccionNivelObject.getAlumno().getNivelActual() + " es: " + proyeccionNivelObject.getFrecuenciaEstudio() + " " + proyeccionNivelObject.getFrecuenciaInciso() );
 end
 rule "Frecuencia A 1.6a"
 	salience 0
@@ -599,13 +601,13 @@ rule "Frecuencia A 1.6a"
     when
        proyeccionNivelObject: ProyeccionNivel(getAlumno().getNivelActual() == "A")
        ProyeccionNivel(getAlumno().getGradoNum() <=6)
-       ProyeccionNivel(getAlumno().getFluidezResta() == 1)
+       ProyeccionNivel(getAlumno().getFluidez() == 1)
        ProyeccionNivel(getAlumno().getTrabajoB() == 0)
        ProyeccionNivel(getAlumno().getConcentracion() == 0)
     then 
     	proyeccionNivelObject.setFrecuenciaEstudio(1.6);
     	proyeccionNivelObject.setFrecuenciaInciso("a");
-        System.out.println("La frecuencia es: " + proyeccionNivelObject.getFrecuenciaEstudio() + " " + proyeccionNivelObject.getFrecuenciaInciso() );
+        System.out.println("La frecuencia del nivel: " + proyeccionNivelObject.getAlumno().getNivelActual() + " es: " + proyeccionNivelObject.getFrecuenciaEstudio() + " " + proyeccionNivelObject.getFrecuenciaInciso() );
 end
 rule "Frecuencia A 1.6b"
 	salience 0
@@ -613,12 +615,12 @@ rule "Frecuencia A 1.6b"
     when
        proyeccionNivelObject: ProyeccionNivel(getAlumno().getNivelActual() == "A")
        ProyeccionNivel(getAlumno().getGradoNum() <=6)
-       ProyeccionNivel(getAlumno().getFluidezResta() == 0)
+       ProyeccionNivel(getAlumno().getFluidez() == 0)
        ProyeccionNivel(getAlumno().getTrabajoB() == 1)
     then 
     	proyeccionNivelObject.setFrecuenciaEstudio(1.6);
     	proyeccionNivelObject.setFrecuenciaInciso("b");
-        System.out.println("La frecuencia es: " + proyeccionNivelObject.getFrecuenciaEstudio() + " " + proyeccionNivelObject.getFrecuenciaInciso() );
+        System.out.println("La frecuencia del nivel: " + proyeccionNivelObject.getAlumno().getNivelActual() + " es: " + proyeccionNivelObject.getFrecuenciaEstudio() + " " + proyeccionNivelObject.getFrecuenciaInciso() );
 end
 rule "Frecuencia A 1.9a"
 	salience 0
@@ -626,12 +628,12 @@ rule "Frecuencia A 1.9a"
     when
        proyeccionNivelObject: ProyeccionNivel(getAlumno().getNivelActual() == "A")
        ProyeccionNivel(getAlumno().getGradoNum() <=6)
-       ProyeccionNivel(getAlumno().getFluidezResta() == 0)
+       ProyeccionNivel(getAlumno().getFluidez() == 0)
        ProyeccionNivel(getAlumno().getTrabajoB() == 0)
     then 
     	proyeccionNivelObject.setFrecuenciaEstudio(1.9);
     	proyeccionNivelObject.setFrecuenciaInciso("a");
-        System.out.println("La frecuencia es: " + proyeccionNivelObject.getFrecuenciaEstudio() + " " + proyeccionNivelObject.getFrecuenciaInciso() );
+        System.out.println("La frecuencia del nivel: " + proyeccionNivelObject.getAlumno().getNivelActual() + " es: " + proyeccionNivelObject.getFrecuenciaEstudio() + " " + proyeccionNivelObject.getFrecuenciaInciso() );
 end
 rule "Frecuencia A 1b"
 	salience 0
@@ -639,12 +641,12 @@ rule "Frecuencia A 1b"
     when
        proyeccionNivelObject: ProyeccionNivel(getAlumno().getNivelActual() == "A")
        ProyeccionNivel(getAlumno().getGradoNum() >6)
-       ProyeccionNivel(getAlumno().getFluidezResta() == 1)
+       ProyeccionNivel(getAlumno().getFluidez() == 1)
        ProyeccionNivel(getAlumno().getTrabajoB() == 1)
     then 
     	proyeccionNivelObject.setFrecuenciaEstudio(1.0);
     	proyeccionNivelObject.setFrecuenciaInciso("a");
-        System.out.println("La frecuencia es: " + proyeccionNivelObject.getFrecuenciaEstudio() + " " + proyeccionNivelObject.getFrecuenciaInciso() );
+        System.out.println("La frecuencia del nivel: " + proyeccionNivelObject.getAlumno().getNivelActual() + " es: " + proyeccionNivelObject.getFrecuenciaEstudio() + " " + proyeccionNivelObject.getFrecuenciaInciso() );
 end
 rule "Frecuencia A 1.5b"
 	salience 0
@@ -652,12 +654,12 @@ rule "Frecuencia A 1.5b"
     when
        proyeccionNivelObject: ProyeccionNivel(getAlumno().getNivelActual() == "A")
        ProyeccionNivel(getAlumno().getGradoNum() >6)
-       ProyeccionNivel(getAlumno().getFluidezResta() == 1)
+       ProyeccionNivel(getAlumno().getFluidez() == 1)
        ProyeccionNivel(getAlumno().getTrabajoB() == 0)
     then 
     	proyeccionNivelObject.setFrecuenciaEstudio(1.5);
     	proyeccionNivelObject.setFrecuenciaInciso("b");
-        System.out.println("La frecuencia es: " + proyeccionNivelObject.getFrecuenciaEstudio() + " " + proyeccionNivelObject.getFrecuenciaInciso() );
+        System.out.println("La frecuencia del nivel: " + proyeccionNivelObject.getAlumno().getNivelActual() + " es: " + proyeccionNivelObject.getFrecuenciaEstudio() + " " + proyeccionNivelObject.getFrecuenciaInciso() );
 end
 rule "Frecuencia A 1.6c"
 	salience 0
@@ -665,12 +667,12 @@ rule "Frecuencia A 1.6c"
     when
        proyeccionNivelObject: ProyeccionNivel(getAlumno().getNivelActual() == "A")
        ProyeccionNivel(getAlumno().getGradoNum() > 6)
-       ProyeccionNivel(getAlumno().getFluidezResta() == 0)
+       ProyeccionNivel(getAlumno().getFluidez() == 0)
        ProyeccionNivel(getAlumno().getTrabajoB() == 1)
     then 
     	proyeccionNivelObject.setFrecuenciaEstudio(1.6);
     	proyeccionNivelObject.setFrecuenciaInciso("c");
-        System.out.println("La frecuencia es: " + proyeccionNivelObject.getFrecuenciaEstudio() + " " + proyeccionNivelObject.getFrecuenciaInciso() );
+        System.out.println("La frecuencia del nivel: " + proyeccionNivelObject.getAlumno().getNivelActual() + " es: " + proyeccionNivelObject.getFrecuenciaEstudio() + " " + proyeccionNivelObject.getFrecuenciaInciso() );
 end
 rule "Frecuencia A 1.8a"
 	salience 0
@@ -678,12 +680,12 @@ rule "Frecuencia A 1.8a"
     when
        proyeccionNivelObject: ProyeccionNivel(getAlumno().getNivelActual() == "A")
        ProyeccionNivel(getAlumno().getGradoNum() > 6)
-       ProyeccionNivel(getAlumno().getFluidezResta() == 0)
+       ProyeccionNivel(getAlumno().getFluidez() == 0)
        ProyeccionNivel(getAlumno().getTrabajoB() == 0)
     then 
     	proyeccionNivelObject.setFrecuenciaEstudio(1.8);
     	proyeccionNivelObject.setFrecuenciaInciso("a");
-        System.out.println("La frecuencia es: " + proyeccionNivelObject.getFrecuenciaEstudio() + " " + proyeccionNivelObject.getFrecuenciaInciso() );
+        System.out.println("La frecuencia del nivel: " + proyeccionNivelObject.getAlumno().getNivelActual() + " es: " + proyeccionNivelObject.getFrecuenciaEstudio() + " " + proyeccionNivelObject.getFrecuenciaInciso() );
 end
 //----------------------------------------------------------------------------------------------------------------------
 //---NivelB-----------------------------------------------------------------------------------------------------------------------------------------------
@@ -699,7 +701,7 @@ rule "Frecuencia B 1.0a"
     then 
         proyeccionNivelObject.setFrecuenciaEstudio(1.0);
     	proyeccionNivelObject.setFrecuenciaInciso("a");
-        System.out.println("La frecuencia es: " + proyeccionNivelObject.getFrecuenciaEstudio() + " " + proyeccionNivelObject.getFrecuenciaInciso() );
+        System.out.println("La frecuencia del nivel: " + proyeccionNivelObject.getAlumno().getNivelActual() + " es: " + proyeccionNivelObject.getFrecuenciaEstudio() + " " + proyeccionNivelObject.getFrecuenciaInciso() );
         
 end
 rule "Frecuencia B 1.3a"
@@ -714,7 +716,7 @@ rule "Frecuencia B 1.3a"
     then 
         proyeccionNivelObject.setFrecuenciaEstudio(1.3);
     	proyeccionNivelObject.setFrecuenciaInciso("a");
-        System.out.println("La frecuencia es: " + proyeccionNivelObject.getFrecuenciaEstudio() + " " + proyeccionNivelObject.getFrecuenciaInciso() );
+        System.out.println("La frecuencia del nivel: " + proyeccionNivelObject.getAlumno().getNivelActual() + " es: " + proyeccionNivelObject.getFrecuenciaEstudio() + " " + proyeccionNivelObject.getFrecuenciaInciso() );
         
 end
 rule "Frecuencia B 1.7a"
@@ -725,10 +727,11 @@ rule "Frecuencia B 1.7a"
        ProyeccionNivel(getAlumno().getGradoNum() <=5)
        ProyeccionNivel(getAlumno().getFluidez() == 1)
        ProyeccionNivel(getAlumno().getTrabajoB() == 0)
+       ProyeccionNivel(getAlumno().getConcentracion() == 1)
     then 
         proyeccionNivelObject.setFrecuenciaEstudio(1.7);
     	proyeccionNivelObject.setFrecuenciaInciso("a");
-        System.out.println("La frecuencia es: " + proyeccionNivelObject.getFrecuenciaEstudio() + " " + proyeccionNivelObject.getFrecuenciaInciso() );
+        System.out.println("La frecuencia del nivel: " + proyeccionNivelObject.getAlumno().getNivelActual() + " es: " + proyeccionNivelObject.getFrecuenciaEstudio() + " " + proyeccionNivelObject.getFrecuenciaInciso() );
         
 end
 rule "Frecuencia B 1.4a"
@@ -742,7 +745,7 @@ rule "Frecuencia B 1.4a"
     then 
         proyeccionNivelObject.setFrecuenciaEstudio(1.4);
     	proyeccionNivelObject.setFrecuenciaInciso("a");
-        System.out.println("La frecuencia es: " + proyeccionNivelObject.getFrecuenciaEstudio() + " " + proyeccionNivelObject.getFrecuenciaInciso() );
+        System.out.println("La frecuencia del nivel: " + proyeccionNivelObject.getAlumno().getNivelActual() + " es: " + proyeccionNivelObject.getFrecuenciaEstudio() + " " + proyeccionNivelObject.getFrecuenciaInciso() );
         
 end
 rule "Frecuencia B 1.0a2"
@@ -756,7 +759,7 @@ rule "Frecuencia B 1.0a2"
     then 
         proyeccionNivelObject.setFrecuenciaEstudio(1.0);
     	proyeccionNivelObject.setFrecuenciaInciso("a");
-        System.out.println("La frecuencia es: " + proyeccionNivelObject.getFrecuenciaEstudio() + " " + proyeccionNivelObject.getFrecuenciaInciso() );
+        System.out.println("La frecuencia del nivel: " + proyeccionNivelObject.getAlumno().getNivelActual() + " es: " + proyeccionNivelObject.getFrecuenciaEstudio() + " " + proyeccionNivelObject.getFrecuenciaInciso() );
         
 end
 rule "Frecuencia B 1.4b"
@@ -770,7 +773,7 @@ rule "Frecuencia B 1.4b"
     then 
         proyeccionNivelObject.setFrecuenciaEstudio(1.4);
     	proyeccionNivelObject.setFrecuenciaInciso("b");
-        System.out.println("La frecuencia es: " + proyeccionNivelObject.getFrecuenciaEstudio() + " " + proyeccionNivelObject.getFrecuenciaInciso() );
+        System.out.println("La frecuencia del nivel: " + proyeccionNivelObject.getAlumno().getNivelActual() + " es: " + proyeccionNivelObject.getFrecuenciaEstudio() + " " + proyeccionNivelObject.getFrecuenciaInciso() );
         
 end
 rule "Frecuencia B 1.5a"
@@ -784,9 +787,24 @@ rule "Frecuencia B 1.5a"
     then 
         proyeccionNivelObject.setFrecuenciaEstudio(1.5);
     	proyeccionNivelObject.setFrecuenciaInciso("a");
-        System.out.println("La frecuencia es: " + proyeccionNivelObject.getFrecuenciaEstudio() + " " + proyeccionNivelObject.getFrecuenciaInciso() );
+        System.out.println("La frecuencia del nivel: " + proyeccionNivelObject.getAlumno().getNivelActual() + " es: " + proyeccionNivelObject.getFrecuenciaEstudio() + " " + proyeccionNivelObject.getFrecuenciaInciso() );
         
 end
+rule "Frecuencia nivelIncorrectoB1"
+	salience 0
+	dialect "java"
+    when
+       proyeccionNivelObject: ProyeccionNivel(getAlumno().getNivelActual() == "B")
+       ProyeccionNivel((getAlumno().getGradoNum() <= 5 && getAlumno().getFluidez() == 0 && getAlumno().getTrabajoB() == 0) ||
+       (getAlumno().getGradoNum() <= 5 && getAlumno().getFluidez() == 1 && getAlumno().getTrabajoB() == 0 && getAlumno().getConcentracion() == 0) ||
+       				   (getAlumno().getGradoNum() > 5 && getAlumno().getFluidez() == 0 && getAlumno().getTrabajoB() == 0))
+    then 
+        proyeccionNivelObject.setFrecuenciaEstudio(0.0);
+    	proyeccionNivelObject.setFrecuenciaInciso(" ");
+        System.out.println("El alumno no cumple con las habilidades necesarias. Revisar nivel de ubicación.");
+end
+
+
 //-----------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 //---NivelC-----------------------------------------------------------------------------------------------------------------------------------------------
@@ -795,78 +813,90 @@ rule "Frecuencia C 1.0a"
 	dialect "java"
     when
        proyeccionNivelObject: ProyeccionNivel(getAlumno().getNivelActual() == "C")
-       ProyeccionNivel(getAlumno().getFluidezMultiplicacion() == 1)
+       ProyeccionNivel(getAlumno().getFluidez() == 1)
        ProyeccionNivel(getAlumno().getCalculoMental() == 1)
        ProyeccionNivel(getAlumno().getProcedimientosCortos() == 1)
     then 
     	proyeccionNivelObject.setFrecuenciaEstudio(1.0);
     	proyeccionNivelObject.setFrecuenciaInciso("a");
-        System.out.println("La frecuencia es: " + proyeccionNivelObject.getFrecuenciaEstudio() + " " + proyeccionNivelObject.getFrecuenciaInciso() );
+        System.out.println("La frecuencia del nivel: " + proyeccionNivelObject.getAlumno().getNivelActual() + " es: " + proyeccionNivelObject.getFrecuenciaEstudio() + " " + proyeccionNivelObject.getFrecuenciaInciso() );
 end
 rule "Frecuencia C 1.2a"
 	salience 0
 	dialect "java"
     when
        proyeccionNivelObject: ProyeccionNivel(getAlumno().getNivelActual() == "C")
-       ProyeccionNivel(getAlumno().getFluidezMultiplicacion() == 1)
+       ProyeccionNivel(getAlumno().getFluidez() == 1)
        ProyeccionNivel(getAlumno().getCalculoMental() == 1)
        ProyeccionNivel(getAlumno().getProcedimientosCortos() == 0)
     then 
     	proyeccionNivelObject.setFrecuenciaEstudio(1.2);
     	proyeccionNivelObject.setFrecuenciaInciso("a");
-        System.out.println("La frecuencia es: " + proyeccionNivelObject.getFrecuenciaEstudio() + " " + proyeccionNivelObject.getFrecuenciaInciso() );
+        System.out.println("La frecuencia del nivel: " + proyeccionNivelObject.getAlumno().getNivelActual() + " es: " + proyeccionNivelObject.getFrecuenciaEstudio() + " " + proyeccionNivelObject.getFrecuenciaInciso() );
 end
 rule "Frecuencia C 1.4a"
 	salience 0
 	dialect "java"
     when
        proyeccionNivelObject: ProyeccionNivel(getAlumno().getNivelActual() == "C")
-       ProyeccionNivel(getAlumno().getFluidezMultiplicacion() == 1)
+       ProyeccionNivel(getAlumno().getFluidez() == 1)
        ProyeccionNivel(getAlumno().getCalculoMental() == 0)
        ProyeccionNivel(getAlumno().getProcedimientosCortos() == 1)
     then 
     	proyeccionNivelObject.setFrecuenciaEstudio(1.4);
     	proyeccionNivelObject.setFrecuenciaInciso("a");
-        System.out.println("La frecuencia es: " + proyeccionNivelObject.getFrecuenciaEstudio() + " " + proyeccionNivelObject.getFrecuenciaInciso() );
+        System.out.println("La frecuencia del nivel: " + proyeccionNivelObject.getAlumno().getNivelActual() + " es: " + proyeccionNivelObject.getFrecuenciaEstudio() + " " + proyeccionNivelObject.getFrecuenciaInciso() );
 end
 rule "Frecuencia C 1.5a"
 	salience 0
 	dialect "java"
     when
        proyeccionNivelObject: ProyeccionNivel(getAlumno().getNivelActual() == "C")
-       ProyeccionNivel(getAlumno().getFluidezMultiplicacion() == 1)
+       ProyeccionNivel(getAlumno().getFluidez() == 1)
        ProyeccionNivel(getAlumno().getCalculoMental() == 0)
        ProyeccionNivel(getAlumno().getProcedimientosCortos() == 0)
     then 
     	proyeccionNivelObject.setFrecuenciaEstudio(1.5);
     	proyeccionNivelObject.setFrecuenciaInciso("a");
-        System.out.println("La frecuencia es: " + proyeccionNivelObject.getFrecuenciaEstudio() + " " + proyeccionNivelObject.getFrecuenciaInciso() );
+        System.out.println("La frecuencia del nivel: " + proyeccionNivelObject.getAlumno().getNivelActual() + " es: " + proyeccionNivelObject.getFrecuenciaEstudio() + " " + proyeccionNivelObject.getFrecuenciaInciso() );
 end
 rule "Frecuencia C 1.7a"
 	salience 0
 	dialect "java"
     when
        proyeccionNivelObject: ProyeccionNivel(getAlumno().getNivelActual() == "C")
-       ProyeccionNivel(getAlumno().getFluidezMultiplicacion() == 0)
+       ProyeccionNivel(getAlumno().getFluidez() == 0)
        ProyeccionNivel(getAlumno().getCalculoMental() == 1)
        ProyeccionNivel(getAlumno().getProcedimientosCortos() == 1)
     then 
     	proyeccionNivelObject.setFrecuenciaEstudio(1.7);
     	proyeccionNivelObject.setFrecuenciaInciso("a");
-        System.out.println("La frecuencia es: " + proyeccionNivelObject.getFrecuenciaEstudio() + " " + proyeccionNivelObject.getFrecuenciaInciso() );
+        System.out.println("La frecuencia del nivel: " + proyeccionNivelObject.getAlumno().getNivelActual() + " es: " + proyeccionNivelObject.getFrecuenciaEstudio() + " " + proyeccionNivelObject.getFrecuenciaInciso() );
 end
 rule "Frecuencia C 1.6a"
 	salience 0
 	dialect "java"
     when
        proyeccionNivelObject: ProyeccionNivel(getAlumno().getNivelActual() == "C")
-       ProyeccionNivel(getAlumno().getFluidezMultiplicacion() == 0)
+       ProyeccionNivel(getAlumno().getFluidez() == 0)
        ProyeccionNivel(getAlumno().getCalculoMental() == 1)
        ProyeccionNivel(getAlumno().getProcedimientosCortos() == 0)
     then 
     	proyeccionNivelObject.setFrecuenciaEstudio(1.6);
     	proyeccionNivelObject.setFrecuenciaInciso("a");
-        System.out.println("La frecuencia es: " + proyeccionNivelObject.getFrecuenciaEstudio() + " " + proyeccionNivelObject.getFrecuenciaInciso() );
+        System.out.println("La frecuencia del nivel: " + proyeccionNivelObject.getAlumno().getNivelActual() + " es: " + proyeccionNivelObject.getFrecuenciaEstudio() + " " + proyeccionNivelObject.getFrecuenciaInciso() + " procediemintos cortos: " + proyeccionNivelObject.getAlumno().getProcedimientosCortos());
+end
+rule "Frecuencia nivelIncorrectoC"
+	salience 0
+	dialect "java"
+    when
+       proyeccionNivelObject: ProyeccionNivel(getAlumno().getNivelActual() == "C")
+       ProyeccionNivel(getAlumno().getFluidez() == 0)
+       ProyeccionNivel(getAlumno().getCalculoMental() == 0)
+    then 
+    	proyeccionNivelObject.setFrecuenciaEstudio(0.0);
+    	proyeccionNivelObject.setFrecuenciaInciso("");
+        System.out.println("El alumno no cumple con las habilidades necesarias. Revisar nivel de ubicación.");
 end
 //-----------------------------------------------------------------------------------------------------------------------------------------------------------------
 //---NivelD-----------------------------------------------------------------------------------------------------------------------------------------------
@@ -880,9 +910,9 @@ rule "Frecuencia D 1.1a"
     then 
     	proyeccionNivelObject.setFrecuenciaEstudio(1.1);
     	proyeccionNivelObject.setFrecuenciaInciso("a");
-        System.out.println("La frecuencia es: " + proyeccionNivelObject.getFrecuenciaEstudio() + " " + proyeccionNivelObject.getFrecuenciaInciso() );
+        System.out.println("La frecuencia del nivel: " + proyeccionNivelObject.getAlumno().getNivelActual() + " es: " + proyeccionNivelObject.getFrecuenciaEstudio() + " " + proyeccionNivelObject.getFrecuenciaInciso() );
 end
-rule "Frecuencia D 1.5b"
+rule "Frecuencia D 1.5a"
 	salience 0
 	dialect "java"
     when
@@ -891,8 +921,8 @@ rule "Frecuencia D 1.5b"
        ProyeccionNivel(getAlumno().getSimplificacion() == 0)
     then 
     	proyeccionNivelObject.setFrecuenciaEstudio(1.5);
-    	proyeccionNivelObject.setFrecuenciaInciso("b");
-        System.out.println("La frecuencia es: " + proyeccionNivelObject.getFrecuenciaEstudio() + " " + proyeccionNivelObject.getFrecuenciaInciso() );
+    	proyeccionNivelObject.setFrecuenciaInciso("a");
+        System.out.println("La frecuencia del nivel: " + proyeccionNivelObject.getAlumno().getNivelActual() + " es: " + proyeccionNivelObject.getFrecuenciaEstudio() + " " + proyeccionNivelObject.getFrecuenciaInciso() );
 end
 rule "Frecuencia D 1.3b"
 	salience 0
@@ -904,7 +934,7 @@ rule "Frecuencia D 1.3b"
     then 
     	proyeccionNivelObject.setFrecuenciaEstudio(1.3);
     	proyeccionNivelObject.setFrecuenciaInciso("b");
-        System.out.println("La frecuencia es: " + proyeccionNivelObject.getFrecuenciaEstudio() + " " + proyeccionNivelObject.getFrecuenciaInciso() );
+        System.out.println("La frecuencia del nivel: " + proyeccionNivelObject.getAlumno().getNivelActual() + " es: " + proyeccionNivelObject.getFrecuenciaEstudio() + " " + proyeccionNivelObject.getFrecuenciaInciso() );
 end
 rule "Frecuencia D 1.4a"
 	salience 0
@@ -916,33 +946,66 @@ rule "Frecuencia D 1.4a"
     then 
     	proyeccionNivelObject.setFrecuenciaEstudio(1.4);
     	proyeccionNivelObject.setFrecuenciaInciso("a");
-        System.out.println("La frecuencia es: " + proyeccionNivelObject.getFrecuenciaEstudio() + " " + proyeccionNivelObject.getFrecuenciaInciso() );
+        System.out.println("La frecuencia del nivel: " + proyeccionNivelObject.getAlumno().getNivelActual() + " es: " + proyeccionNivelObject.getFrecuenciaEstudio() + " " + proyeccionNivelObject.getFrecuenciaInciso() );
 end
 //-----------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-
-rule "desempeño Bajo"
+rule "desempeño Bajo nivel"
 dialect "java"
-	salience 10
+	salience 8
 	    when
-        nivelObject : Nivel(getPuntajeDesempeño() <= 30)
+        nivelObject : Nivel((getDesempeñoNivel() == "malo" && getDesempeñoGeneral() == "malo") ||
+        					(getDesempeñoNivel() == "malo" && getDesempeñoGeneral() == "medio") ||
+        					(getDesempeñoNivel() == "medio" && getDesempeñoGeneral() == "malo"))
     then 
         nivelObject.setNivelMessage("Bajo, + " + nivelObject.getDesempeñoBajo());
         nivelObject.setDesempeño(nivelObject.getDesempeñoBajo());
 end
-rule "desempeño Medio"
-	salience 10
+rule "desempeño Medio nivel"
+	salience 8
     when
-        nivelObject : Nivel(getPuntajeDesempeño() > 30 && getPuntajeDesempeño() <= 75)
+    	nivelObject : Nivel((getDesempeñoNivel() == "malo" && getDesempeñoGeneral() == "bueno") ||
+        					(getDesempeñoNivel() == "medio" && getDesempeñoGeneral() == "medio") ||
+        					(getDesempeñoNivel() == "bueno" && getDesempeñoGeneral() == "malo"))
     then 
         nivelObject.setNivelMessage("Medio, + " + nivelObject.getDesempeñoMedio());
         nivelObject.setDesempeño(nivelObject.getDesempeñoMedio());
 end
-rule "desempeño Alto"
-	salience 10
+rule "desempeño Alto nivel"
+	salience 8
     when
-        nivelObject : Nivel(getPuntajeDesempeño() > 75 && getPuntajeDesempeño() <= 95)
+    	nivelObject : Nivel((getDesempeñoNivel() == "medio" && getDesempeñoGeneral() == "bueno") ||
+        					(getDesempeñoNivel() == "bueno" && getDesempeñoGeneral() == "bueno") ||
+        					(getDesempeñoNivel() == "bueno" && getDesempeñoGeneral() == "medio"))
     then 
         nivelObject.setNivelMessage("Alto, + " + nivelObject.getDesempeñoAlto());
         nivelObject.setDesempeño(nivelObject.getDesempeñoAlto());
+end
+//-----------------------------------------------------------------------------------------------------------------
+
+rule "desempeño Bajo general"
+dialect "java"
+	salience 10
+	    when
+        alumnoObject : Alumno(getPuntajeDesempeño() <= 30)
+    then 
+    	alumnoObject.setDesempeño(alumnoObject.getDesempeñoBajo());
+    	System.out.println("El desempeño general es "+ alumnoObject.getDesempeño());
+        
+end
+rule "desempeño Medio general"
+	salience 10
+    when
+        alumnoObject : Alumno(getPuntajeDesempeño() > 30 && getPuntajeDesempeño() <= 75)
+    then 
+        alumnoObject.setDesempeño(alumnoObject.getDesempeñoMedio());
+        System.out.println("El desempeño general es "+ alumnoObject.getDesempeño());
+end
+rule "desempeño Alto general"
+	salience 10
+    when
+        alumnoObject : Alumno(getPuntajeDesempeño() > 75 && getPuntajeDesempeño() <= 95)
+    then 
+       alumnoObject.setDesempeño(alumnoObject.getDesempeñoAlto());
+       System.out.println("El desempeño general es "+ alumnoObject.getDesempeño());
 end

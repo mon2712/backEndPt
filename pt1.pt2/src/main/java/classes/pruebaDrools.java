@@ -110,7 +110,7 @@ public class pruebaDrools {
 					}
 				System.out.println(" nivel: "+ n + " Freceuncias: " + Frec);
 				niveles[x-nivelUbicacion] = new Nivel();
-				niveles[x-nivelUbicacion].setPuntajeDesempeño(puntaje[x-nivelUbicacion]);
+				//niveles[x-nivelUbicacion].setPuntajeDesempeño(puntaje[x-nivelUbicacion]);
 			}
 			//List <Nivel> niveles = Arrays.asList(nivel1, nivel2, nivel3, nivel4, nivel5, nivel6);
 			int resultado=0, residuo=0, rango=0, frecCompartidas=0;
