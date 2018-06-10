@@ -151,7 +151,6 @@ public class ProyeccionAnual {
 	public static String crearProyeccionAnual(String array) throws JSONException, SQLException, IOException {
 		
 		Auxiliar aux= new Auxiliar();
-<<<<<<< HEAD
 				WorkingMemory wk;
 				try {
 					wk = aux.conexionDrools();
