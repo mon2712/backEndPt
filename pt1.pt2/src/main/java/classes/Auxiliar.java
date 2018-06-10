@@ -54,7 +54,6 @@ public class Auxiliar {
 		PackageBuilder packageBuilder = new PackageBuilder();
 		String ruleFile = "../rules/proyeccionNive.drl";
 		InputStream resourceAsStream = getClass().getResourceAsStream(ruleFile);
-
 		Reader reader = new InputStreamReader(resourceAsStream);
 		packageBuilder.addPackageFromDrl(reader);
 		org.drools.core.rule.Package rulesPackage = packageBuilder.getPackage();
