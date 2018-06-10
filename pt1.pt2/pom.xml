@@ -33,8 +33,8 @@
                 <version>${jersey.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
-            </dependency>
-        </dependencies>
+            </dependency>       
+    	</dependencies>
     </dependencyManagement>
 
     <dependencies>
@@ -52,12 +52,67 @@
             <groupId>org.glassfish.jersey.media</groupId>
             <artifactId>jersey-media-json-binding</artifactId>
         </dependency>
-    		<dependency>
+    	<dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
-            <version>8.0.7-dmr</version>
+            <version>8.0.11</version>
         </dependency>
-    </dependencies>
+		<dependency>
+    			<groupId>com.google.code.gson</groupId>
+    			<artifactId>gson</artifactId>
+   			<version>2.8.0</version>
+		</dependency>
+		<dependency>
+ 			<groupId> org.apache.poi </groupId> 
+ 			<artifactId> poi </artifactId>
+			<version> 3.12 </version>
+		</dependency>
+		<dependency>
+ 			<groupId> org.apache.poi </groupId>
+ 			<artifactId> poi-ooxml</artifactId>
+ 			<version> 3.12 </version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi-ooxml-schemas</artifactId>
+			<version>3.12</version>
+		</dependency>
+		<dependency>
+    			<groupId>com.google.zxing</groupId>
+    			<artifactId>core</artifactId>
+    			<version>3.3.2</version>
+  		</dependency>
+  		<dependency>
+    		<groupId>com.google.zxing</groupId>
+    		<artifactId>javase</artifactId>
+    		<version>3.3.2</version>
+		</dependency>
+		<dependency>
+  			<groupId>org.apache.pdfbox</groupId>
+  			<artifactId>pdfbox</artifactId>
+  			<version>2.0.4</version>
+		</dependency>
+		<dependency>
+    		<groupId>com.github.dhorions</groupId>
+    		<artifactId>boxable</artifactId>
+    		<version>1.5</version>
+		</dependency>
+		<dependency>
+    		<groupId>org.json</groupId>
+    		<artifactId>json</artifactId>
+    		<version>20180130</version>
+		</dependency>
+		<dependency>
+        	<groupId>com.fasterxml.jackson.datatype</groupId>
+        	<artifactId>jackson-datatype-jsr310</artifactId>
+        	<version>2.9.5</version>
+		</dependency>
+		<dependency>
+			<groupId>org.drools</groupId>
+			<artifactId>drools-compiler</artifactId>
+			<version>6.0.1.Final</version>
+		</dependency>
+	</dependencies>
     <properties>
         <jersey.version>2.26</jersey.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

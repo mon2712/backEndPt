@@ -12,20 +12,23 @@ public class conexionDB implements Serializable{
     static PreparedStatement prepareStat = null;
 
 
-    public static void makeJDBCConnection() {
-
+    public static Connection conectarBD() {
+    		Connection conn = null;
+    		String pass ="dBoy6Ap281015";
+    		//String pass ="vfcnmm2201";
         try {
             Class.forName("com.mysql.jdbc.Driver");
             System.out.print("Congrats - Seems your MySQL JDBC Driver Registered!");
         } catch (ClassNotFoundException e) {
             System.out.print("Sorry, couldn't found JDBC driver. Make sure you have added JDBC Maven Dependency Correctly");
             e.printStackTrace();
-            return;
         }
 
         try {
             // DriverManager: The basic service for managing a set of JDBC drivers.
-            conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/db_pt2?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", "root", "vfcnmm2201");
+
+            conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/db_pt2?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", "root", pass);
+
             if (conn != null) {
                 System.out.println("Connection Successful! Enjoy. Now it's time to push data");
             } else {
@@ -34,8 +37,8 @@ public class conexionDB implements Serializable{
         } catch (SQLException e) {
             System.out.print("MySQL Connection Failed!");
             e.printStackTrace();
-            return;
         }
+        return conn;
 
     }
 
@@ -109,7 +112,8 @@ public class conexionDB implements Serializable{
 
             // Execute the Query, and get a java ResultSet
             ResultSet rs = prepareStat.executeQuery();
-
+            
+           
             List<String> users=new ArrayList<>();
             while (rs.next()) {
                 users.add(rs.getString("usuario"));

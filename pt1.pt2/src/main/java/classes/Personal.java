@@ -1,0 +1,98 @@
+package classes;
+
+import java.io.StringWriter;
+import java.sql.CallableStatement;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Types;
+
+import javax.json.Json;
+import javax.json.stream.JsonGenerator;
+
+import classes.BaseDatos;
+
+public class Personal {
+	static PreparedStatement prepareStat = null;
+    private static Connection conn = BaseDatos.conectarBD();
+    
+    public static String iniciarSesion(String username, String password) {
+    		String type="", name="";
+    		int id;
+    		StringWriter swriter = new StringWriter();
+    		try {
+    		    CallableStatement cStmt = conn.prepareCall("{call verifyUser(?, ?, ?, ?, ?)}");
+	
+    		    cStmt.setString(1, username);
+    		    cStmt.setString(2, password);
+    		    cStmt.registerOutParameter(3, Types.VARCHAR);
+    		    cStmt.registerOutParameter(4, Types.VARCHAR);
+    		    cStmt.registerOutParameter(5, Types.INTEGER);
+    		    
+    		    cStmt.execute();    
+    		    
+    		    type = cStmt.getString(3);
+    		    name = cStmt.getString(4);
+    		    id = cStmt.getInt(5);
+
+    		    if(id == 0) {
+    		    		try (JsonGenerator gen = Json.createGenerator(swriter)) {
+    	    	            gen.writeStartObject();
+    	    	            gen.writeStartObject("infoLogin");
+    	    	            gen.write("code", 0);
+    	    	            gen.write("type", "Usuario o contraseña incorrecta");
+    	    	            gen.writeEnd();
+    	    	            gen.writeEnd();
+    	    	        }
+    		    }else {
+	    	        try (JsonGenerator gen = Json.createGenerator(swriter)) {
+	    	            gen.writeStartObject();
+	    	            gen.writeStartObject("infoLogin");
+	    	            gen.write("code", 1);
+	    	            gen.write("name", name);
+	    	            gen.write("type", type);
+	    	            gen.write("id", id);
+	    	            gen.writeEnd();
+	    	            gen.writeEnd();
+	    	        }
+    		    }
+    	        
+    		} catch (SQLException e) {
+    			e.printStackTrace();
+    		}
+    		
+    		return swriter.toString();
+    }
+    
+    public static String getPersonal() {
+		StringWriter swriter = new StringWriter();
+	    try {
+	        String getQueryStatement = "SELECT us.idUsuario, us.nombre, us.apellido FROM Usuario as us  JOIN Asistente as asis JOIN Recepcionista as rec  \n" + 
+	        		"ON (us.idUsuario=rec.Usuario_idUsuario) OR (us.idUsuario=asis.Usuario_idUsuario) GROUP BY us.idUsuario;";
+	
+	        prepareStat = conn.prepareStatement(getQueryStatement);
+	
+	        // Execute the Query, and get a java ResultSet
+	        ResultSet rs = prepareStat.executeQuery();
+	
+	        try (JsonGenerator gen = Json.createGenerator(swriter)) {
+	        	gen.writeStartObject();
+	            gen.writeStartArray("allAssistants");
+	            while(rs.next()) {
+		            	gen.writeStartObject();
+		               	gen.write("name", ""+rs.getString(2)+ " " + rs.getString(3));
+		                gen.write("idAssistant", ""+rs.getString(1));
+		            gen.writeEnd();
+	            }
+	            gen.writeEnd();
+	            gen.writeEnd();
+	        }
+	        return swriter.toString();
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	        return null;
+	    }
+	}
+
+}
