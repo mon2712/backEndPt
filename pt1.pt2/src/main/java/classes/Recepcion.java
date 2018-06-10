@@ -274,6 +274,7 @@ public class Recepcion {
 	    		    		}
 	    		    		
 	    		    }else {
+	    		    		System.out.println("hubo error");
 	    		    		finalResult = asistente;
 	    		    }
 	    		    
@@ -330,6 +331,8 @@ public class Recepcion {
 	        		    }
 	            }
 	            finalResult = swriter.toString();
+		    }else {
+		    		System.out.println("hubo error en call");
 		    }
 		    
 		}else {
