@@ -80,7 +80,7 @@ public class DroolsTest {
 				niveles[x-nivelUbicacion].setIdNivel(x);
 				niveles[x-nivelUbicacion].setNombreNivel(n);
 				niveles[x-nivelUbicacion].setFrecuencias(Frec);
-				niveles[x-nivelUbicacion].setPuntajeDesempeño(puntaje[x-nivelUbicacion]);
+				//niveles[x-nivelUbicacion].setPuntajeDesempeño(puntaje[x-nivelUbicacion]);
 				
 				workingMemory.insert(niveles[x-nivelUbicacion]);
 				workingMemory.fireAllRules();

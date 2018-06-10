@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import org.drools.compiler.compiler.DroolsParserException;
 import org.drools.core.RuleBase;
 import org.drools.core.WorkingMemory;
+import org.json.JSONObject;
 
 import javax.json.Json;
 import javax.json.stream.JsonGenerator;
@@ -59,10 +60,23 @@ public class pruebafecha {
 		//System.out.print(alumnosLlamada);
 		//recepcion.NotaLlamada(3, "hola", "23/04/2018");
 
+
+		Auxiliar aux= new Auxiliar();
+
 		/*Auxiliar aux= new Auxiliar();
 		WorkingMemory wk=aux.conexionDrools();
 		aux.executeFrecuencias(wk);*/
+
 		
+		//String fileRules1="../rules/proyeccionNivel.drl";
+		//String fileRules2="../rules/desempeño.drl";
+		String arrayJson=aux.crearJson();
+		JSONObject obj = new JSONObject(arrayJson);
+		WorkingMemory wk=aux.conexionDrools();
+		JSONObject results = obj.getJSONObject("resultsTest");
+		//aux.executeFrecuencias(wk);
+		aux.executeFrecInicial(wk, arrayJson);
+		//aux.exFrecuencias(wk,2);
 		/*pruebaDSL prueba = new pruebaDSL();
 		
         //Cargamos la base de reglas
@@ -81,7 +95,7 @@ public class pruebafecha {
 		//String asistentes = asistente.getAsistentes();
 		//System.out.println(asistentes);
 		
-		
+		//ProyeccionAnual.crearProyeccionAnual(null);
 		
 		/*StringWriter swriter = new StringWriter();
 		try(JsonGenerator gen = Json.createGenerator(swriter)){

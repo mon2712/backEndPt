@@ -9,28 +9,38 @@ public class Nivel {
 	
 	
 	private int idNivel;
-	public int getFluidezResta() {
-		return fluidezResta;
+	private int desempeño;
+	private String nombreNivel;
+	private List<Double> Frecuencias;
+	private List<String> tipos;
+	
+	
+	public List<String> getTipos() {
+		return tipos;
 	}
 
-	public void setFluidezResta(int fluidezResta) {
-		this.fluidezResta = fluidezResta;
+	public void setTipos(List<String> tipos) {
+		this.tipos = tipos;
 	}
 
-	public int getTrabajoB() {
-		return trabajoB;
+	private String desempeñoNivel;
+	private String desempeñoGeneral;
+	
+	
+	public String getDesempeñoGeneral() {
+		return desempeñoGeneral;
 	}
 
-	public void setTrabajoB(int trabajoB) {
-		this.trabajoB = trabajoB;
+	public void setDesempeñoGeneral(String desempeñoGeneral) {
+		this.desempeñoGeneral = desempeñoGeneral;
 	}
 
-	public int getConcentracion() {
-		return concentracion;
+	public String getDesempeñoNivel() {
+		return desempeñoNivel;
 	}
 
-	public void setConcentracion(int concentracion) {
-		this.concentracion = concentracion;
+	public void setDesempeñoNivel(String desempeñoNivel) {
+		this.desempeñoNivel = desempeñoNivel;
 	}
 
 	public String getDesempeñoMessage() {
@@ -40,20 +50,7 @@ public class Nivel {
 	public void setDesempeñoMessage(String desempeñoMessage) {
 		this.desempeñoMessage = desempeñoMessage;
 	}
-	private int desempeño;
-	private String nombreNivel;
-	private List<Double> Frecuencias;
-	private int puntajeDesempeño;
-	private int fluidezResta;
-	private int trabajoB;
-	private int concentracion;
-	public int getPuntajeDesempeño() {
-		return puntajeDesempeño;
-	}
 
-	public void setPuntajeDesempeño(int puntajeDesempeño) {
-		this.puntajeDesempeño = puntajeDesempeño;
-	}
 	private String desempeñoMessage;
 	
 	

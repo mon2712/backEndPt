@@ -30,6 +30,9 @@ public class ProyeccionAnual {
 	private String timeLevel;
 	private String dailyTime;
 	
+	
+	
+	
 	public String getLevel() {
 		return level;
 	}
@@ -84,6 +87,7 @@ public class ProyeccionAnual {
 	public void setDailyTime(String dailyTime) {
 		this.dailyTime = dailyTime;
 	}
+
 	
 	public static String obtenerProyeccionAnual(int idAlumno) throws SQLException {
 		StringWriter swriter = new StringWriter();
@@ -144,28 +148,27 @@ public class ProyeccionAnual {
 		return swriter.toString();
 	}
 	
-	public static String crearProyeccionAnual(String array) throws JSONException, SQLException {
+	public static String crearProyeccionAnual(String array) throws JSONException, SQLException, IOException {
 		
 		Auxiliar aux= new Auxiliar();
-		WorkingMemory wk;
-		try {
-			wk = aux.conexionDrools();
-			aux.executeFrecuencias(wk);
-		} catch (DroolsParserException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		
-		JSONObject obj = new JSONObject(array);
+				WorkingMemory wk;
+				try {
+					wk = aux.conexionDrools();
+					aux.executeFrecInicial(wk, array);
+				} catch (DroolsParserException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+	      JSONObject obj = new JSONObject(array);
+
 		
 		JSONObject results = obj.getJSONObject("resultsTest");
 		
 			JSONObject infoStudent = results.getJSONObject("infoStudent");
-		
+			String idStudent=infoStudent.getString("idStudent");
 			int desempeñoGeneral = results.getInt("finalScore");
 		
 			JSONArray exams = results.getJSONArray("exams");
@@ -174,10 +177,9 @@ public class ProyeccionAnual {
 		System.out.println("puntajeDesempeño " + desempeñoGeneral);
 		System.out.println("infoStudent" +infoStudent.toString());
 		System.out.println("para frecuencia inicial" + frecuenciaIncial.toString());
-		
-		
-		String proyeccion = obtenerProyeccionAnual(infoStudent.getInt("idStudent")); //Obtiene la proyeccion despues de la insercion
-		//String proyeccion = obtenerProyeccionAnual(3); //Obtiene la proyeccion despues de la insercion
+
+		//String proyeccion = obtenerProyeccionAnual(infoStudent.getInt("idStudent")); //Obtiene la proyeccion despues de la insercion
+		String proyeccion = obtenerProyeccionAnual(Integer.parseInt(idStudent)); //Obtiene la proyeccion despues de la insercion
 		return proyeccion;
 	}
 
