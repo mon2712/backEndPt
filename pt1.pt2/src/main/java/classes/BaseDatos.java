@@ -12,8 +12,11 @@ public class BaseDatos {
 
     public static Connection conectarBD() {
     		Connection conn = null;
-    		String pass ="dBoy6Ap281015";
-    		//String pass = "12345678";
+
+    		//String pass ="dBoy6Ap281015";
+    		String pass = "12345678";
+
+
         try {
             Class.forName("com.mysql.jdbc.Driver");
             System.out.print("Congrats - Seems your MySQL JDBC Driver Registered!");

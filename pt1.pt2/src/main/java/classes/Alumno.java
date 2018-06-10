@@ -17,11 +17,22 @@ import javax.json.Json;
 import javax.json.stream.JsonGenerator;
 
 public class Alumno {
-	public static final int DESEMPEÑO_ATO= 0;
-	public static final int DESEMPEÑO_MEDIO = 1;
-	public static final int DESEMPEÑO_BAJO = 2;
+	public static final String DESEMPEÑO_ALTO= "bueno";
+	public static final String DESEMPEÑO_MEDIO = "medio";
+	public static final String DESEMPEÑO_BAJO = "malo";
 	
 	
+	public static String getDesempeñoAlto() {
+		return DESEMPEÑO_ALTO;
+	}
+	public static String getDesempeñoMedio() {
+		return DESEMPEÑO_MEDIO;
+	}
+	public static String getDesempeñoBajo() {
+		return DESEMPEÑO_BAJO;
+	}
+
+
 	private String idAlumno;
 	private String apellidoPaterno;
 	private String nombre;
@@ -60,7 +71,24 @@ public class Alumno {
 	private int simplificacion;
 	private int cuenta;
 	private int anteSuc;
+	private int puntajeDesempeño;
+	private String desempeño;
 	
+
+	
+	public String getDesempeño() {
+		return desempeño;
+	}
+	public void setDesempeño(String desempeño) {
+		this.desempeño = desempeño;
+	}
+	public int getPuntajeDesempeño() {
+		return puntajeDesempeño;
+	}
+	public void setPuntajeDesempeño(int puntajeDesempeño) {
+		this.puntajeDesempeño = puntajeDesempeño;
+	}
+
 	public int getAnteSuc() {
 		return anteSuc;
 	}
