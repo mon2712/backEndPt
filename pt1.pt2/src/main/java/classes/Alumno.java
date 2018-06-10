@@ -74,7 +74,7 @@ public class Alumno {
 	private int puntajeDesempeño;
 	private String desempeño;
 	
-<<<<<<< HEAD
+
 	
 	public String getDesempeño() {
 		return desempeño;
@@ -88,8 +88,7 @@ public class Alumno {
 	public void setPuntajeDesempeño(int puntajeDesempeño) {
 		this.puntajeDesempeño = puntajeDesempeño;
 	}
-=======
->>>>>>> refs/heads/dev
+
 	public int getAnteSuc() {
 		return anteSuc;
 	}

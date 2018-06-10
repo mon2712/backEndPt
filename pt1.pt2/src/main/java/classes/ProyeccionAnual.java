@@ -164,22 +164,7 @@ public class ProyeccionAnual {
 					e.printStackTrace();
 				}
 	      JSONObject obj = new JSONObject(array);
-=======
-		WorkingMemory wk;
-		try {
-			wk = aux.conexionDrools();
-			aux.executeFrecuencias(wk);
-		} catch (DroolsParserException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		
-		JSONObject obj = new JSONObject(array);
->>>>>>> refs/heads/dev
+
 		
 		JSONObject results = obj.getJSONObject("resultsTest");
 		
@@ -193,15 +178,9 @@ public class ProyeccionAnual {
 		System.out.println("puntajeDesempeño " + desempeñoGeneral);
 		System.out.println("infoStudent" +infoStudent.toString());
 		System.out.println("para frecuencia inicial" + frecuenciaIncial.toString());
-		
-<<<<<<< HEAD
+
 		//String proyeccion = obtenerProyeccionAnual(infoStudent.getInt("idStudent")); //Obtiene la proyeccion despues de la insercion
 		String proyeccion = obtenerProyeccionAnual(Integer.parseInt(idStudent)); //Obtiene la proyeccion despues de la insercion
-=======
-		
-		String proyeccion = obtenerProyeccionAnual(infoStudent.getInt("idStudent")); //Obtiene la proyeccion despues de la insercion
-		//String proyeccion = obtenerProyeccionAnual(3); //Obtiene la proyeccion despues de la insercion
->>>>>>> refs/heads/dev
 		return proyeccion;
 	}
 

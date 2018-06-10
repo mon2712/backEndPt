@@ -60,13 +60,13 @@ public class pruebafecha {
 		//System.out.print(alumnosLlamada);
 		//recepcion.NotaLlamada(3, "hola", "23/04/2018");
 
-<<<<<<< HEAD
+
 		Auxiliar aux= new Auxiliar();
-=======
+
 		/*Auxiliar aux= new Auxiliar();
 		WorkingMemory wk=aux.conexionDrools();
 		aux.executeFrecuencias(wk);*/
->>>>>>> refs/heads/dev
+
 		
 		//String fileRules1="../rules/proyeccionNivel.drl";
 		//String fileRules2="../rules/desempeño.drl";
