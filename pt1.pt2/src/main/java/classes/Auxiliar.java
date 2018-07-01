@@ -79,21 +79,10 @@ public class Auxiliar {
         System.out.println();
         System.out.println("______________________________________________________________");
 		int dimension = 6 - nivelUbicacion+1;
-
-		//String [] desempeñoNivel = {"malo","malo","malo","malo","malo","malo"};  //obtenidos del front
-		//System.out.println("Examenes desempeños:  "+ Arrays.asList(desempeñosNivel));
-		//System.out.println("Dimension: " + dimension);
-
 		Nivel[] niveles = new Nivel[dimension];
-		
-		//alu.setDesempeño("bueno");
 		double frecInicial = pn.getFrecuenciaEstudio();
 		String inciso = pn.getFrecuenciaInciso();
-		//System.out.println("Nivel inicial: "+ nivelUbicacion);
-		//System.out.println("Frecuencia inicial: " + frecInicial+ inciso );
-		
-		//List<Double> Frec=new ArrayList<Double>();
-		//Obtencion de todas las frecuencias y tipos por nivel
+
 		for(int x =nivelUbicacion; x<=6; x++) {
 			List<Double> Frec=new ArrayList<Double>();
 			List<String> Incisos=new ArrayList<String>();
@@ -111,57 +100,33 @@ public class Auxiliar {
 	        }
 	        
 	        //Estableciendo los atributos de cada nivel
-	        //System.out.println(" nivel: "+ n + " Freceuncias: " + Frec);
-			System.out.println(" nivel lengt : "+ n.length + "x:" + x + " nivelUbicacion: " + nivelUbicacion+ " indice: " + (x-nivelUbicacion));
+			System.out.println(" nivel length : "+ n.length + "indice actual: " + x + " nivelUbicacion: " + nivelUbicacion+ " indice: " + (x-nivelUbicacion));
 			niveles[x-nivelUbicacion] = new Nivel();
 			niveles[x-nivelUbicacion].setIdNivel(x);
-			//System.out.println("Niveles en la segunda: " + Arrays.asList(n));
 			niveles[x-nivelUbicacion].setNombreNivel(n[x-nivelUbicacion]);
 			niveles[x-nivelUbicacion].setFrecuencias(Frec);
 			niveles[x-nivelUbicacion].setTipos(Incisos);
 			niveles[x-nivelUbicacion].setDesempeñoGeneral(pn.getAlumno().getDesempeño());
 			niveles[x-nivelUbicacion].setDesempeñoNivel(desempeñosNivel[x-nivelUbicacion]);
-			//System.out.println(" x: "+ niveles[x-nivelUbicacion].getIdNivel() + " nivelUbicacion: " + nivelUbicacion+ " indice: " + (x-nivelUbicacion));
-			
-			//System.out.println("Nombre nivel: "+ niveles[x-nivelUbicacion].getNombreNivel());
-			//System.out.println(" Freceuncias: " + niveles[x-nivelUbicacion].getFrecuencias());
-			//System.out.println("Desempeño del nivel: " + niveles[x-nivelUbicacion].getDesempeñoNivel() + " Desempeño general: " + pn.getAlumno().getDesempeño());
-			
-			//para obtener la frecuencia por nivel
+
 			workingMemory.insert(niveles[x-nivelUbicacion]);
 			workingMemory.fireAllRules();
-			
-			
-			//System.out.println("Desempeño del nivel: "+ niveles[x-nivelUbicacion].getDesempeñoNivel()+", Desempeño general: "+ niveles[x-nivelUbicacion].getDesempeñoGeneral() + ", Desempeño total: "+ niveles[x-nivelUbicacion].getDesempeño());
-			//System.out.println("Mensaje: "+niveles[x-nivelUbicacion].getNivelMessage());
-			//niveles[x-nivelUbicacion].setPuntajeDesempeño(puntaje[x-nivelUbicacion]);
-	        //int size= Frec.size();
-	        //System.out.println("size: "+ size);
+
 	        
 		}
-		double []frecProy = new double [6-nivelUbicacion+1];
+		String []frecProy = new String [6-nivelUbicacion+1];
 		String []frecProyTipo = new String [6-nivelUbicacion+1];
 		int size, frecOriginal, s=0, indiceActual=0, mov=0, totalF=0, err;
 		String msn;
 		
 		for(int x=0;x<=(6-nivelUbicacion);x++) { //nivel
 			size=niveles[x].getFrecuencias().size();
-			//System.out.println("Numero de frecuenicas del nivel actual: " + size);
-			//s=0;
-			/*while(s<size && niveles[x].getFrecuencias().get(s)!=frecInicial) {
-				//System.out.println("Freceuncia " +  (x+1) + ": " + niveles[x].getFrecuencias().get(s));
-				s++;
-			}*/
 			if(x==0) {
 				indiceActual=niveles[x].getFrecuencias().indexOf(frecInicial);
 				if(indiceActual == -1) {
 					//System.out.println("La frecuencia no existe");
 					break;
 				}
-				else {
-					//System.out.println("Está en el indice: " + indiceActual);
-				}
-				//System.out.println("Avanzaré " + (niveles[x].getDesempeño()) + " Indices");
 	
 			}
 			else {
@@ -178,7 +143,7 @@ public class Auxiliar {
 				//frecProy[x] = niveles[x].getFrecuencias().get(indiceActual);
 			}
 			//System.out.println("Frecuencia: "+niveles[x].getFrecuencias().get(indiceActual) + " x: " + x);
-			frecProy[x]= niveles[x].getFrecuencias().get(indiceActual);
+			frecProy[x]= niveles[x].getFrecuencias().get(indiceActual).toString();
 			frecProyTipo[x]= niveles[x].getTipos().get(indiceActual);
 		  }
 		int idAl=Integer.parseInt(pn.getAlumno().getIdAlumno());
@@ -188,7 +153,7 @@ public class Auxiliar {
 				
 			 	
 				cS.setInt(1, idAl);
-			 	cS.setDouble(2, frecProy[x]);
+			 	cS.setString(2, frecProy[x]);
 			 	cS.setString(3, niveles[x].getNombreNivel());
 			 	cS.setString(4, frecProyTipo[x] );
 			 	cS.registerOutParameter(5, Types.INTEGER);
@@ -196,14 +161,15 @@ public class Auxiliar {
 			 	cS.execute();
 			 	
 		 	if(cS.getInt(5)==1 && x==0) {
-		 		System.out.println("Error: " + cS.getInt(5) + " " + cS.getString(6));
+		 		System.out.println("Error: " + cS.getInt(5) + " " + cS.getString(6) );
 		 		break;
 		 	}
-		 	else {
-		 		//System.out.println("Frecuencia " + (x+1) + " : " + frecProy[x] + " " + frecProyTipo[x] + " " + niveles[x].getNombreNivel());
+		 	else { System.out.println("Entro al else de proyeccion anual");
+		 		
+		 		System.out.println("Frecuencia " + (x+1) + " : " + frecProy[x] + " " + frecProyTipo[x] + " " + niveles[x].getNombreNivel());
 				CallableStatement cS2 = conn.prepareCall("{call setProyeccionNivelInProyeccionAnual(?, ?, ?, ?, ?, ?)}");
 				cS2.setInt(1, idAl);
-			 	cS2.setDouble(2,frecProy[x]);
+			 	cS2.setString(2,frecProy[x]);
 			 	//(2, String.valueOf(frecProy[x]));
 			 	cS2.setString(3, niveles[x].getNombreNivel());
 			 	cS2.setString(4, frecProyTipo[x] );
