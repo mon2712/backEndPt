@@ -168,7 +168,7 @@ public class ProyeccionAnual {
 		
 		JSONObject results = obj.getJSONObject("resultsTest");
 		
-			JSONObject infoStudent = results.getJSONObject("infoStudent");
+			JSONObject infoStudent = results.getJSONObject("infoStudent"); 
 			String idStudent=infoStudent.getString("idStudent");
 			int desempeñoGeneral = results.getInt("finalScore");
 		

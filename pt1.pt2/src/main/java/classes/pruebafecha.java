@@ -61,16 +61,22 @@ public class pruebafecha {
 		//recepcion.NotaLlamada(3, "hola", "23/04/2018");
 
 		Auxiliar aux= new Auxiliar();
-
+		String arrayJson=aux.crearJson();
 		
+		ProyeccionAnual pa= new ProyeccionAnual();
+		pa.crearProyeccionAnual(arrayJson);
+		/*String[] examenes={"3A", "2A", "B", "C", "D", "E"};
+		String inicia="C";
+		String fin="D";
+		int index=aux.indexOfIntArray(examenes, inicia);
+		int index2=aux.indexOfIntArray(examenes, fin);
+		System.out.println("Nivel inicial: "+ inicia + " index incial: "+ index + " Nivel final: "+ fin + "index final: " + index2);
+		*/
 		//String fileRules1="../rules/proyeccionNivel.drl";
 		//String fileRules2="../rules/desempeño.drl";
-		String arrayJson=aux.crearJson();
-		JSONObject obj = new JSONObject(arrayJson);
-		WorkingMemory wk=aux.conexionDrools();
-		JSONObject results = obj.getJSONObject("resultsTest");
+
+		//JSONObject results = obj.getJSONObject("resultsTest");
 		//aux.executeFrecuencias(wk);
-		aux.executeFrecInicial(wk, arrayJson);
 		//aux.exFrecuencias(wk,2);
 		/*pruebaDSL prueba = new pruebaDSL();
 		
@@ -122,11 +128,11 @@ public class pruebafecha {
             gen.writeEnd();
             gen.writeEnd();
 		}*/
-        
+       /* 
 		Recepcion recepcion = new Recepcion();
 		String notificaciones = recepcion.getNotificacion();
 		System.out.println("noti" + notificaciones);
-		
+		*/
 		
 	}
 
