@@ -54,7 +54,7 @@ public class Recepcion {
             int diaSemana = fecha.get(Calendar.DAY_OF_WEEK);
             int hora = fecha.get(Calendar.HOUR_OF_DAY);
             String mesString="", diaString="";
-            System.out.println("Dia de la semana: " + diaSemana);
+
             if(mes<10) {
             	mesString="0"+ Integer.toString(mes);
             }
@@ -68,8 +68,7 @@ public class Recepcion {
             	diaString=Integer.toString(dia);
             }
             String hoy= año + "-" + mesString + "-" + diaString;
-            System.out.println("Fecha Actual: "+hoy);
-            System.out.println("La hora es:"+ hora);
+            
             //////////////////////////////////////////////////////////////////
             try (JsonGenerator gen = Json.createGenerator(swriter)) {
             gen.writeStartObject();
@@ -77,26 +76,19 @@ public class Recepcion {
             	//notificaciones ya cargadas (llamadas viejas)
             	while(rs2.next()) {
             		if(hoy.equals(rs2.getString(4))) {
-            			System.out.println("hoy: " + hoy);
             			old="false";
-            			System.out.println("old: " + old);
             		}
             		else {
-            			System.out.println("hoy: " + hoy);
             			old="true";
-            			System.out.println("old: " + old);
             		}
             		if( rs2.getString(5).equals(null) || rs2.getString(5).equals("") ) {
             			done="false";
             		}
             		else{
             			done="true";
-            			System.out.println("Resultado de la consulta de notificacion llamadas ya hechas:" + rs2.getInt(1)+ " nombre: "+rs2.getString(2)+rs2.getString(3)+" call: done: "+done+" active: "+active + " nota: "+rs2.getString(5)+"fecha: "+rs2.getString(4));
-
             		}
 	            	if((old.equals("true") && done.equals("false")) || (old.equals("false"))){	
-	            		System.out.println("Resultado de la consulta de notificacion id:" + rs2.getInt(1)+ " nombre: "+rs2.getString(2)+rs2.getString(3)+" call: done: "+done+" active: "+active + " nota: "+rs2.getString(5)+"fecha: "+rs2.getString(4));
-            			gen.writeStartObject();
+	            		gen.writeStartObject();
 		    	            gen.write("idStudent", rs2.getInt(1));
 		    	            gen.write("name", ""+rs2.getString(2)+  " " + rs2.getString(3));
 		    	            gen.writeStartObject("call");
@@ -111,20 +103,15 @@ public class Recepcion {
             	}
             	
             	//notificaciones para cargar (llamadas nuevas)
-            	//System.out.println(rs.isBeforeFirst()+rs.getString(12));
             	if(hora>=19) { //PARA QUE SE EJECUTE DESPUES DE LAS 7 PM
-            		System.out.println("Entro a agregar nueva falta");
             		if(diaSemana!=1 && diaSemana!=3 && diaSemana!=6) {
 	            		if(rs.getRow()==1 && rs.getInt(9)==1){ //no hay faltas
 		            			System.out.println("recibo elerror" + rs.getString(9) );
 		                }else { //si hay faltas
-		                    System.out.println("Recibo info si hay faltas nuevas ");
 		                    while(rs.next()){
-		                    	//System.out.println("So" + rs.getInt(1));
 			            		old= "false";
 			            		List<Integer> diasQueViene = new ArrayList<Integer> ();
 			
-			            		//System.out.println(rs.getString(1)+ " "+rs.getString(2)+ " "+rs.getInt(3)+ " "+rs.getString(4)+ " "+rs.getString(5)+ " "+rs.getString(6)+ " "+rs.getString(7)+ " "+rs.getString(8));
 			            		int diaAnterior=0;
 			            		int today=0;
 			            		
@@ -144,7 +131,6 @@ public class Recepcion {
 			            		for(int i=0; i<4; i++) {
 			            			
 			            			if(today != i && arrayDays[i] == 1) {
-			            				//System.out.println("dia: " + arrayDays[i]+ i);
 			            				if(i == 0) diasQueViene.add(2);
 			            				if(i == 1) diasQueViene.add(4);
 			            				if(i == 2) diasQueViene.add(5);
@@ -154,20 +140,15 @@ public class Recepcion {
 			            		int size=diasQueViene.size();
 			            		
 			            		if(size == 0) {
-			            			//System.out.println("size" + diasQueViene.size());
-			                		//System.out.println("El dia inmediato anterior es: " + rs.getInt(8));
-			                		diaAnterior=rs.getInt(8);
+			            			diaAnterior=rs.getInt(8);
 			
 			            		}else {
-			            			//System.out.println("size" + diasQueViene.size());
-			                		//System.out.println("El dia inmediato anterior es: " + diasQueViene.get(size-1));
-			                		diaAnterior=diasQueViene.get(size-1);
+			            			diaAnterior=diasQueViene.get(size-1);
 			            		}
 			            		
 			            		//Ejecutando uno a uno los alumnos para ver si pertenecen a la lista dellamdas por realizar (es su segunda falta)
 			            		cStmt.setInt(1, diaAnterior); //dìa anterior
 			        		    cStmt.setInt(2, rs.getInt(3)); //id del alumno
-			        		    //System.out.println("holi:"+rs.getInt(3) + diaAnterior);
 			        		    cStmt.registerOutParameter(3, Types.INTEGER); // id regreso
 			        		    cStmt.registerOutParameter(4, Types.VARCHAR); // nombre
 			        		    cStmt.registerOutParameter(5, Types.VARCHAR); // apellido
@@ -182,15 +163,9 @@ public class Recepcion {
 			        		    
 			        		    cStmt.execute();    
 		
-			        		    System.out.println("idAlumno enviado: " +rs.getInt(3) + " idAlumno regresado: "+ cStmt.getInt(3));
-			        		    if (cStmt.getInt(11) == 0){
-			        		    	System.out.println("idAlumno: " + cStmt.getInt(3));
+			        		   if (cStmt.getInt(11) == 0){
 				        		    
-				        		    /*alumn.setIdAlumno(Integer.toString(cStmt.getInt(3)));
-				        		    alumn.setNombre(cStmt.getString(4));
-				        		    alumn.setApellidoPaterno(cStmt.getString(5));*/
 				        		    nota=""+cStmt.getString(6);
-				        		    System.out.println("nota: "+cStmt.getString(6));
 				        		    fechaLlamada=""+cStmt.getString(7);
 				        		    estatus=cStmt.getInt(8);
 				        		    activacion=cStmt.getInt(9);
@@ -200,7 +175,6 @@ public class Recepcion {
 				        		    if(activacion == 1) active="true";	
 				        		    else active="false";
 				        		    if(cStmt.getInt(11)==0 && cStmt.getInt(3)!=0){
-				        		    	System.out.println("Entro al los alumnos con dos faltas");
 				        		    	gen.writeStartObject();
 						    	            gen.write("idStudent", cStmt.getInt(3));
 						    	            gen.write("name", cStmt.getString(4) +  " " + cStmt.getString(5));
@@ -218,40 +192,11 @@ public class Recepcion {
 		                }
             		}
             	}
-/*
-	        		    //System.out.println("idAlumno: " + cStmt.getString(3));
-	        		    
-	        		    alumn.setIdAlumno(Integer.toString(cStmt.getInt(3)));
-	        		    alumn.setNombre(cStmt.getString(4));
-	        		    alumn.setApellidoPaterno(cStmt.getString(5));
-	        		    nota=""+cStmt.getString(6);
-	        		    fechaLlamada=""+cStmt.getString(7);
-	        		    estatus=cStmt.getInt(8);
-	        		    activacion=cStmt.getInt(9);
-	        		    ultimaAsistencia=cStmt.getString(10);
-	        		    if(estatus == 1) done="true";	
-	        		    else done="false";
-	        		    
-	        		    if(activacion == 1) active="true";	
-	        		    else active="false";
-	        		    
-	        		    	gen.writeStartObject();
-			    	            gen.write("idStudent", alumn.getIdAlumno());
-			    	            gen.write("name", alumn.getNombre()+  " " + alumn.getApellidoPaterno());
-			    	            gen.writeStartObject("call");
-				    	            gen.write("done", done);
-				    	            gen.write("active", active);
-				    	            gen.write("note", nota);
-				    	            gen.write("date", fechaLlamada);
-				    	        gen.writeEnd();
-				    	     gen.writeEnd();
-		    	        }
-*/
 	            gen.writeEnd();
 		        gen.writeEnd();  
             	}
             resultado=swriter.toString();
-            System.out.println("Lo que envio al servicio " + resultado);
+            System.out.println(resultado);
 		 } catch (SQLException e) {
 
 			e.printStackTrace();
