@@ -73,6 +73,8 @@ public class Recepcion {
             		}
             		else{
             			done="true";
+            			System.out.println("Resultado de la consulta de notificacion llamadas ya hechas:" + rs2.getInt(1)+ " nombre: "+rs2.getString(2)+rs2.getString(3)+" call: done: "+done+" active: "+active + " nota: "+rs2.getString(5)+"fecha: "+rs2.getString(4));
+
             		}
 	            	if((old.equals("true") && done.equals("false")) || (old.equals("false"))){	
 	            		System.out.println("Resultado de la consulta de notificacion id:" + rs2.getInt(1)+ " nombre: "+rs2.getString(2)+rs2.getString(3)+" call: done: "+done+" active: "+active + " nota: "+rs2.getString(5)+"fecha: "+rs2.getString(4));
@@ -239,10 +241,11 @@ public class Recepcion {
     public static void NotaLlamada(int idAlumno, String nota, String fec) {
         CallableStatement cStmt;
 		try {
-			cStmt = conn.prepareCall("{call setNotaLlamada(?, ?, ?)}");
+			cStmt = conn.prepareCall("{call setNotaLlamada(?, ?, ?, ?)}");
 			cStmt.setInt(1, idAlumno);
 		    cStmt.setString(2, nota);
 		    cStmt.setString(3, fec);
+		    cStmt.setInt(4, 0);
 		    cStmt.execute();
 		} catch (SQLException e1) {
 			// TODO Auto-generated catch block
