@@ -60,7 +60,7 @@ public class pruebafecha {
 		//System.out.print(alumnosLlamada);
 		//recepcion.NotaLlamada(3, "hola", "23/04/2018");
 
-		Auxiliar aux= new Auxiliar();
+		/*Auxiliar aux= new Auxiliar();
 
 		
 		//String fileRules1="../rules/proyeccionNivel.drl";
@@ -68,9 +68,9 @@ public class pruebafecha {
 		String arrayJson=aux.crearJson();
 		JSONObject obj = new JSONObject(arrayJson);
 		WorkingMemory wk=aux.conexionDrools();
-		JSONObject results = obj.getJSONObject("resultsTest");
+		JSONObject results = obj.getJSONObject("resultsTest");*/
 		//aux.executeFrecuencias(wk);
-		aux.executeFrecInicial(wk, arrayJson);
+		//aux.executeFrecInicial(wk, arrayJson);
 		//aux.exFrecuencias(wk,2);
 		/*pruebaDSL prueba = new pruebaDSL();
 		
@@ -123,9 +123,13 @@ public class pruebafecha {
             gen.writeEnd();
 		}*/
         
-		Recepcion recepcion = new Recepcion();
+		/*Recepcion recepcion = new Recepcion();
 		String notificaciones = recepcion.getNotificacion();
-		System.out.println("noti" + notificaciones);
+		System.out.println("noti" + notificaciones);*/
+		
+		Alumno alumno = new Alumno();
+		String calif = alumno.getBoleta();
+		System.out.println("calif "+ calif);
 		
 		
 	}
