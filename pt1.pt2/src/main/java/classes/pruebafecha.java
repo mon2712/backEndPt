@@ -49,22 +49,22 @@ public class pruebafecha {
 
 		//Instructor instructor = new Instructor();
 		//instructor.obtenerGafetesAlumnos();	
-		/*
+		
 		Recepcion recepcion = new Recepcion();
 		String alumnosLlamada= recepcion.getAlumnosLlamadas();
 		System.out.print(alumnosLlamada);
 		//recepcion.NotaLlamada(2, "hola", "2018-04-23");
-*/
+
 		//Recepcion recepcion = new Recepcion();
 		//String alumnosLlamada= recepcion.getAlumnosLlamadas();
 		//System.out.print(alumnosLlamada);
 		//recepcion.NotaLlamada(3, "hola", "23/04/2018");
 
-		Auxiliar aux= new Auxiliar();
+		/*Auxiliar aux= new Auxiliar();
 		String arrayJson=aux.crearJson();
 		
 		ProyeccionAnual pa= new ProyeccionAnual();
-		pa.crearProyeccionAnual(arrayJson);
+		pa.crearProyeccionAnual(arrayJson);*/
 		/*String[] examenes={"3A", "2A", "B", "C", "D", "E"};
 		String inicia="C";
 		String fin="D";

@@ -30,7 +30,6 @@ public class resRecepcion {
 	public String getStudentsCall() {
 		
 		String alumnosLlamada= recepcion.getAlumnosLlamadas();
-		//System.out.print(alumnosLlamada);
 		return alumnosLlamada;
 	}
 	
