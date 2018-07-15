@@ -97,7 +97,7 @@ public class Recepcion {
 	            	if(rs.getRow()==1 && rs.getInt(9)==1){ //no hay faltas
 	            			System.out.println("recibo elerror" + rs.getString(9) );
 	                }else { //si hay faltas
-	                    System.out.println("Recibo info ");
+	                    System.out.println("Recibo info si hay faltas nuevas ");
 	                    while(rs.next()){
 	                    	//System.out.println("So" + rs.getInt(1));
 		            		old= "false";
@@ -169,7 +169,7 @@ public class Recepcion {
 			        		    alumn.setNombre(cStmt.getString(4));
 			        		    alumn.setApellidoPaterno(cStmt.getString(5));*/
 			        		    nota=""+cStmt.getString(6);
-			        		    //System.out.println("nota: "+cStmt.getString(6));
+			        		    System.out.println("nota: "+cStmt.getString(6));
 			        		    fechaLlamada=""+cStmt.getString(7);
 			        		    estatus=cStmt.getInt(8);
 			        		    activacion=cStmt.getInt(9);
