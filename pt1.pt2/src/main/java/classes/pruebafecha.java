@@ -61,12 +61,7 @@ public class pruebafecha {
 		//recepcion.NotaLlamada(3, "hola", "23/04/2018");
 
 		/*Auxiliar aux= new Auxiliar();
-<<<<<<< HEAD
 
-=======
-		String arrayJson=aux.crearJson();
->>>>>>> refs/heads/dev
-		
 		ProyeccionAnual pa= new ProyeccionAnual();
 		pa.crearProyeccionAnual(arrayJson);*/
 		/*String[] examenes={"3A", "2A", "B", "C", "D", "E"};
@@ -78,20 +73,19 @@ public class pruebafecha {
 		*/
 		//String fileRules1="../rules/proyeccionNivel.drl";
 		//String fileRules2="../rules/desempeño.drl";
-<<<<<<< HEAD
-		String arrayJson=aux.crearJson();
+
+		/*String arrayJson=aux.crearJson();
 		JSONObject obj = new JSONObject(arrayJson);
 		WorkingMemory wk=aux.conexionDrools();
 		JSONObject results = obj.getJSONObject("resultsTest");*/
-=======
+
 
 		//JSONObject results = obj.getJSONObject("resultsTest");
->>>>>>> refs/heads/dev
+
 		//aux.executeFrecuencias(wk);
-<<<<<<< HEAD
+
 		//aux.executeFrecInicial(wk, arrayJson);
-=======
->>>>>>> refs/heads/dev
+
 		//aux.exFrecuencias(wk,2);
 		/*pruebaDSL prueba = new pruebaDSL();
 		
@@ -150,13 +144,7 @@ public class pruebafecha {
 		String notificaciones = recepcion.getNotificacion();
 
 		System.out.println("noti" + notificaciones);*/
-		
-		Alumno alumno = new Alumno();
-		String calif = alumno.getBoleta();
-		System.out.println("calif "+ calif);
-		
-
-		
+			
 	}
 
 }
