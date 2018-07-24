@@ -145,7 +145,6 @@ public class Alumno {
 	public void setTrabajoB(int trabajoB) {
 		this.trabajoB = trabajoB;
 	}
-
 	
 	public int getFluidezResta() {
 		return fluidezResta;

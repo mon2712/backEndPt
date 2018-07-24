@@ -65,6 +65,7 @@ public class Auxiliar {
 		return workingMemory;
 		
 	}
+	
 	public void exFrecuencias(WorkingMemory workingMemory,ProyeccionNivel pn, String desempeñosNivel[], String n[]) throws SQLException {
 		String getQueryStatementN ="Select idNivel from Nivel where nombre='"+ pn.getAlumno().getNivelActual()+"';";
         prepareStat = conn.prepareStatement(getQueryStatementN);
@@ -78,21 +79,10 @@ public class Auxiliar {
         System.out.println();
         System.out.println("______________________________________________________________");
 		int dimension = 6 - nivelUbicacion+1;
-
-		//String [] desempeñoNivel = {"malo","malo","malo","malo","malo","malo"};  //obtenidos del front
-		//System.out.println("Examenes desempeños:  "+ Arrays.asList(desempeñosNivel));
-		//System.out.println("Dimension: " + dimension);
-
 		Nivel[] niveles = new Nivel[dimension];
-		
-		//alu.setDesempeño("bueno");
 		double frecInicial = pn.getFrecuenciaEstudio();
 		String inciso = pn.getFrecuenciaInciso();
-		//System.out.println("Nivel inicial: "+ nivelUbicacion);
-		//System.out.println("Frecuencia inicial: " + frecInicial+ inciso );
-		
-		//List<Double> Frec=new ArrayList<Double>();
-		
+
 		for(int x =nivelUbicacion; x<=6; x++) {
 			List<Double> Frec=new ArrayList<Double>();
 			List<String> Incisos=new ArrayList<String>();
@@ -109,57 +99,34 @@ public class Auxiliar {
 	        	i++;
 	        }
 	        
-	        
-	        //System.out.println(" nivel: "+ n + " Freceuncias: " + Frec);
-			//System.out.println(" x: "+ x + " nivelUbicacion: " + nivelUbicacion+ " indice: " + (x-nivelUbicacion));
+	        //Estableciendo los atributos de cada nivel
+			System.out.println(" nivel length : "+ n.length + "indice actual: " + x + " nivelUbicacion: " + nivelUbicacion+ " indice: " + (x-nivelUbicacion));
 			niveles[x-nivelUbicacion] = new Nivel();
 			niveles[x-nivelUbicacion].setIdNivel(x);
-			//System.out.println("Niveles en la segunda: " + Arrays.asList(n));
 			niveles[x-nivelUbicacion].setNombreNivel(n[x-nivelUbicacion]);
 			niveles[x-nivelUbicacion].setFrecuencias(Frec);
 			niveles[x-nivelUbicacion].setTipos(Incisos);
 			niveles[x-nivelUbicacion].setDesempeñoGeneral(pn.getAlumno().getDesempeño());
 			niveles[x-nivelUbicacion].setDesempeñoNivel(desempeñosNivel[x-nivelUbicacion]);
-			//System.out.println(" x: "+ niveles[x-nivelUbicacion].getIdNivel() + " nivelUbicacion: " + nivelUbicacion+ " indice: " + (x-nivelUbicacion));
-			
-			//System.out.println("Nombre nivel: "+ niveles[x-nivelUbicacion].getNombreNivel());
-			//System.out.println(" Freceuncias: " + niveles[x-nivelUbicacion].getFrecuencias());
-			//System.out.println("Desempeño del nivel: " + niveles[x-nivelUbicacion].getDesempeñoNivel() + " Desempeño general: " + pn.getAlumno().getDesempeño());
-			
+
 			workingMemory.insert(niveles[x-nivelUbicacion]);
 			workingMemory.fireAllRules();
-			
-			
-			//System.out.println("Desempeño del nivel: "+ niveles[x-nivelUbicacion].getDesempeñoNivel()+", Desempeño general: "+ niveles[x-nivelUbicacion].getDesempeñoGeneral() + ", Desempeño total: "+ niveles[x-nivelUbicacion].getDesempeño());
-			//System.out.println("Mensaje: "+niveles[x-nivelUbicacion].getNivelMessage());
-			//niveles[x-nivelUbicacion].setPuntajeDesempeño(puntaje[x-nivelUbicacion]);
-	        //int size= Frec.size();
-	        //System.out.println("size: "+ size);
+
 	        
 		}
-		double []frecProy = new double [6-nivelUbicacion+1];
+		String []frecProy = new String [6-nivelUbicacion+1];
 		String []frecProyTipo = new String [6-nivelUbicacion+1];
 		int size, frecOriginal, s=0, indiceActual=0, mov=0, totalF=0, err;
 		String msn;
 		
 		for(int x=0;x<=(6-nivelUbicacion);x++) { //nivel
 			size=niveles[x].getFrecuencias().size();
-			//System.out.println("Numero de frecuenicas del nivel actual: " + size);
-			//s=0;
-			/*while(s<size && niveles[x].getFrecuencias().get(s)!=frecInicial) {
-				//System.out.println("Freceuncia " +  (x+1) + ": " + niveles[x].getFrecuencias().get(s));
-				s++;
-			}*/
 			if(x==0) {
 				indiceActual=niveles[x].getFrecuencias().indexOf(frecInicial);
 				if(indiceActual == -1) {
 					//System.out.println("La frecuencia no existe");
 					break;
 				}
-				else {
-					//System.out.println("Está en el indice: " + indiceActual);
-				}
-				//System.out.println("Avanzaré " + (niveles[x].getDesempeño()) + " Indices");
 	
 			}
 			else {
@@ -176,31 +143,34 @@ public class Auxiliar {
 				//frecProy[x] = niveles[x].getFrecuencias().get(indiceActual);
 			}
 			//System.out.println("Frecuencia: "+niveles[x].getFrecuencias().get(indiceActual) + " x: " + x);
-			frecProy[x]= niveles[x].getFrecuencias().get(indiceActual);
+			frecProy[x]= niveles[x].getFrecuencias().get(indiceActual).toString();
 			frecProyTipo[x]= niveles[x].getTipos().get(indiceActual);
 		  }
 		int idAl=Integer.parseInt(pn.getAlumno().getIdAlumno());
 		for(int x=0; x<6-nivelUbicacion+1; x++) {
 			System.out.println("Frecuencia " + (x+1) + " : " + frecProy[x] + " " + frecProyTipo[x] + " " + niveles[x].getNombreNivel());
-			CallableStatement cS = conn.prepareCall("{call setProyeccionAnual(?, ?, ?, ?, ?, ?)}");
-		 	
-			cS.setInt(1, idAl);
-		 	cS.setString(2, String.valueOf(frecProy[x]));
-		 	cS.setString(3, niveles[x].getNombreNivel());
-		 	cS.setString(4, frecProyTipo[x] );
-		 	cS.registerOutParameter(5, Types.INTEGER);
-		 	cS.registerOutParameter(6, Types.VARCHAR);
-		 	cS.execute();
-		 	
+				CallableStatement cS = conn.prepareCall("{call setProyeccionAnual(?, ?, ?, ?, ?, ?)}");
+				
+			 	
+				cS.setInt(1, idAl);
+			 	cS.setString(2, frecProy[x]);
+			 	cS.setString(3, niveles[x].getNombreNivel());
+			 	cS.setString(4, frecProyTipo[x] );
+			 	cS.registerOutParameter(5, Types.INTEGER);
+			 	cS.registerOutParameter(6, Types.VARCHAR);
+			 	cS.execute();
+			 	
 		 	if(cS.getInt(5)==1 && x==0) {
-		 		System.out.println("Error: " + cS.getInt(5) + " " + cS.getString(6));
+		 		System.out.println("Error: " + cS.getInt(5) + " " + cS.getString(6) );
 		 		break;
 		 	}
-		 	else {
-		 		//System.out.println("Frecuencia " + (x+1) + " : " + frecProy[x] + " " + frecProyTipo[x] + " " + niveles[x].getNombreNivel());
+		 	else { System.out.println("Entro al else de proyeccion anual");
+		 		
+		 		System.out.println("Frecuencia " + (x+1) + " : " + frecProy[x] + " " + frecProyTipo[x] + " " + niveles[x].getNombreNivel());
 				CallableStatement cS2 = conn.prepareCall("{call setProyeccionNivelInProyeccionAnual(?, ?, ?, ?, ?, ?)}");
 				cS2.setInt(1, idAl);
-			 	cS2.setString(2, String.valueOf(frecProy[x]));
+			 	cS2.setString(2,frecProy[x]);
+			 	//(2, String.valueOf(frecProy[x]));
 			 	cS2.setString(3, niveles[x].getNombreNivel());
 			 	cS2.setString(4, frecProyTipo[x] );
 			 	cS2.registerOutParameter(5, Types.INTEGER);
@@ -216,32 +186,33 @@ public class Auxiliar {
 
 	
 	public void executeFrecInicial(WorkingMemory workingMemory, String array) {
-		//Nivel niv = new Nivel();
-		//String array=this.crearJson();
+		
 		JSONObject obj = new JSONObject(array);
 		
 		JSONObject results = obj.getJSONObject("resultsTest");
 		
 			JSONObject infoStudent = results.getJSONObject("infoStudent");
-		
-			int desempeñoGeneral = results.getInt("finalScore");
-		
 			JSONArray exams = results.getJSONArray("exams");
 			JSONArray frecuenciaIncial = results.getJSONArray("startPoint");
 			String n;
-			System.out.println("puntajeDesempeño " + desempeñoGeneral);
+			
+			//---------------Impresion de datos obtenidos del Json-------------
+			//System.out.println("puntajeDesempeño " + desempeñoGeneral);
 			System.out.println("examenes " + exams);
 			System.out.println("infoStudent" +infoStudent.toString());
 			System.out.println("para frecuencia inicial" + frecuenciaIncial.toString());
 			System.out.println("nivel" + infoStudent.getString("level"));
+			//-----------------------------------------------------------------
 			
-			n=infoStudent.getString("level");
-			String g=infoStudent.getString("grade");
-			String idStudent=infoStudent.getString("idStudent");
+			n=infoStudent.getString("level"); //obtención del nivel
+			String g=infoStudent.getString("grade"); //obtención del grado
+			String idStudent=infoStudent.getString("idStudent");  //obtención del id
+			int desempeñoGeneral = results.getInt("finalScore");  //obtención del desempeño general
 			Alumno alumn = new Alumno();
+			//dando atributos al alumno
 			alumn.setPuntajeDesempeño(desempeñoGeneral);
-			workingMemory.insert(alumn);
-			workingMemory.fireAllRules();
+			//workingMemory.insert(alumn);
+			//workingMemory.fireAllRules();
 			//System.out.println("Desempeño general: " +  alumn.getDesempeño());
 			alumn.setNivelActual(n);
 			alumn.setGrado(g);
@@ -249,24 +220,40 @@ public class Auxiliar {
 			String id;
 			//String desempeñosNivel[] = new String [exams.length()];
 			String desNivel[] = new String [exams.length()];
-			String level[] = new String [exams.length()];
+			String [] level = new String [exams.length()];
 			//List<Double> Frec=new ArrayList<Double>();
 			//System.out.println("Longitud de examenes: "+exams.length());
+			
+			//obtencion de desempeño por nivel
+			System.out.println("_______________________________________________");
+			System.out.println("Exámenes que realizó: ");
 			for(int i=0; i<exams.length();i++) {
 				JSONObject res = (JSONObject) exams.get(i);
-				desNivel[i]=res.getString("desempeño");
-				level[i] = res.getString("level");
+				if(res.getString("level").compareTo("E")!=0 && res.getString("level").compareTo("F")!=0 ) {
+					desNivel[i]=res.getString("desempeño");
+					level[i] = res.getString("level");
+					System.out.println("Nivel: "+ level[i]);
+				}
 			}
+			System.out.println("_______________________________________________");
+			//buscando el indice del nivel de ubicación
+			int newIndice=indexOfIntArray(level,n);
 			
-			int newIndice=Arrays.binarySearch(level, n);
-			//System.out.println("New indice: " + newIndice);
-			//String desempeñosNivel[] = new String [exams.length()- newIndice];
-			//String nivel[] = new String [exams.length()- newIndice];
-			String desempeñosNivel[]=Arrays.copyOf(desNivel, newIndice);
-			String nivel[]=Arrays.copyOfRange(level, newIndice, exams.length());
-			//System.out.println("Examenes desempeños:  "+ Arrays.asList(desempeñosNivel) + " Niveles: " + Arrays.asList(nivel));
+			//buscando indie de nivel final (D)
+			String fin="D";
+			int newIndice2=indexOfIntArray(level,fin);
 			
 			
+			//System.out .println("Tamaño del array de desempeños: "+ desNivel.length + " New indice: " + newIndice + " tamaño de array examenes" + exams.length());
+			
+			//acotando los desempeños de nivel a partir del nivel deubicación
+			System.out.println("Nivel ubicacion: " + n + " Indice de incicio: "+ newIndice);
+			System.out.println("Nivel final: " + fin + " Indice de fin: "+ newIndice2);
+			String desempeñosNivel[]=Arrays.copyOfRange(desNivel, newIndice, newIndice2+1);
+			String nivel[]=Arrays.copyOfRange(level, newIndice, newIndice2+1);
+			System.out.println("Examenes desempeños:  "+ Arrays.asList(desempeñosNivel) + " Niveles: " + Arrays.asList(nivel));
+			
+			//Obtención de variables a tomar en cuenta ne el árbol de decisión de la freceuncia incial
 			for(int i=0; i<frecuenciaIncial.length();i++) {
 				JSONObject res = (JSONObject) frecuenciaIncial.get(i);
 				id=res.getString("identificador");
@@ -306,6 +293,7 @@ public class Auxiliar {
 		ProyeccionNivel pn = new ProyeccionNivel();
 		pn.setAlumno(alumn);
 		workingMemory.insert(pn);
+		workingMemory.insert(alumn);
 		workingMemory.fireAllRules();
 		try {
 			this.exFrecuencias(workingMemory,pn, desempeñosNivel, nivel);
@@ -323,56 +311,60 @@ public class Auxiliar {
             try (JsonGenerator gen = Json.createGenerator(swriter)) {
             	gen.writeStartObject();
                 gen.writeStartObject("resultsTest");
-	                gen.write("finalScore", "76");
+	                gen.write("finalScore", "72");
 	                gen.writeStartObject("infoStudent");
 	                    //gen.writeStartObject();
-		                gen.write("level", "B");
+		                gen.write("level", "2A");
 		                gen.write("grade", "1");
-		                gen.write("name", "Ximena Aguilar");
-		                gen.write("idStudent", "7");
-		                gen.write("startDate", "2017-03-02");
+		                gen.write("name", "Itzel  Aguilar ");
+		                gen.write("idStudent", "3");
+		                gen.write("startDate", "2017-04-03");
 		            gen.writeEnd();
 		            gen.writeStartArray("exams");
 			            gen.writeStartObject();
-			                 gen.write("desempeño", "malo");
-			                 gen.write("level", "3A");
-			             gen.writeEnd();
-			             gen.writeStartObject();
-			                 gen.write("desempeño", "malo");
+			                 gen.write("desempeño", "medio");
 			                 gen.write("level", "2A");
 			             gen.writeEnd();
 			             gen.writeStartObject();
-			                 gen.write("desempeño", "malo");
+			                 gen.write("desempeño", "medio");
 			                 gen.write("level", "A");
 			             gen.writeEnd();
-				             gen.writeStartObject();
-			                 gen.write("desempeño", "malo");
+			             gen.writeStartObject();
+			                 gen.write("desempeño", "medio");
 			                 gen.write("level", "B");
 			             gen.writeEnd();
-			             gen.writeStartObject();
-			                 gen.write("desempeño", "malo");
+				             gen.writeStartObject();
+			                 gen.write("desempeño", "bueno");
 			                 gen.write("level", "C");
 			             gen.writeEnd();
 			             gen.writeStartObject();
+			                 gen.write("desempeño", "medio");
+			                 gen.write("level", "D");
+			             gen.writeEnd();
+			             /*gen.writeStartObject();
 			                 gen.write("desempeño", "malo");
 			                 gen.write("level", "D");
+			             gen.writeEnd();*/
+			             gen.writeStartObject();
+			                 gen.write("desempeño", "medio");
+			                 gen.write("level", "E");
 			             gen.writeEnd();
 		            gen.writeEnd();
 		            gen.writeStartArray("startPoint");
 		             gen.writeStartObject();
 		                 gen.write("identificador", "fluidez");
-		                 gen.write("answer", "0");
-		                 gen.write("answerLbl", "Si");
-		             gen.writeEnd();
-		             gen.writeStartObject();
-			             gen.write("identificador", "concentracion");
 		                 gen.write("answer", "1");
 		                 gen.write("answerLbl", "Si");
 		             gen.writeEnd();
 		             gen.writeStartObject();
-			             gen.write("identificador", "trabajoB");
+			             gen.write("identificador", "calculo");
 		                 gen.write("answer", "1");
 		                 gen.write("answerLbl", "Si");
+		             gen.writeEnd();
+		             gen.writeStartObject();
+			             gen.write("identificador", "procedimeinto");
+		                 gen.write("answer", "1");
+		                 gen.write("answerLbl", "Cortos");
 		                 gen.writeEnd();
 		            /* gen.writeStartObject();
 			             gen.write("identificador", "cuenta");
@@ -386,6 +378,17 @@ public class Auxiliar {
         return swriter.toString(); 
 	}
 	
+	
+	public static int indexOfIntArray(String[] array, String key) {
+	    int returnvalue = -1;
+	    for (int i = 0; i < array.length; ++i) {
+	        if (key.equals(array[i])) {
+	            returnvalue = i;
+	            break;
+	        }
+	    }
+	    return returnvalue;
+	}
 
     public static String asignarAsistente(String alumno) throws SQLException {
     		String[] niveles = {"7A","6A","5A","4A","3A","2A","A","B","C","D","E","F","G","H","I","J"}; 
