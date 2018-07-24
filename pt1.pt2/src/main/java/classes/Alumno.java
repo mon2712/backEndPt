@@ -16,6 +16,8 @@ import java.util.List;
 import javax.json.Json;
 import javax.json.stream.JsonGenerator;
 
+import org.json.JSONObject;
+
 public class Alumno {
 	public static final String DESEMPEÑO_ALTO= "bueno";
 	public static final String DESEMPEÑO_MEDIO = "medio";
@@ -542,13 +544,16 @@ public class Alumno {
 	    }
     }
     
-    public static String getBoleta() {
+    public static String getBoleta(String alumno) {
+    		System.out.println(alumno);
+    		//JSONObject obj2 = new JSONObject(alumno);
+    		
 		StringWriter swriter = new StringWriter();
 	    try {
 	        String getQueryStatement = "Select re.idRegistro, DAY(re.fecha) as dia, MONTH(re.fecha) as mes, YEAR(re.fecha) as año, us.nombre, se.`set`, re.tipo, re.tiempo, re.`1`, re.`2`,re.`3`,re.`4`,re.`5`,re.`6`,re.`7`,re.`8`,re.`9`,re.`10` \r\n" + 
 	        		"from Registro as re JOIN Usuario as us JOIN `Set` as se JOIN Nivel as niv\r\n" + 
 	        		"ON re.Asistente_Usuario_idUsuario=us.idUsuario AND se.idSet=re.Set_idSet AND se.Nivel_idNivel=niv.idNivel\r\n" + 
-	        		"WHERE Alumno_idAlumno=2 ORDER BY fecha ASC;";
+	        		"WHERE Alumno_idAlumno="+alumno+ " ORDER BY fecha ASC;";
 	
 	        prepareStat = conn.prepareStatement(getQueryStatement);
 	
@@ -591,12 +596,22 @@ public class Alumno {
 						        			gen.writeStartArray("days"); //Empieza el array de los días
 						        			
 						        				gen.writeStartObject(); //Empieza el objeto de 1 día 
-								        			gen.write("idPayment", rs.getString(1));
-								        			gen.write("month", rs.getString(5));
-								        			gen.write("quantity", ""+rs.getString(2));
-								        			gen.write("typePayment", rs.getString(4));
-							        				gen.write("date", rs.getString(9));
-							        				gen.write("card", rs.getString(10));
+						        					gen.write("idRegister", rs.getInt(1));
+								        			gen.write("day", rs.getInt(2));
+								        			gen.write("set", rs.getInt(6));
+								        			gen.write("typeSet", ""+rs.getString(7));
+								        			gen.write("time", rs.getInt(8));
+								        			gen.write("assistant", rs.getString(5));
+							        				gen.write("1", rs.getInt(9));
+							        				gen.write("2", rs.getInt(10));
+							        				gen.write("3", rs.getInt(11));
+							        				gen.write("4", rs.getInt(12));
+							        				gen.write("5", rs.getInt(13));
+							        				gen.write("6", rs.getInt(14));
+							        				gen.write("7", rs.getInt(15));
+							        				gen.write("8", rs.getInt(16));
+							        				gen.write("9", rs.getInt(17));
+							        				gen.write("10", rs.getInt(18));
 							        			gen.writeEnd(); //Cierra el objeto de 1 día
 					        		}else {
 					        			System.out.println("si no entra a a empty");
@@ -605,28 +620,39 @@ public class Alumno {
 					        		
 				        			for(i=0; i<grades.size(); i++) {
 				        				
-					        			if(grades.get(i).equals(rs.getString(4))) {
+					        			if(grades.get(i).equals(rs.getString(4))) { //donde el año sea igual 
 					        				
-					        				System.out.println("año en for " + rs.getString(4));
+					        				//System.out.println("año en for " + rs.getString(4));
 					        				
-					        				for(int j=0; j<mes.size(); j++) {
+					        				for(int j=0; j<mes.size(); j++) { //buscar meses 
 						        				
-					        					if(mes.get(j).equals(rs.getString(3))) {
-					        						System.out.println("mes en for " + rs.getString(3));
+					        					if(mes.get(j).equals(rs.getString(3))) { // si mes ya existe agrego un día
+					        						//System.out.println("mes en for " + rs.getString(3));
 
-					        						System.out.println("el mes es igual en el if");
+					        						//System.out.println("el mes es igual en el if");
 					        						
 					        						gen.writeStartObject();
-							        					gen.write("idPayment", rs.getString(1));
-								        				gen.write("month", rs.getString(5));
-								        				gen.write("quantity", rs.getString(2));
-								        				gen.write("typePayment", ""+rs.getString(4));
-								        				gen.write("date", rs.getString(9));
-								        				gen.write("card", rs.getString(10));
+						        						gen.write("idRegister", rs.getInt(1));
+									        			gen.write("day", rs.getInt(2));
+									        			gen.write("set", rs.getInt(6));
+									        			gen.write("typeSet", ""+rs.getString(7));
+									        			gen.write("time", rs.getInt(8));
+									        			gen.write("assistant", rs.getString(5));
+								        				gen.write("1", rs.getInt(9));
+								        				gen.write("2", rs.getInt(10));
+								        				gen.write("3", rs.getInt(11));
+								        				gen.write("4", rs.getInt(12));
+								        				gen.write("5", rs.getInt(13));
+								        				gen.write("6", rs.getInt(14));
+								        				gen.write("7", rs.getInt(15));
+								        				gen.write("8", rs.getInt(16));
+								        				gen.write("9", rs.getInt(17));
+								        				gen.write("10", rs.getInt(18));
 								        			gen.writeEnd();
 								        			
 								        			bandera2=0;
 						        				}else {
+						        					//System.out.println("mes en for cuando bandera2 se vuelve 1 " + rs.getString(3));
 						        					bandera2=1;
 						        					//System.out.println("entra al else año: " + rs.getString(4) + "mes " + rs.getString(3));
 						        				}
@@ -644,27 +670,36 @@ public class Alumno {
 					        			}
 				        			}
 				        			
-				        			if(bandera2==1) {
-			        					System.out.println("si entra al bandera2");
+				        			if(bandera2==1) { 
+			        					System.out.println("si entra al bandera2 a mes diferente de if");
+			        					System.out.println("entra al else año: " + rs.getString(4) + "mes " + rs.getString(3));
 			        					gen.writeEnd();
 				        				gen.writeEnd();
 
-				        				gen.writeEnd();
-				        				gen.writeEnd();
-
-
+				        				//gen.writeEnd();
 				        				
 				        				
 				        				gen.writeStartObject();
 			        					gen.write("month", rs.getString(3));
 				        				gen.writeStartArray("days");
 					        				gen.writeStartObject();
-						        				gen.write("idPayment", rs.getString(1));
-						        				gen.write("month", rs.getString(5));
-						        				gen.write("quantity", rs.getString(2));
-						        				gen.write("typePayment", ""+rs.getString(4));
-						        				gen.write("date", rs.getString(9));
-						        				gen.write("card", rs.getString(10));
+						        				gen.write("idRegister", rs.getInt(1));
+							        			gen.write("day", rs.getInt(2));
+							        			gen.write("set", rs.getInt(6));
+							        			gen.write("typeSet", ""+rs.getString(7));
+							        			gen.write("time", rs.getInt(8));
+							        			gen.write("assistant", rs.getString(5));
+						        				gen.write("1", rs.getInt(9));
+						        				gen.write("2", rs.getInt(10));
+						        				gen.write("3", rs.getInt(11));
+						        				gen.write("4", rs.getInt(12));
+						        				gen.write("5", rs.getInt(13));
+						        				gen.write("6", rs.getInt(14));
+						        				gen.write("7", rs.getInt(15));
+						        				gen.write("8", rs.getInt(16));
+						        				gen.write("9", rs.getInt(17));
+						        				gen.write("10", rs.getInt(18));
+
 						        			gen.writeEnd();
 						        			
 						        		mes.add(rs.getString(3));
@@ -676,11 +711,8 @@ public class Alumno {
 				        				gen.writeEnd();
 				        				gen.writeEnd();
 				        				gen.writeEnd();
-				        				gen.writeEnd();
-				        				gen.writeEnd();
 
-				        				gen.writeEnd();
-				        				gen.writeEnd();
+				        				
 				        				
 				        				gen.writeStartObject();
 				        					gen.write("year", rs.getString(4));
@@ -689,12 +721,22 @@ public class Alumno {
 					        					gen.write("month", rs.getString(3));
 						        				gen.writeStartArray("days");
 							        				gen.writeStartObject();
-								        				gen.write("idPayment", rs.getString(1));
-								        				gen.write("month", rs.getString(5));
-								        				gen.write("quantity", rs.getString(2));
-								        				gen.write("typePayment", ""+rs.getString(4));
-								        				gen.write("date", rs.getString(9));
-								        				gen.write("card", rs.getString(10));
+								        				gen.write("idRegister", rs.getInt(1));
+									        			gen.write("day", rs.getInt(2));
+									        			gen.write("set", rs.getInt(6));
+									        			gen.write("typeSet", ""+rs.getString(7));
+									        			gen.write("time", rs.getInt(8));
+									        			gen.write("assistant", rs.getString(5));
+								        				gen.write("1", rs.getInt(9));
+								        				gen.write("2", rs.getInt(10));
+								        				gen.write("3", rs.getInt(11));
+								        				gen.write("4", rs.getInt(12));
+								        				gen.write("5", rs.getInt(13));
+								        				gen.write("6", rs.getInt(14));
+								        				gen.write("7", rs.getInt(15));
+								        				gen.write("8", rs.getInt(16));
+								        				gen.write("9", rs.getInt(17));
+								        				gen.write("10", rs.getInt(18));
 								        			gen.writeEnd(); //Cierra el objeto de 1 alumno
 		
 					        			
@@ -704,18 +746,18 @@ public class Alumno {
 					        	}
 				        	}
 
+				        //gen.writeEnd();
+						//gen.writeEnd();
 				        gen.writeEnd();
 						gen.writeEnd();
-				        gen.writeEnd();
 						gen.writeEnd();
+						gen.writeEnd();
+						gen.writeEnd();
+						gen.writeEnd();
+						/*gen.writeEnd();*/
 						//gen.writeEnd();
-						//gen.writeEnd();
-						//gen.writeEnd();
-						//gen.writeEnd();
-						//gen.writeEnd();
-						//gen.writeEnd();
-						//gen.writeEnd();
-						//gen.writeEnd();
+						
+						
 						
 		            	}
 	        }
