@@ -338,7 +338,7 @@ public class Recepcion {
     public static String getNotificacion() throws SQLException {
     		StringWriter swriter = new StringWriter();
     
-	    	String qryLlamadas = "SELECT COUNT(*) FROM Notificacion WHERE tipo='llamada' AND fecha IS NULL AND nota IS NULL GROUP BY tipo;";
+	    	String qryLlamadas = "SELECT COUNT(*) FROM Notificacion WHERE tipo='llamada' AND fecha='' AND nota='' GROUP BY tipo;";
 	    	String qryPagos = "SELECT * FROM Notificacion as noti JOIN Alumno as alu ON noti.Alumno_idAlumno=alu.idAlumno WHERE fecha=CURDATE() AND tipo='pago';";
 	    	
 	

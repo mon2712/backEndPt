@@ -46,4 +46,12 @@ public class resAlumno {
 	public String getStudentsWithAnnualPlan() {
     		return alumno.getAlumnosConProyeccion();
 	}
+	
+	@GET
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/getFile")
+	public String getFileStudent(@QueryParam("idAlumno") String idAlumno) {
+    		return alumno.getBoleta(idAlumno);
+	}
 }
