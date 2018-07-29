@@ -28,7 +28,7 @@ public class FileReport {
 	private static int numCols =0, numCol=0, numRow=0, numRows=0;
 	
 	public static void getBaseInfo(String routeFile1) throws IOException, ParseException {
-		String getQueryStatement = "CALL resetBaseAlumnos()";
+		/*String getQueryStatement = "CALL resetBaseAlumnos()";
     	
         try {
 			prepareStat = conn.prepareStatement(getQueryStatement);
@@ -36,7 +36,7 @@ public class FileReport {
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		}*/
 		
 		FileInputStream fis = new FileInputStream(new File(routeFile1));
 		
@@ -116,7 +116,27 @@ public class FileReport {
 						break;
 					case 20:
 						alumn.setCelTutor(cell.getStringCellValue().trim());
-						fileToDB(alumn.getIdAlumno(),alumn.getApellidoPaterno(),alumn.getNombre(),alumn.getFechaNac(),alumn.getGrado(),alumn.getTel(),alumn.getNombreMadre(),alumn.getApellidoMadre(),alumn.getEmailMadre(),alumn.getCelMadre(),alumn.getTutorNombre(),alumn.getCelTutor(),alumn.getTelTutor());
+						//fileToDB(alumn.getIdAlumno(),alumn.getApellidoPaterno(),alumn.getNombre(),alumn.getFechaNac(),alumn.getGrado(),alumn.getTel(),alumn.getNombreMadre(),alumn.getApellidoMadre(),alumn.getEmailMadre(),alumn.getCelMadre(),alumn.getTutorNombre(),alumn.getCelTutor(),alumn.getTelTutor());
+						break;
+					case 23:
+						alumn.setLunes((int) cell.getNumericCellValue());
+						//fileToDB(alumn.getIdAlumno(),alumn.getApellidoPaterno(),alumn.getNombre(),alumn.getFechaNac(),alumn.getGrado(),alumn.getTel(),alumn.getNombreMadre(),alumn.getApellidoMadre(),alumn.getEmailMadre(),alumn.getCelMadre(),alumn.getTutorNombre(),alumn.getCelTutor(),alumn.getTelTutor());
+						break;
+					case 24:
+						alumn.setMiercoles((int) cell.getNumericCellValue());
+						//fileToDB(alumn.getIdAlumno(),alumn.getApellidoPaterno(),alumn.getNombre(),alumn.getFechaNac(),alumn.getGrado(),alumn.getTel(),alumn.getNombreMadre(),alumn.getApellidoMadre(),alumn.getEmailMadre(),alumn.getCelMadre(),alumn.getTutorNombre(),alumn.getCelTutor(),alumn.getTelTutor());
+						break;
+					case 25:
+						alumn.setJueves((int) cell.getNumericCellValue());
+						//fileToDB(alumn.getIdAlumno(),alumn.getApellidoPaterno(),alumn.getNombre(),alumn.getFechaNac(),alumn.getGrado(),alumn.getTel(),alumn.getNombreMadre(),alumn.getApellidoMadre(),alumn.getEmailMadre(),alumn.getCelMadre(),alumn.getTutorNombre(),alumn.getCelTutor(),alumn.getTelTutor());
+						break;
+					case 26:
+						alumn.setSabado((int) cell.getNumericCellValue());
+						//fileToDB(alumn.getIdAlumno(),alumn.getApellidoPaterno(),alumn.getNombre(),alumn.getFechaNac(),alumn.getGrado(),alumn.getTel(),alumn.getNombreMadre(),alumn.getApellidoMadre(),alumn.getEmailMadre(),alumn.getCelMadre(),alumn.getTutorNombre(),alumn.getCelTutor(),alumn.getTelTutor(), alumn.getLunes(), alumn.getMiercoles(), alumn.getJueves(), alumn.getSabado());
+						break;
+					case 27:
+						alumn.setAdeudo((int) cell.getNumericCellValue());
+						fileToDB(alumn.getIdAlumno(),alumn.getApellidoPaterno(),alumn.getNombre(),alumn.getFechaNac(),alumn.getGrado(),alumn.getTel(),alumn.getNombreMadre(),alumn.getApellidoMadre(),alumn.getEmailMadre(),alumn.getCelMadre(),alumn.getTutorNombre(),alumn.getCelTutor(),alumn.getTelTutor(), alumn.getLunes(), alumn.getMiercoles(), alumn.getJueves(), alumn.getSabado(), alumn.getAdeudo());
 						break;
 					}
 					
@@ -224,9 +244,9 @@ public class FileReport {
 		
 	}
 	
-	public static void fileToDB(String s1, String s2, String s3, String s4, String s5, String s6, String s7, String s8,String s9,String s10,String s11,String s12,String s13 ){
+	public static void fileToDB(String s1, String s2, String s3, String s4, String s5, String s6, String s7, String s8,String s9,String s10,String s11,String s12,String s13, int s14, int s15, int s16, int s17, int s18){
 		 try {
-			 CallableStatement cS = conn.prepareCall("{CALL setBaseAlumnos(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)}");
+			 CallableStatement cS = conn.prepareCall("{CALL setBaseAlumnos(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)}");
 			 	cS.setString(1, s1);
 			 	cS.setString(2, s2);
 			 	cS.setString(3, s3);
@@ -240,6 +260,11 @@ public class FileReport {
 			 	cS.setString(11, s11);
 			 	cS.setString(12, s12);
 			 	cS.setString(13, s13);
+			 	cS.setInt(14, s14);
+			 	cS.setInt(15, s15);
+			 	cS.setInt(16, s16);
+			 	cS.setInt(17, s17);
+			 	cS.setInt(18, s18);
 			 	cS.execute();		
 				
 	    } catch (SQLException e) {
