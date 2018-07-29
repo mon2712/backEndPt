@@ -405,7 +405,7 @@ public class Auxiliar {
 			if(niveles[i].equals(nivel)) {
 				index=i;
 			}else {
-				System.out.println("no esta en el array");
+				//System.out.println("no esta en el array");
 			}
 		}
 		
@@ -563,5 +563,226 @@ public class Auxiliar {
 	        
 	        return swriter.toString();
 
+    }
+    
+    public static String analisisRecomendaciones(String recomendaciones, String nivel) {
+    		StringWriter swriter = new StringWriter();
+    		
+    		JSONObject obj2 = new JSONObject(recomendaciones);
+    		JSONArray recom = obj2.getJSONArray("recomendaciones");
+    		
+	    	switch (nivel) {
+	    		case "3A":
+				try (JsonGenerator gen = Json.createGenerator(swriter)) {
+					gen.writeStartObject();
+					gen.writeStartArray("recomendations");
+				
+						for(int i=0; i<recom.length(); i++) {
+							JSONObject pregunta = recom.getJSONObject(i);
+							
+								switch (pregunta.getInt("idPregunta")) {
+									case 21:
+										if(pregunta.getString("respuesta").equals("No")) {
+											gen.writeStartObject();
+									    			gen.write("recomendacion", "Medir tus tiempos");
+									    		gen.writeEnd();
+										}
+									break;
+									case 22:
+										if(pregunta.getString("respuesta").equals("No")) {
+											gen.writeStartObject();
+									    			gen.write("recomendacion", "Concentrarte en tu trabajo");
+									    		gen.writeEnd();
+										}
+									break;
+									case 24:
+										if(pregunta.getString("respuesta").equals("No")) {
+											gen.writeStartObject();
+									    			gen.write("recomendacion", "No utilizar dedos al contar");
+									    		gen.writeEnd();
+										}
+									break;
+								}
+						}
+					gen.writeEnd();
+					gen.writeEnd();
+				}
+			break;
+			case "2A":
+				try (JsonGenerator gen = Json.createGenerator(swriter)) {
+					gen.writeStartObject();
+					gen.writeStartArray("recomendations");
+				
+						for(int i=0; i<recom.length(); i++) {
+							JSONObject pregunta = recom.getJSONObject(i);
+							
+								switch (pregunta.getInt("idPregunta")) {
+									case 21:
+										if(pregunta.getString("respuesta").equals("No")) {
+											gen.writeStartObject();
+									    			gen.write("recomendacion", "Medir tus tiempos");
+									    		gen.writeEnd();
+										}
+									break;
+									case 22:
+										if(pregunta.getString("respuesta").equals("No")) {
+											gen.writeStartObject();
+									    			gen.write("recomendacion", "Concentrarte en tu trabajo");
+									    		gen.writeEnd();
+										}
+									break;
+									case 24:
+										if(pregunta.getString("respuesta").equals("No")) {
+											gen.writeStartObject();
+									    			gen.write("recomendacion", "No utilizar dedos al contar");
+									    		gen.writeEnd();
+										}
+									break;
+								}
+						}
+					gen.writeEnd();
+					gen.writeEnd();
+				}
+			break;
+	    		case "A":
+				try (JsonGenerator gen = Json.createGenerator(swriter)) {
+					gen.writeStartObject();
+					gen.writeStartArray("recomendations");
+				
+						for(int i=0; i<recom.length(); i++) {
+							JSONObject pregunta = recom.getJSONObject(i);
+							
+								switch (pregunta.getInt("idPregunta")) {
+									case 25:
+										if(pregunta.getString("respuesta").equals("No")) {
+											gen.writeStartObject();
+									    			gen.write("recomendacion", "Medir tus tiempos");
+									    		gen.writeEnd();
+										}
+									break;
+									case 26:
+										if(pregunta.getString("respuesta").equals("No")) {
+											gen.writeStartObject();
+									    			gen.write("recomendacion", "No anotar la que se lleva y no utilizar dedos al contar");
+									    		gen.writeEnd();
+										}
+									break;
+									case 22:
+										if(pregunta.getString("respuesta").equals("No")) {
+											gen.writeStartObject();
+									    			gen.write("recomendacion", "Concentrarte en tu trabajo");
+									    		gen.writeEnd();
+										}
+									break;
+								}
+						}
+					gen.writeEnd();
+					gen.writeEnd();
+				}
+			break;
+	    		case "B":
+				try (JsonGenerator gen = Json.createGenerator(swriter)) {
+					gen.writeStartObject();
+					gen.writeStartArray("recomendations");
+				
+						for(int i=0; i<recom.length(); i++) {
+							JSONObject pregunta = recom.getJSONObject(i);
+							
+								switch (pregunta.getInt("idPregunta")) {
+									case 21:
+										if(pregunta.getString("respuesta").equals("No")) {
+											gen.writeStartObject();
+									    			gen.write("recomendacion", "Medir tus tiempos");
+									    		gen.writeEnd();
+										}
+									break;
+									case 26:
+										if(pregunta.getString("respuesta").equals("No")) {
+											gen.writeStartObject();
+									    			gen.write("recomendacion", "No anotar la que se lleva, ni utilizar dedos para contar");
+									    		gen.writeEnd();
+										}
+									break;
+									case 22:
+										if(pregunta.getString("respuesta").equals("No")) {
+											gen.writeStartObject();
+									    			gen.write("recomendacion", "Concentrarte en tu trabajo");
+									    		gen.writeEnd();
+										}
+									break;
+								}
+						}
+					gen.writeEnd();
+					gen.writeEnd();
+				}
+			break;
+			case "C":
+				try (JsonGenerator gen = Json.createGenerator(swriter)) {
+					gen.writeStartObject();
+					gen.writeStartArray("recomendations");
+				
+						for(int i=0; i<recom.length(); i++) {
+							JSONObject pregunta = recom.getJSONObject(i);
+							
+								switch (pregunta.getInt("idPregunta")) {
+									case 27:
+										if(pregunta.getString("respuesta").equals("No")) {
+											gen.writeStartObject();
+									    			gen.write("recomendacion", "Repasar las tablas en casa");
+									    		gen.writeEnd();
+										}
+									break;
+									case 28:
+										if(pregunta.getString("respuesta").equals("No")) {
+											gen.writeStartObject();
+									    			gen.write("recomendacion", "No utilizar dedos al contar");
+									    		gen.writeEnd();
+										}
+									break;
+									case 29:
+										if(pregunta.getString("respuesta").equals("Largos")) {
+											gen.writeStartObject();
+									    			gen.write("recomendacion", "Utilizar procedimiento enseñado en centro");
+									    		gen.writeEnd();
+										}
+									break;
+								}
+						}
+					gen.writeEnd();
+					gen.writeEnd();
+				}
+			break;
+			case "D":
+				try (JsonGenerator gen = Json.createGenerator(swriter)) {
+					gen.writeStartObject();
+					gen.writeStartArray("recomendations");
+				
+						for(int i=0; i<recom.length(); i++) {
+							JSONObject pregunta = recom.getJSONObject(i);
+							
+								switch (pregunta.getInt("idPregunta")) {
+									case 30:
+										if(pregunta.getString("respuesta").equals("No")) {
+											gen.writeStartObject();
+									    			gen.write("recomendacion", "Realizar el procedimiento de división con resta");
+									    		gen.writeEnd();
+										}
+									break;
+									case 31:
+										if(pregunta.getString("respuesta").equals("No")) {
+											gen.writeStartObject();
+									    			gen.write("recomendacion", "Simplificar");
+									    		gen.writeEnd();
+										}
+									break;
+								}
+						}
+					gen.writeEnd();
+					gen.writeEnd();
+				}
+			break;
+			
+		}
+    		return swriter.toString();
     }
 }

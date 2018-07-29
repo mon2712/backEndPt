@@ -221,6 +221,7 @@ public class Recepcion {
     
     public static String setAsistencia(String array) throws SQLException {
 		StringWriter swriter = new StringWriter();
+		StringWriter swriterFinal = new StringWriter();
 		String finalResult = "";
 		
 		JSONObject obj = new JSONObject(array);
@@ -258,16 +259,61 @@ public class Recepcion {
 	    		    
 	    		    if(cStmt.getInt(4) == 0) {
 	    		    		//getRecomendaciones
+	    		    		String queryRecomendaciones = "SELECT nv.idNivel, nv.nombre, preg.idpreguntaTest, preg.pregunta, resp.IdRespuesta, resp.respuesta FROM Registro_has_Nivel_has_PreguntaTest_has_Respuesta  as observaciones \r\n" + 
+	    		    				"JOIN PreguntaTest as preg JOIN Respuesta as resp JOIN Nivel as nv JOIN Usuario as usr\r\n" + 
+	    		    				"ON observaciones.Nivel_has_P_has_R_idpreguntaTest=preg.idpreguntaTest AND observaciones.Nivel_has_P_has_R_IdRespuesta=resp.IdRespuesta\r\n" + 
+	    		    				"AND nv.idNivel=observaciones.Nivel_has_P_has_R_Nivel_idNivel AND usr.idUsuario=observaciones.Registro_Asistente_Usuario_idUsuario\r\n" + 
+	    		    				"WHERE Registro_idRegistro = (SELECT idRegistro FROM Registro WHERE Alumno_idAlumno="+Integer.toString(id)+ " ORDER BY idRegistro DESC limit 1);";
+			    		
+		
+		        		prepareStat = conn.prepareStatement(queryRecomendaciones);
+		
+		            ResultSet rsRecomendaciones = prepareStat.executeQuery();
+		            String nivel="";
+		            
+	    		    		try (JsonGenerator gen = Json.createGenerator(swriter)) {
+	    		    			 gen.writeStartObject();
+	    		    			if(!rsRecomendaciones.isBeforeFirst()) {
+	    				    		System.out.println("vacio");
+	    				    }else {
+	    				    		gen.writeStartArray("recomendaciones");
+			    		    		while(rsRecomendaciones.next()) {
+			    		    			System.out.println("entro" + rsRecomendaciones.getString(2));
+			    		    			nivel=rsRecomendaciones.getString(2);
+			    		    			gen.writeStartObject();
+			    			    			gen.write("idPregunta",rsRecomendaciones.getInt(3));
+			    			    			gen.write("pregunta",rsRecomendaciones.getString(4));
+			    			    			gen.write("idRespuesta",rsRecomendaciones.getInt(5));
+			    			    			gen.write("respuesta",rsRecomendaciones.getString(6));
+			    			    		gen.writeEnd();
+			    		    		}
+			    		    		gen.writeEnd();
+	    				    }
+	    		    			gen.writeEnd();
+	    		    		}
+	    		    		
+	    		    		String recomendacionesArray = aux.analisisRecomendaciones(swriter.toString(), nivel);
+	    		    		
 	    		    		
 	    		    		if(infoAssistant.getBoolean("missingPayment") == true) {
 	    		    			CallableStatement cStmt2 = conn.prepareCall("{call setNotificacionPago(?)}");
 
 	    		    			cStmt2.setInt(1, id);
-	    		    		    
 	    		    			cStmt2.execute();
 
 	    		    		}
 	    		    		
+	    		    		JSONObject studentInfo = new JSONObject(alumnoInfo);
+	    		    		JSONObject assistantInfo = new JSONObject(asistente);
+	    		    		JSONObject recommendationsInfo = new JSONObject(recomendacionesArray);
+	    		    		
+	    		    		JSONObject combined = new JSONObject();
+	    		    	
+	    		    		combined.put("alumno", studentInfo);
+	    		    		combined.put("asistente", assistantInfo);
+	    		    		combined.put("recomendaciones", recommendationsInfo);
+	    		    		
+	    		    		finalResult = combined.toString();
 	    		    }else {
 	    		    		finalResult = asistente;
 	    		    }
@@ -276,7 +322,7 @@ public class Recepcion {
 				finalResult = asistente;
 			}
 			
-			finalResult = alumnoInfo;
+			
 		}else if(types.equals("A")) {
 			CallableStatement cStmt = conn.prepareCall("{call setAsistencia(?,?,?,?)}");
 			
@@ -324,7 +370,18 @@ public class Recepcion {
 	        		        return null;
 	        		    }
 	            }
-	            finalResult = swriter.toString();
+	            
+	            	JSONObject studentInfo = new JSONObject(swriter.toString());
+		    		JSONObject assistantInfo = new JSONObject();
+		    		JSONObject recommendationsInfo = new JSONObject();
+		    		
+		    		JSONObject combined = new JSONObject();
+		    	
+		    		combined.put("alumno", studentInfo);
+		    		combined.put("asistente", assistantInfo);
+		    		combined.put("recomendaciones", recommendationsInfo);
+	    		
+	            finalResult = combined.toString();
 		    }
 		    
 		}else {
