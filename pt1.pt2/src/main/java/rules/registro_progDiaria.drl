@@ -1,10 +1,11 @@
-//A continuación escribimos nuestras reglas en un archivo proyeccionNivel.drl
+//A continuación escribimos nuestras reglas en un archivo REGISTRO_PROGDIARIA.drl
 
 
 package rules
 import classes.Registro;
 
 //---Prog Diaria-----------------------------------------------------------------------------------------------------------------------------------------------
+//---CLASIFICACIÓN DE LA EVALUACIÓN-----------------------------------------------------------------------------------------------------------------------------------------------
 rule "Evaluacion excelente"
 	salience 0
 	dialect "java"
@@ -32,13 +33,42 @@ rule "Evaluacion mala"
     then 
     	registroObject.setEvaluacion("Mala");
 end
+//---Cambio de Prog Diaria-----------------------------------------------------------------------------------------------------------------------------------------------
 rule "Disminuir frecuencia"
     salience 0
 	dialect "java"
     when
        registroObject: Registro(getEvaluacion=="Excelente")
        Registro(getTime()<=getNivel().getMaxTime())
-       Registro(getNivel().getFrecuencias().indecOf())
+       Registro(getNivel().getFrecuencias().indecOf()>0)
     then 
-    	registroObject.setEvaluacion("Mala");
+    	System.out.rintln("DISMINUYE");
+    	
+rule "Mantener frecuencia"
+    salience 0
+	dialect "java"
+    when
+       (registroObject: Registro(getEvaluacion=="Excelente")
+       Registro(getTime()<=getNivel().getMaxTime())
+       Registro(getNivel().getFrecuencias().indecOf()==0)) || 
+       (registroObject: Registro(getEvaluacion=="Excelente")
+       Registro(getTime()>getNivel().getMaxTime())) || 
+       (registroObject: Registro(getEvaluacion=="Buena")
+       Registro(getTime()<=getNivel().getMaxTime()))
+    then 
+    	 System.out.rintln("PERMANECE");
+    	 
+ rule "Aumentar frecuencia"
+    salience 0
+	dialect "java"
+    when
+       (registroObject: Registro(getEvaluacion=="Buena")
+       Registro(getTime()>getNivel().getMaxTime())
+       Registro(getNivel().getFrecuencias().indecOf()==0)) || 
+       (registroObject: Registro(getEvaluacion=="Excelente")
+       Registro(getTime()>getNivel().getMaxTime())) || 
+       (registroObject: Registro(getEvaluacion=="Buena")
+       Registro(getTime()<=getNivel().getMaxTime()))
+    then 
+    	 System.out.rintln("AUMENTAR");
 end
