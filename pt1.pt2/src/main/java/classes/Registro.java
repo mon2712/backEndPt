@@ -30,8 +30,15 @@ public class Registro {
 	private int numFlecha;
 	private int numTriangulo;
 	private Nivel nivel;
+	private float frec;
 	
 	
+	public float getFrec() {
+		return frec;
+	}
+	public void setFrec(float frec) {
+		this.frec = frec;
+	}
 	public Nivel getNivel() {
 		return nivel;
 	}

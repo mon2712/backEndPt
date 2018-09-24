@@ -19,7 +19,7 @@ rule "Evaluacion buena"
     salience 0
 	dialect "java"
     when
-       registroObject: Registro(getNumTriangulo() + getNumFlecha()<=4)
+       registroObject: Registro((getNumTriangulo() + getNumFlecha())<=4)
        Registro(getNumCien()>=4)
        //Registro(getNumOchenta() + getNumNoventa() + getNumSetenta == 10 - getNumTriangulo() + getNumFlecha() + getNumCien())
     then 
@@ -40,7 +40,7 @@ rule "Disminuir frecuencia"
     when
        registroObject: Registro(getEvaluacion=="Excelente")
        Registro(getTime()<=getNivel().getMaxTime())
-       Registro(getNivel().getFrecuencias().indecOf()>0)
+       Registro(getNivel().getFrecuencias().indexOf(Registro(getFrec()))>0)
     then 
     	System.out.rintln("DISMINUYE");
     	
