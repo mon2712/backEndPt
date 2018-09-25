@@ -12,8 +12,8 @@ public class Registro {
 	private String fecha;
 	private String tipo;
 	private int tiempo;
-	private int uno;
-	private int dos;
+	private int calificaciones[];
+	/*private int dos;
 	private int tres;
 	private int cuatro;
 	private int cinco;
@@ -21,7 +21,7 @@ public class Registro {
 	private int siete;
 	private int ocho;
 	private int nueve;
-	private int diez;
+	private int diez;*/
 	private String evaluacion;
 	private int numCien;
 	private int numNoventa;
@@ -124,7 +124,7 @@ public class Registro {
 	public void setTiempo(int tiempo) {
 		this.tiempo = tiempo;
 	}
-	public int getUno() {
+	/*public int getUno() {
 		return uno;
 	}
 	public void setUno(int uno) {
@@ -183,9 +183,15 @@ public class Registro {
 	}
 	public void setDiez(int diez) {
 		this.diez = diez;
-	}
+	}*/
 	public String getEvaluacion() {
 		return evaluacion;
+	}
+	public int[] getCalificaciones() {
+		return calificaciones;
+	}
+	public void setCalificaciones(int[] calificaciones) {
+		this.calificaciones = calificaciones;
 	}
 	public void setEvaluacion(String evaluacion) {
 		this.evaluacion = evaluacion;
@@ -198,40 +204,40 @@ public class Registro {
 	//}
 	
 	
-	 public void setCantidadCalificaciones(Registro rs, WorkingMemory wm) {
-		 rs.numCien=0;
-		 rs.numNoventa=0;
-		 rs.numOchenta=0;
-		 rs.numSetenta=0;
-		 rs.numFlecha=0;
-		 rs.numTriangulo=0;
-		 int[] calificaciones = new int[]{rs.uno, rs.dos, rs.tres, rs.cuatro, rs.cinco, rs.seis, rs.siete, rs.ocho, rs.nueve, rs.diez};
+	 public void setCantidadCalificaciones(WorkingMemory wm) {
+		 this.numCien=0;
+		 this.numNoventa=0;
+		 this.numOchenta=0;
+		 this.numSetenta=0;
+		 this.numFlecha=0;
+		 this.numTriangulo=0;
+		 //int[] calificaciones = new int[]{rs.uno, rs.dos, rs.tres, rs.cuatro, rs.cinco, rs.seis, rs.siete, rs.ocho, rs.nueve, rs.diez};
 		 for(int x=0; x<10;x++) {
-			 switch (calificaciones[x]){
+			 switch (this.calificaciones[x]){
 			 case 70:
-				 rs.numSetenta=rs.numSetenta+1;
+				 this.numSetenta=this.numSetenta+1;
 			 break;
 			 case 80:
-				 rs.numOchenta=rs.numOchenta+1;
-				 System.out.println("numOchenta: " + rs.numOchenta);
+				 this.numOchenta=this.numOchenta+1;
+				 System.out.println("numOchenta: " + this.numOchenta);
 			 break;
 			 case 90:
-				 rs.numNoventa=rs.numNoventa+1;
+				 this.numNoventa=this.numNoventa+1;
 			 break;
 			 case 100:
-				 rs.numCien=rs.numCien+1;
+				 this.numCien=this.numCien+1;
 			 break;
 			 case 110:
-				 rs.numTriangulo=rs.numTriangulo+1;
+				 this.numTriangulo=this.numTriangulo+1;
 			 break;
 			 case 120:
-				 rs.numFlecha=rs.numFlecha+1;
+				 this.numFlecha=this.numFlecha+1;
 			 break;
 			 
 				 
 			 }
 		 }
-		 wm.insert(rs);
+		 wm.insert(this);
 		 wm.fireAllRules();
 	 }
 	

@@ -315,9 +315,51 @@ public class Auxiliar {
 			e.printStackTrace();
 		}		
 	}
+	
+	public void executeProgramacion(WorkingMemory workingMemory, String array) {
+		JSONObject obj = new JSONObject(array);
+		
+		JSONObject results = obj.getJSONObject("resultsRegistro");
+		
+			JSONObject infoStudent = results.getJSONObject("infoStudent");
+
+			JSONArray cal = results.getJSONArray("calificaciones");
+			JSONObject time = results.getJSONObject("time");
+			String n;
+			System.out.println("tiempo " + time);
+			System.out.println("examenes " + cal );
+			System.out.println("infoStudent" +infoStudent.toString());
+			//System.out.println("para frecuencia inicial" + frecuenciaIncial.toString());
+			System.out.println("nivel" + infoStudent.getString("level"));
+			
+			n=infoStudent.getString("level");
+			String g=infoStudent.getString("grade");
+			String idStudent=infoStudent.getString("idStudent");
+			Alumno alumn = new Alumno();
+			Registro reg =  new Registro();
+			//alumn.setPuntajeDesempeño(desempeñoGeneral);
+		//workingMemory.insert(alumn);
+		//workingMemory.fireAllRules();
+			//System.out.println("Desempeño general: " +  alumn.getDesempeño());
+			alumn.setNivelActual(n);
+			alumn.setGrado(g);
+			alumn.setIdAlumno(idStudent);
+			String id;
+			reg.setIdAlumno(Integer.parseInt(alumn.getIdAlumno()));
+			int calif[] = new  int [10];
+			for(int i=0; i<10;i++) {
+				JSONObject res = (JSONObject) cal.get(i);
+				System.out.println("Hoja: " + i + " calficacion: " + calif[i]);
+			}
+			reg.setCantidadCalificaciones(workingMemory);
+			
+		//workingMemory.insert(pn);
+		//workingMemory.fireAllRules();
+			
+	}
 	public String crearJson() {
 		StringWriter swriter = new StringWriter();
-		String alumno[], testInicial[], desempeñoGral[], puntajeNivel[];
+		//String alumno[], testInicial[], desempeñoGral[], puntajeNivel[];
             try (JsonGenerator gen = Json.createGenerator(swriter)) {
             	gen.writeStartObject();
                 gen.writeStartObject("resultsTest");
@@ -361,6 +403,93 @@ public class Auxiliar {
 		                 gen.writeEnd();
 		            gen.writeEnd();
 		            gen.writeStartArray("startPoint");
+		             gen.writeStartObject();
+		                 gen.write("identificador", "fluidez");
+		                 gen.write("answer", "0");
+		                 gen.write("answerLbl", "Si");
+		             gen.writeEnd();
+		             gen.writeStartObject();
+			             gen.write("identificador", "concentracion");
+		                 gen.write("answer", "1");
+		                 gen.write("answerLbl", "Si");
+		             gen.writeEnd();
+		             gen.writeStartObject();
+			             gen.write("identificador", "trabajoB");
+		                 gen.write("answer", "1");
+		                 gen.write("answerLbl", "Si");
+		                 gen.writeEnd();
+		            /* gen.writeStartObject();
+			             gen.write("identificador", "cuenta");
+		                 gen.write("answer", "0");
+		                 gen.write("answerLbl", "No");
+		             gen.writeEnd();*/
+	            gen.writeEnd();
+                gen.writeEnd();
+                gen.writeEnd();
+            }
+        return swriter.toString(); 
+	}
+	
+	
+	public String crearJsonRegistro() {
+		StringWriter swriter = new StringWriter();
+		//String alumno[], testInicial[], desempeñoGral[], puntajeNivel[];
+            try (JsonGenerator gen = Json.createGenerator(swriter)) {
+            	gen.writeStartObject();
+                gen.writeStartObject("resultsRegistro");
+	                gen.write("set", "21");
+	                gen.write("time", "20");
+	                gen.writeStartObject("infoStudent");
+	                    //gen.writeStartObject();
+		                gen.write("level", "B");
+		                gen.write("grade", "1");
+		                gen.write("name", "Ximena Aguilar");
+		                gen.write("idStudent", "7");
+		                gen.write("startDate", "2017-03-02");
+		            gen.writeEnd();
+		            gen.writeStartArray("Calificaciones");
+			            gen.writeStartObject();
+			            	 gen.write("hoja","1");
+			                 gen.write("calif", "70");
+			             gen.writeEnd();
+			             gen.writeStartObject();
+			            	 gen.write("hoja","2");
+			                 gen.write("calif", "70");
+			             gen.writeEnd();
+			             gen.writeStartObject();
+			            	 gen.write("hoja","3");
+			                 gen.write("calif", "70");
+		                 gen.writeEnd();
+				         gen.writeStartObject();
+			            	 gen.write("hoja","4");
+			                 gen.write("calif", "70");
+			             gen.writeEnd();
+			             gen.writeStartObject();
+			            	 gen.write("hoja","5");
+			                 gen.write("calif", "70");
+			             gen.writeEnd();
+			             gen.writeStartObject();
+			            	 gen.write("hoja","6");
+			                 gen.write("calif", "70");
+		                 gen.writeEnd();
+			             gen.writeStartObject();
+			            	 gen.write("hoja","7");
+			                 gen.write("calif", "70");
+		                 gen.writeEnd();
+				         gen.writeStartObject();
+			            	 gen.write("hoja","8");
+			                 gen.write("calif", "70");
+			             gen.writeEnd();
+			             gen.writeStartObject();
+			            	 gen.write("hoja","9");
+			                 gen.write("calif", "70");
+			             gen.writeEnd();
+			             gen.writeStartObject();
+			            	 gen.write("hoja","10");
+			                 gen.write("calif", "70");
+		                 gen.writeEnd();
+		            gen.writeEnd();
+		            /*gen.writeStartArray("startPoint");
 		             gen.writeStartObject();
 		                 gen.write("identificador", "fluidez");
 		                 gen.write("answer", "0");
