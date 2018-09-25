@@ -12,63 +12,28 @@ rule "Evaluacion excelente"
     when
        registroObject: Registro(getNumNoventa()<=4)
        Registro(getNumCien()>=6)
+       Registro(getNumTriangulo()==0)
+       Registro(getNumOchenta()==0)
+       Registro(getNumSetenta()==0)
+       Registro(getNumFlecha()==0)
     then 
        registroObject.setEvaluacion("Excelente");
 end
 rule "Evaluacion buena"
-    salience 0
+    salience 1
 	dialect "java"
     when
        registroObject: Registro((getNumTriangulo() + getNumFlecha())<=4)
        Registro(getNumCien()>=4)
-       //Registro(getNumOchenta() + getNumNoventa() + getNumSetenta == 10 - getNumTriangulo() + getNumFlecha() + getNumCien())
+       //Registro((getNumOchenta() + getNumNoventa() + getNumSetenta())>=2)
     then 
     	registroObject.setEvaluacion("Buena");
 end
 rule "Evaluacion mala"
-    salience 0
+    salience 2
 	dialect "java"
     when
        registroObject: Registro((getNumTriangulo() + getNumFlecha())>4)
     then 
     	registroObject.setEvaluacion("Mala");
-end
-//---Cambio de Prog Diaria-----------------------------------------------------------------------------------------------------------------------------------------------
-rule "Disminuir frecuencia"
-    salience 0
-	dialect "java"
-    when
-       registroObject: Registro(getEvaluacion=="Excelente")
-       Registro(getTime()<=getNivel().getMaxTime())
-       Registro(getNivel().getFrecuencias().indexOf(Registro(getFrec()))>0)
-    then 
-    	System.out.rintln("DISMINUYE");
-    	
-rule "Mantener frecuencia"
-    salience 0
-	dialect "java"
-    when
-       (registroObject: Registro(getEvaluacion=="Excelente")
-       Registro(getTime()<=getNivel().getMaxTime())
-       Registro(getNivel().getFrecuencias().indecOf()==0)) || 
-       (registroObject: Registro(getEvaluacion=="Excelente")
-       Registro(getTime()>getNivel().getMaxTime())) || 
-       (registroObject: Registro(getEvaluacion=="Buena")
-       Registro(getTime()<=getNivel().getMaxTime()))
-    then 
-    	 System.out.rintln("PERMANECE");
-    	 
- rule "Aumentar frecuencia"
-    salience 0
-	dialect "java"
-    when
-       (registroObject: Registro(getEvaluacion=="Buena")
-       Registro(getTime()>getNivel().getMaxTime())
-       Registro(getNivel().getFrecuencias().indecOf()==0)) || 
-       (registroObject: Registro(getEvaluacion=="Excelente")
-       Registro(getTime()>getNivel().getMaxTime())) || 
-       (registroObject: Registro(getEvaluacion=="Buena")
-       Registro(getTime()<=getNivel().getMaxTime()))
-    then 
-    	 System.out.rintln("AUMENTAR");
 end

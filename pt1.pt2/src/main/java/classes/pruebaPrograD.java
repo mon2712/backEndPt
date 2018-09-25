@@ -27,7 +27,7 @@ public class pruebaPrograD {
 
 			PackageBuilder packageBuilder = new PackageBuilder();
 
-			String ruleFile = "../rules/proyeccionNivel.drl";
+			String ruleFile = "../rules/registro_progDiaria.drl";
 			InputStream resourceAsStream = getClass().getResourceAsStream(ruleFile);
 
 			Reader reader = new InputStreamReader(resourceAsStream);
