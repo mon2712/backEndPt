@@ -20,7 +20,7 @@ public class pruebaProg {
 		//aux.executeFrecuencias(wk);
 		//aux.executeFrecInicial(wk, arrayJson);
 		//aux.exFrecuencias(wk,2);
-		
-	}
 
+	}
 }
+

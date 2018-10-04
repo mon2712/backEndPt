@@ -228,7 +228,7 @@ public class Registro {
 			 break;
 			 case 80:
 				 r.numOchenta=r.numOchenta+1;
-				 System.out.println("numOchenta: " + r.numOchenta);
+				 //System.out.println("numOchenta: " + r.numOchenta);
 			 break;
 			 case 90:
 				 r.numNoventa=r.numNoventa+1;
@@ -248,7 +248,7 @@ public class Registro {
 		 }
 		 wm.insert(r);
 		 wm.fireAllRules();
-		 System.out.println(r.getEvaluacion());
+		 //System.out.println(r.getEvaluacion());
 	 }
 	
 }

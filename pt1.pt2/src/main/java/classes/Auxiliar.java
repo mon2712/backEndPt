@@ -326,12 +326,12 @@ public class Auxiliar {
 			JSONArray cal = results.getJSONArray("calificaciones");
 			int time = results.getInt("time");
 			String n;
-			System.out.println("tiempo " + time);
+			/*System.out.println("tiempo " + time);
 			System.out.println("calificaciones " + cal );
 			System.out.println("infoStudent" +infoStudent.toString());
 			//System.out.println("para frecuencia inicial" + frecuenciaIncial.toString());
 			System.out.println("nivel " + infoStudent.getString("level"));
-			
+			*/
 			n=infoStudent.getString("level");
 			String g=infoStudent.getString("grade");
 			String idStudent=infoStudent.getString("idStudent");
@@ -350,26 +350,28 @@ public class Auxiliar {
 			for(int i=0; i<10;i++) {
 				JSONObject res = (JSONObject) cal.get(i);
 				calif[i]=res.getInt("calif");
-				System.out.println("Hoja: " + (i+1) + " calficacion: " + calif[i]);
+				//System.out.println("Hoja: " + (i+1) + " calficacion: " + calif[i]);
 			}
 			reg.setCalificaciones(calif);
-			
 			reg.setCantidadCalificaciones(reg,workingMemory);
-			System.out.println(
-			" 100: " + reg.getNumCien() +
-			" flecha: " + reg.getNumFlecha() +
-			" 90: " + reg.getNumNoventa() +
-			" 80: " + reg.getNumOchenta() +
-			" 70: " + reg.getNumSetenta() +
-			" triangulo: " + reg.getNumTriangulo());
-			//workingMemory.insert(reg);
+			if (reg.getEvaluacion() == "Mala") {	
+				System.out.println(
+				" 100: " + reg.getNumCien() +
+				" flecha: " + reg.getNumFlecha() +
+				" 90: " + reg.getNumNoventa() +
+				" 80: " + reg.getNumOchenta() +
+				" 70: " + reg.getNumSetenta() +
+				" triangulo: " + reg.getNumTriangulo());
+				//workingMemory.insert(reg);
+				//workingMemory.fireAllRules();
+				System.out.println(reg.getEvaluacion());
+				//System.out.println(reg.getAccion());
+			//workingMemory.insert(pn);
 			//workingMemory.fireAllRules();
-			System.out.println(reg.getEvaluacion());
-			//System.out.println(reg.getAccion());
-		//workingMemory.insert(pn);
-		//workingMemory.fireAllRules();
+			}
 			
 	}
+	
 	public String crearJson() {
 		StringWriter swriter = new StringWriter();
 		//String alumno[], testInicial[], desempeñoGral[], puntajeNivel[];
@@ -501,6 +503,66 @@ public class Auxiliar {
 			            	 gen.write("hoja","10");
 			                 gen.write("calif", "100");
 		                 gen.writeEnd();
+		            gen.writeEnd();
+                gen.writeEnd();
+                gen.writeEnd();
+            }
+        return swriter.toString(); 
+	}
+	
+	public String crearJsonRegistro2(int f, int t, int s, int o, int n, int c) {
+		StringWriter swriter = new StringWriter();
+		//String alumno[], testInicial[], desempeñoGral[], puntajeNivel[];
+            try (JsonGenerator gen = Json.createGenerator(swriter)) {
+            	gen.writeStartObject();
+                gen.writeStartObject("resultsRegistro");
+	                gen.write("set", "21");
+	                gen.write("time", "20");
+	                gen.writeStartObject("infoStudent");
+	                    //gen.writeStartObject();
+		                gen.write("level", "B");
+		                gen.write("grade", "1");
+		                gen.write("name", "Ximena Aguilar");
+		                gen.write("idStudent", "7");
+		                gen.write("startDate", "2017-03-02");
+		            gen.writeEnd();
+		            gen.writeStartArray("calificaciones");
+		            for(int i=1; i<=t;i++) {
+		            	gen.writeStartObject();
+			            	 gen.write("hoja", i);
+			                 gen.write("calif", "110");
+		                gen.writeEnd();
+		            }
+		            for(int i=(t+1); i<=(t+f);i++) {
+		            	gen.writeStartObject();
+			            	 gen.write("hoja", i);
+			                 gen.write("calif", "120");
+		                gen.writeEnd();
+		            }
+		            for(int i=(t+f+1); i<=(t+f+c);i++) {
+		            	gen.writeStartObject();
+			            	 gen.write("hoja", i);
+			                 gen.write("calif", "100");
+		                gen.writeEnd();
+		            }
+		            for(int i=(t+f+c+1); i<=(t+f+c+n);i++) {
+		            	gen.writeStartObject();
+			            	 gen.write("hoja", i);
+			                 gen.write("calif", "90");
+		                gen.writeEnd();
+		            }
+		            for(int i=(t+f+c+n+1); i<=(t+f+c+n+o);i++) {
+		            	gen.writeStartObject();
+			            	 gen.write("hoja", i);
+			                 gen.write("calif", "80");
+		                gen.writeEnd();
+		            }
+		            for(int i=(t+f+c+n+o+1); i<=(t+f+c+n+o+s);i++) {
+		            	gen.writeStartObject();
+			            	 gen.write("hoja", i);
+			                 gen.write("calif", "70");
+		                gen.writeEnd();
+		            }
 		            gen.writeEnd();
                 gen.writeEnd();
                 gen.writeEnd();

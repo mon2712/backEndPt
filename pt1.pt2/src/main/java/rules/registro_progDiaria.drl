@@ -33,7 +33,7 @@ rule "Evaluacion mala"
     salience 2
 	dialect "java"
     when
-       registroObject: Registro((getNumTriangulo() + getNumFlecha())>4)
+       registroObject: Registro(getEvaluacion() == null)
     then 
     	registroObject.setEvaluacion("Mala");
 end
