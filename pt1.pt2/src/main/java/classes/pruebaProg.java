@@ -16,7 +16,7 @@ public class pruebaProg {
 		JSONObject obj = new JSONObject(arrayJson);
 		WorkingMemory wk=aux.conexionDrools();
 		JSONObject results = obj.getJSONObject("resultsRegistro");
-		aux.executeProgramacion(wk, arrayJson);
+		aux.executeProg(wk, arrayJson);
 		//aux.executeFrecuencias(wk);
 		//aux.executeFrecInicial(wk, arrayJson);
 		//aux.exFrecuencias(wk,2);

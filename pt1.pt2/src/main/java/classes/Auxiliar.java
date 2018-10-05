@@ -354,21 +354,77 @@ public class Auxiliar {
 			}
 			reg.setCalificaciones(calif);
 			reg.setCantidadCalificaciones(reg,workingMemory);
-			if (reg.getEvaluacion() == "Mala") {	
-				System.out.println(
-				" 100: " + reg.getNumCien() +
-				" flecha: " + reg.getNumFlecha() +
-				" 90: " + reg.getNumNoventa() +
-				" 80: " + reg.getNumOchenta() +
-				" 70: " + reg.getNumSetenta() +
-				" triangulo: " + reg.getNumTriangulo());
+			//if (reg.getEvaluacion() == "Mala") {	
+				System.out.print(
+				" Num100: " + reg.getNumCien() +
+				" NumFlecha: " + reg.getNumFlecha() +
+				" Num90: " + reg.getNumNoventa() +
+				" Num80: " + reg.getNumOchenta() +
+				" Num70: " + reg.getNumSetenta() +
+				" NumTriangulo: " + reg.getNumTriangulo() + " Evaluacion:");
 				//workingMemory.insert(reg);
 				//workingMemory.fireAllRules();
 				System.out.println(reg.getEvaluacion());
 				//System.out.println(reg.getAccion());
 			//workingMemory.insert(pn);
 			//workingMemory.fireAllRules();
+			//}
+			
+	}
+	
+	public void executeProg(WorkingMemory workingMemory, String array) {
+		JSONObject obj = new JSONObject(array);
+		
+		JSONObject results = obj.getJSONObject("resultsRegistro");
+		
+			JSONObject infoStudent = results.getJSONObject("infoStudent");
+
+			JSONArray cal = results.getJSONArray("calificaciones");
+			int time = results.getInt("time");
+			String n;
+			System.out.println("tiempo " + time);
+			System.out.println("calificaciones " + cal );
+			System.out.println("infoStudent" +infoStudent.toString());
+			//System.out.println("para frecuencia inicial" + frecuenciaIncial.toString());
+			System.out.println("nivel " + infoStudent.getString("level"));
+			
+			n=infoStudent.getString("level");
+			String g=infoStudent.getString("grade");
+			String idStudent=infoStudent.getString("idStudent");
+			Alumno alumn = new Alumno();
+			Registro reg =  new Registro();
+			//alumn.setPuntajeDesempeño(desempeñoGeneral);
+		//workingMemory.insert(alumn);
+		//workingMemory.fireAllRules();
+			//System.out.println("Desempeño general: " +  alumn.getDesempeño());
+			alumn.setNivelActual(n);
+			alumn.setGrado(g);
+			alumn.setIdAlumno(idStudent);
+			String id;
+			reg.setIdAlumno(Integer.parseInt(alumn.getIdAlumno()));
+			int calif[] = new  int [10];
+			for(int i=0; i<10;i++) {
+				JSONObject res = (JSONObject) cal.get(i);
+				calif[i]=res.getInt("calif");
+				//System.out.println("Hoja: " + (i+1) + " calficacion: " + calif[i]);
 			}
+			reg.setCalificaciones(calif);
+			reg.setCantidadCalificaciones(reg,workingMemory);
+			//if (reg.getEvaluacion() == "Mala") {	
+				System.out.print(
+				" Num100: " + reg.getNumCien() +
+				" NumFlecha: " + reg.getNumFlecha() +
+				" Num90: " + reg.getNumNoventa() +
+				" Num80: " + reg.getNumOchenta() +
+				" Num70: " + reg.getNumSetenta() +
+				" NumTriangulo: " + reg.getNumTriangulo() + " Evaluacion:");
+				//workingMemory.insert(reg);
+				//workingMemory.fireAllRules();
+				System.out.println(reg.getEvaluacion());
+				//System.out.println(reg.getAccion());
+			//workingMemory.insert(pn);
+			//workingMemory.fireAllRules();
+			//}
 			
 	}
 	
@@ -433,11 +489,6 @@ public class Auxiliar {
 		                 gen.write("answer", "1");
 		                 gen.write("answerLbl", "Si");
 		                 gen.writeEnd();
-		            /* gen.writeStartObject();
-			             gen.write("identificador", "cuenta");
-		                 gen.write("answer", "0");
-		                 gen.write("answerLbl", "No");
-		             gen.writeEnd();*/
 	            gen.writeEnd();
                 gen.writeEnd();
                 gen.writeEnd();
