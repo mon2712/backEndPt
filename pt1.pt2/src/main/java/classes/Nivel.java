@@ -1,8 +1,15 @@
 package classes;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Nivel {
+	
+	
 	public static final int DESEMPEÑO_ALTO = 0;
 	public static final int DESEMPEÑO_MEDIO= 1;
 	public static final int DESEMPEÑO_BAJO = 2;
@@ -19,7 +26,7 @@ public class Nivel {
 	private int mintime;
 	private int maxTime;
 	
-	
+    
 	
 	public int getMintime() {
 		return mintime;
@@ -117,4 +124,34 @@ public class Nivel {
 	public String getNivelMessage() {
 		return desempeñoMessage;
 	}
+	
+	public void setearValores(String nombre, Connection conn) throws SQLException {
+		String getQueryStatement = "select * from nivel where nombre='"+nombre+"';";
+		PreparedStatement prepareStat = conn.prepareStatement(getQueryStatement);
+		ResultSet rs = prepareStat.executeQuery();
+		while(rs.next()) {
+			this.idNivel=rs.getInt(1);
+			this.mintime=rs.getInt(3);
+			this.maxTime=rs.getInt(4); 
+		}
+		List<Double> Frec=new ArrayList<Double>();
+		List<String> Incisos=new ArrayList<String>();
+		getQueryStatement = "SELECT frecuenciaEstudio,tipo FROM ProyeccionNivel where Nivel_idNivel='" + this.idNivel + "'order by frecuenciaEstudio";
+		try {
+			prepareStat = conn.prepareStatement(getQueryStatement);
+			rs = prepareStat.executeQuery();
+
+	        while(rs.next()) {
+	        	Frec.add(rs.getDouble(1));
+	        	Incisos.add(rs.getString(2));
+	        	this.setFrecuencias(Frec);
+	        	this.setTipos(Incisos);System.out.println("Frecuencia: " + rs.getDouble(1) + "Tipos: " + rs.getString(2));
+	        }
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+  
+	}
+	
 }

@@ -10,6 +10,7 @@ import org.json.JSONObject;
 public class pruebaCombinaciones{
 	public static void main(String[] args) throws DroolsParserException, IOException{
 		Auxiliar aux= new Auxiliar();
+		String fileRules1="../rules/registro_progDiaria.drl";
 		//int flecha, triangulo, setenta, ochenta,noventa, cien, c1, c2, c3;
 		int digitos=6, posibles=11,c1, c2;
 		int num[]= {0,1,2,3,4,5,6,7,8,9,10}, combinaciones[][]=new int[digitos][((int) Math.pow(posibles,(digitos-1)))*posibles], combinaciones2[][]=new int[((int) Math.pow(posibles,(digitos-1)))*posibles][digitos];
@@ -93,7 +94,7 @@ public class pruebaCombinaciones{
             
             String arrayJson=aux.crearJsonRegistro2(combinaciones3[j][0], combinaciones3[j][1], combinaciones3[j][2], combinaciones3[j][3], combinaciones3[j][4],combinaciones3[j][5]);
      		JSONObject obj = new JSONObject(arrayJson);
-     		WorkingMemory wk=aux.conexionDrools();
+     		WorkingMemory wk=aux.conexionDrools(fileRules1);
      		JSONObject results = obj.getJSONObject("resultsRegistro");
      		aux.executeProgramacion(wk, arrayJson);
           //IMPRESION DE RESULTADO DE EVALUACION

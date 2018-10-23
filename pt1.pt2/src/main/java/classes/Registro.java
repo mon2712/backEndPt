@@ -13,25 +13,8 @@ public class Registro {
 	private String tipo;
 	private int tiempo;
 	private int calificaciones[];
-	/*private int dos;
-	private int tres;
-	private int cuatro;
-	private int cinco;
-	private int seis;
-	private int siete;
-	private int ocho;
-	private int nueve;
-	private int diez;*/
 	private String evaluacion;
 	private String accion;
-	public String getAccion() {
-		return accion;
-	}
-	public void setAccion(String accion) {
-		this.accion = accion;
-	}
-
-
 	private int numCien;
 	private int numNoventa;
 	private int numOchenta;
@@ -41,7 +24,12 @@ public class Registro {
 	private Nivel nivel;
 	private float frec;
 	
-	
+	public void setAccion(String accion) {
+		this.accion = accion;
+	}
+	public String getAccion() {
+		return accion;
+	}
 	public float getFrec() {
 		return frec;
 	}
@@ -213,41 +201,41 @@ public class Registro {
 	//}
 	
 	
-	 public void setCantidadCalificaciones(Registro r,WorkingMemory wm) {
-		 r.numCien=0;
-		 r.numNoventa=0;
-		 r.numOchenta=0;
-		 r.numSetenta=0;
-		 r.numFlecha=0;
-		 r.numTriangulo=0;
+	 public void setCantidadCalificaciones() {
+		 this.numCien=0;
+		 this.numNoventa=0;
+		 this.numOchenta=0;
+		 this.numSetenta=0;
+		 this.numFlecha=0;
+		 this.numTriangulo=0;
 		 //int[] calificaciones = new int[]{rs.uno, rs.dos, rs.tres, rs.cuatro, rs.cinco, rs.seis, rs.siete, rs.ocho, rs.nueve, rs.diez};
 		 for(int x=0; x<10;x++) {
-			 switch (r.calificaciones[x]){
+			 switch (this.calificaciones[x]){
 			 case 70:
-				 r.numSetenta=r.numSetenta+1;
+				 this.numSetenta=this.numSetenta+1;
 			 break;
 			 case 80:
-				 r.numOchenta=r.numOchenta+1;
+				 this.numOchenta=this.numOchenta+1;
 				 //System.out.println("numOchenta: " + r.numOchenta);
 			 break;
 			 case 90:
-				 r.numNoventa=r.numNoventa+1;
+				 this.numNoventa=this.numNoventa+1;
 			 break;
 			 case 100:
-				 r.numCien=r.numCien+1;
+				 this.numCien=this.numCien+1;
 			 break;
 			 case 110:
-				 r.numTriangulo=r.numTriangulo+1;
+				 this.numTriangulo=this.numTriangulo+1;
 			 break;
 			 case 120:
-				 r.numFlecha=r.numFlecha+1;
+				 this.numFlecha=this.numFlecha+1;
 			 break;
 			 
 				 
 			 }
 		 }
-		 wm.insert(r);
-		 wm.fireAllRules();
+		 //wm.insert(r);
+		 //wm.fireAllRules();
 		 //System.out.println(r.getEvaluacion());
 	 }
 	

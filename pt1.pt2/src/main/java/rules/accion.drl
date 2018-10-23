@@ -4,62 +4,27 @@
 package rules
 import classes.Registro;
 
-//---Prog Diaria-----------------------------------------------------------------------------------------------------------------------------------------------
-//---CLASIFICACIÓN DE LA EVALUACIÓN-----------------------------------------------------------------------------------------------------------------------------------------------
-/*
-rule "Evaluacion mala"
-    salience 3
-	dialect "java"
-    when
-       registroObject: Registro(evaluacion == null)
-    then 
-    	registroObject.setEvaluacion("Mala");
-end
-rule "Evaluacion buena"
-    salience 2
-	dialect "java"
-    when
-       registroObject: Registro((numTriangulo  + numFlecha)<=4)
-       Registro(numCien >=4)
-       //Registro((numOchenta + numNoventa + numSetenta)>=2)
-    then 
-    	registroObject.setEvaluacion("Buena");
-end*/
-rule "Evaluacion excelente"
-	salience 3
-	dialect "java"
-    when
-       registroObject: Registro(numNoventa <=4)
-       Registro(numCien >=6)
-       Registro(numTriangulo ==0)
-       Registro(numOchenta ==0)
-       Registro(numSetenta ==0)
-       Registro(numFlecha ==0)
-    then 
-       registroObject.setEvaluacion("Excelente");
-end
 //---Cambio de Prog Diaria-----------------------------------------------------------------------------------------------------------------------------------------------
+rule "Disminuir frecuencia"
+    salience 0
+	dialect "java"
+    when
+       registroObject: Registro(getEvaluacion()=="Excelente")
+       Registro(getTiempo() <= (getNivel().getMaxTime()*10))
+       //Registro(getNivel().getFrecuencias().indexOf(getFrec())>0)
+    then 
+       registroObject.setAccion("DISMINUYE");
+end
 /*
 rule "Disminuir frecuencia"
     salience 0
 	dialect "java"
     when
        registroObject: Registro(getEvaluacion()=="Excelente")
-       //Registro(getTiempo() <= (getNivel().getMaxTime()*10))
-       //Registro(getNivel().getFrecuencias().indexOf(getFrec())>0)
+       Registro(getTiempo() <= (getNivel().getMaxTime()*10))
+       Registro(getNivel().getFrecuencias().indexOf(getFrec())>0)
     then 
-       registroObject.setAccion("DIs");
-       //System.out.println("DISMINUYE");
-end
-rule "Disminuir frecuencia"
-    salience 0
-	dialect "java"
-    when
-       registroObject: Registro(getEvaluacion()=="Excelente")
-       //Registro(getTiempo() <= (getNivel().getMaxTime()*10))
-       //Registro(getNivel().getFrecuencias().indexOf(getFrec())>0)
-    then 
-       registroObject.setAccion("DI");
+       registroObject.setAccion("DISMINUYE");
     	//System.out.println("DISMINUYE");
 end
 rule "Mantener frecuencia"

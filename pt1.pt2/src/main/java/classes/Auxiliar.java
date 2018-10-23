@@ -31,12 +31,13 @@ import org.kie.internal.KnowledgeBaseFactory;
 public class Auxiliar {
 	
 	static PreparedStatement prepareStat = null;
-    private static Connection conn = BaseDatos.conectarBD();
+    Connection conn = BaseDatos.conectarBD();
     
 	public float frecuenciaInicial;
 	public String nivelInicial;
 	public String[] respuestasUbicacion;
 	public int desempeñoGral;
+	public int contadorMala=0;
 	//public String[] respuestasRegistro;
 	//public int[] calificaciones;
 	//public String[] nivelUbicacion;
@@ -49,11 +50,11 @@ public class Auxiliar {
 		droolsTest.executeDrools();
 	}*/
 		
-	public WorkingMemory conexionDrools() throws DroolsParserException, IOException {
+	public WorkingMemory conexionDrools(String ruleFile) throws DroolsParserException, IOException {
 
 		PackageBuilder pB = new PackageBuilder();
 		//String ruleFile = "../rules/proyeccionNivel.drl";
-		String ruleFile = "../rules/registro_progDiaria.drl";
+		//String ruleFile = "../rules/registro_progDiaria.drl";
 		InputStream resourceAsStream = getClass().getResourceAsStream(ruleFile);
 
 		Reader reader = new InputStreamReader(resourceAsStream);
@@ -65,10 +66,40 @@ public class Auxiliar {
 		WorkingMemory workingMemory = rB.newStatefulSession();
 		
 		return workingMemory;
-		
 	}
+	
 	public void exFrecuencias(WorkingMemory workingMemory,ProyeccionNivel pn, String desempeñosNivel[], String n[]) throws SQLException {
-		String getQueryStatementN ="Select idNivel from Nivel where nombre='"+ pn.getAlumno().getNivelActual()+"';";
+		//Nueva estructuracion
+		Nivel nivelActual = new Nivel();
+		String nombreNivel=pn.getAlumno().getNivelActual(); 
+		nivelActual.setearValores(nombreNivel, conn);
+		int nivelUbicacion=nivelActual.getIdNivel();
+		System.out.println();
+        System.out.println("______________________________________________________________");
+		int dimension = 6 - nivelUbicacion+1;
+		
+		Nivel[] niveles = new Nivel[dimension];
+		double frecInicial = pn.getFrecuenciaEstudio();
+		String inciso = pn.getFrecuenciaInciso();
+		
+		//para obtener las frecuencias de estudio de cada nivel
+		for(int x =nivelUbicacion; x<=6; x++) {
+	        niveles[x-nivelUbicacion] = new Nivel();
+	        niveles[x-nivelUbicacion].setearValores(n[x-nivelUbicacion], conn);
+			niveles[x-nivelUbicacion].setDesempeñoGeneral(pn.getAlumno().getDesempeño());
+			niveles[x-nivelUbicacion].setDesempeñoNivel(desempeñosNivel[x-nivelUbicacion]);
+			
+			workingMemory.insert(niveles[x-nivelUbicacion]);
+			workingMemory.fireAllRules();
+	        
+		}
+		
+		
+		
+		
+		
+		//Vieja estructuracion
+		/*String getQueryStatementN ="Select idNivel from Nivel where nombre='"+ pn.getAlumno().getNivelActual()+"';";
         prepareStat = conn.prepareStatement(getQueryStatementN);
         ResultSet rsN = prepareStat.executeQuery();
        // System.out.println(rsN.getString(0));
@@ -92,7 +123,7 @@ public class Auxiliar {
 		//System.out.println("Frecuencia inicial: " + frecInicial+ inciso );
 		
 		//List<Double> Frec=new ArrayList<Double>();
-		
+		//para obtenr las frecuencis de estudio de cada nivel
 		for(int x =nivelUbicacion; x<=6; x++) {
 			List<Double> Frec=new ArrayList<Double>();
 			List<String> Incisos=new ArrayList<String>();
@@ -101,18 +132,15 @@ public class Auxiliar {
 			getQueryStatement = "SELECT frecuenciaEstudio,tipo FROM ProyeccionNivel where Nivel_idNivel="+Integer.toString(x)+" order by frecuenciaEstudio;";
 	        prepareStat = conn.prepareStatement(getQueryStatement);
 	        rs = prepareStat.executeQuery();
-			int i=0;
+			//int i=0;
 			
 	        while(rs.next()) {
 	        	Frec.add(rs.getDouble(1));
 	        	Incisos.add(rs.getString(2));
-	        	i++;
+	        	//i++;
 	        }
 	        
-	        
-	        //System.out.println(" nivel: "+ n + " Freceuncias: " + Frec);
-			//System.out.println(" x: "+ x + " nivelUbicacion: " + nivelUbicacion+ " indice: " + (x-nivelUbicacion));
-			niveles[x-nivelUbicacion] = new Nivel();
+	        niveles[x-nivelUbicacion] = new Nivel();
 			niveles[x-nivelUbicacion].setIdNivel(x);
 			//System.out.println("Niveles en la segunda: " + Arrays.asList(n));
 			niveles[x-nivelUbicacion].setNombreNivel(n[x-nivelUbicacion]);
@@ -136,7 +164,7 @@ public class Auxiliar {
 	        //int size= Frec.size();
 	        //System.out.println("size: "+ size);
 	        
-		}
+		}*/
 		double []frecProy = new double [6-nivelUbicacion+1];
 		String []frecProyTipo = new String [6-nivelUbicacion+1];
 		int size, frecOriginal, s=0, indiceActual=0, mov=0, totalF=0, err;
@@ -315,7 +343,7 @@ public class Auxiliar {
 			e.printStackTrace();
 		}		
 	}
-	
+	//PARA COMBINACIONES
 	public void executeProgramacion(WorkingMemory workingMemory, String array) {
 		JSONObject obj = new JSONObject(array);
 		
@@ -337,6 +365,7 @@ public class Auxiliar {
 			String idStudent=infoStudent.getString("idStudent");
 			Alumno alumn = new Alumno();
 			Registro reg =  new Registro();
+			Nivel niv= new Nivel();
 			//alumn.setPuntajeDesempeño(desempeñoGeneral);
 		//workingMemory.insert(alumn);
 		//workingMemory.fireAllRules();
@@ -353,26 +382,31 @@ public class Auxiliar {
 				//System.out.println("Hoja: " + (i+1) + " calficacion: " + calif[i]);
 			}
 			reg.setCalificaciones(calif);
-			reg.setCantidadCalificaciones(reg,workingMemory);
-			//if (reg.getEvaluacion() == "Mala") {	
+			reg.setCantidadCalificaciones();
+			String ev="Mala";
+			workingMemory.insert(reg);
+			workingMemory.fireAllRules();
+			if (reg.getEvaluacion()=="Excelente") {	
+			//	contadorMala++;
 				System.out.print(
-				" Num100: " + reg.getNumCien() +
-				" NumFlecha: " + reg.getNumFlecha() +
-				" Num90: " + reg.getNumNoventa() +
-				" Num80: " + reg.getNumOchenta() +
-				" Num70: " + reg.getNumSetenta() +
-				" NumTriangulo: " + reg.getNumTriangulo() + " Evaluacion:");
-				//workingMemory.insert(reg);
-				//workingMemory.fireAllRules();
+						" Num100: " + reg.getNumCien() +
+						" Num90: " + reg.getNumNoventa() +
+						" Num80: " + reg.getNumOchenta() +
+						" Num70: " + reg.getNumSetenta() +
+						" NumTriangulo: " + reg.getNumTriangulo() +
+						" NumFlecha: " + reg.getNumFlecha() + " Evaluacion:" );
+				
 				System.out.println(reg.getEvaluacion());
 				//System.out.println(reg.getAccion());
 			//workingMemory.insert(pn);
 			//workingMemory.fireAllRules();
-			//}
+				//System.out.println("Evaluaciones malas: " + contadorMala);
+			}
+			//System.out.println("Evalucacion:  " + reg.getEvaluacion());
 			
 	}
-	
-	public void executeProg(WorkingMemory workingMemory, String array) {
+	//PARA UN SOLO REGISTRO
+	public void executeProg(WorkingMemory workingMemory, WorkingMemory workingMemory2, String array) {
 		JSONObject obj = new JSONObject(array);
 		
 		JSONObject results = obj.getJSONObject("resultsRegistro");
@@ -393,6 +427,17 @@ public class Auxiliar {
 			String idStudent=infoStudent.getString("idStudent");
 			Alumno alumn = new Alumno();
 			Registro reg =  new Registro();
+			//reg.setIdAlumno(idStudent);
+			reg.setTiempo(time);
+			Nivel niv =  new Nivel();
+			try {
+				niv.setearValores(n, conn);
+				reg.setNivel(niv);
+				System.out.println("Tiempo maximo del nivel: " + reg.getNivel().getMaxTime());
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			//alumn.setPuntajeDesempeño(desempeñoGeneral);
 		//workingMemory.insert(alumn);
 		//workingMemory.fireAllRules();
@@ -409,25 +454,44 @@ public class Auxiliar {
 				//System.out.println("Hoja: " + (i+1) + " calficacion: " + calif[i]);
 			}
 			reg.setCalificaciones(calif);
-			reg.setCantidadCalificaciones(reg,workingMemory);
-			//if (reg.getEvaluacion() == "Mala") {	
+			reg.setCantidadCalificaciones();
+			//if (reg.getEvaluacion() == "Buena") {	
+			//reg.setEvaluacion("Excelente");
+			workingMemory.insert(reg);
+			workingMemory.fireAllRules();
+				contadorMala++;
 				System.out.print(
-				" Num100: " + reg.getNumCien() +
-				" NumFlecha: " + reg.getNumFlecha() +
-				" Num90: " + reg.getNumNoventa() +
-				" Num80: " + reg.getNumOchenta() +
-				" Num70: " + reg.getNumSetenta() +
-				" NumTriangulo: " + reg.getNumTriangulo() + " Evaluacion:");
-				//workingMemory.insert(reg);
-				//workingMemory.fireAllRules();
-				System.out.println(reg.getEvaluacion());
-				//System.out.println(reg.getAccion());
+				" Num100:" + reg.getNumCien() +
+				" Num90:" + reg.getNumNoventa() +
+				" Num80:" + reg.getNumOchenta() +
+				" Num70:" + reg.getNumSetenta() +
+				" NumTriangulo:" + reg.getNumTriangulo() +
+				" NumFlecha:" + reg.getNumFlecha() + " Evaluacion:" + reg.getEvaluacion());
+				//System.out.println("Resutado consulta: " + reg.getNivel().getIdNivel() + " minTime: " + reg.getNivel().getMintime() + " maxTime " + reg.getNivel().getMaxTime());
+				//sSystem.out.println(reg.getTiempo() +"<= ("+ reg.getNivel().getMaxTime()*10);
+				//System.out.println(reg.getEvaluacion());
+				//if(reg.getEvaluacion().equals("Exce")){
+				workingMemory2.insert(reg);
+				workingMemory2.fireAllRules();
+				//if(reg.getNivel().getFrecuencias().indexOf(reg.getFrec())>0) {
+					
+					System.out.println("Hola"+ reg.getFrec());
+				//}
+				System.out.println(" Accion: " + reg.getAccion());
+				//AQUI HAY QUE AGREGAR LA CONSULTA
+				//this.getFrecuencias(alumn.getn ), reg.getNivel());
+				System.out.println("Frecuencias: " + reg.getNivel().getFrecuencias() + "Tipos: " + reg.getNivel().getTipos());
+				//}
 			//workingMemory.insert(pn);
 			//workingMemory.fireAllRules();
+				
 			//}
-			
+				
+				
+				//System.out.println(" Evaluaciones malas: " + contadorMala);
 	}
 	
+//Creación deJsons
 	public String crearJson() {
 		StringWriter swriter = new StringWriter();
 		//String alumno[], testInicial[], desempeñoGral[], puntajeNivel[];
@@ -516,7 +580,7 @@ public class Auxiliar {
 		            gen.writeStartArray("calificaciones");
 			            gen.writeStartObject();
 			            	 gen.write("hoja","1");
-			                 gen.write("calif", "110");
+			                 gen.write("calif", "100");
 			             gen.writeEnd();
 			             gen.writeStartObject();
 			            	 gen.write("hoja","2");
@@ -544,15 +608,15 @@ public class Auxiliar {
 		                 gen.writeEnd();
 				         gen.writeStartObject();
 			            	 gen.write("hoja","8");
-			                 gen.write("calif", "100");
+			                 gen.write("calif", "90");
 			             gen.writeEnd();
 			             gen.writeStartObject();
 			            	 gen.write("hoja","9");
-			                 gen.write("calif", "100");
+			                 gen.write("calif", "90");
 			             gen.writeEnd();
 			             gen.writeStartObject();
 			            	 gen.write("hoja","10");
-			                 gen.write("calif", "100");
+			                 gen.write("calif", "90");
 		                 gen.writeEnd();
 		            gen.writeEnd();
                 gen.writeEnd();
@@ -560,7 +624,7 @@ public class Auxiliar {
             }
         return swriter.toString(); 
 	}
-	
+	//JSON PARA COMBINACIONES
 	public String crearJsonRegistro2(int f, int t, int s, int o, int n, int c) {
 		StringWriter swriter = new StringWriter();
 		//String alumno[], testInicial[], desempeñoGral[], puntajeNivel[];

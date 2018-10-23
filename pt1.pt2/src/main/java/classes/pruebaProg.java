@@ -12,11 +12,14 @@ public class pruebaProg {
 		
 		//String fileRules1="../rules/proyeccionNivel.drl";
 		//String fileRules2="../rules/desempeño.drl";
+		String fileRules1="../rules/registro_progDiaria.drl";
+		String fileRules2="../rules/accion.drl";
 		String arrayJson=aux.crearJsonRegistro();
 		JSONObject obj = new JSONObject(arrayJson);
-		WorkingMemory wk=aux.conexionDrools();
+		WorkingMemory wk1=aux.conexionDrools(fileRules1);
+		WorkingMemory wk2=aux.conexionDrools(fileRules2);
 		JSONObject results = obj.getJSONObject("resultsRegistro");
-		aux.executeProg(wk, arrayJson);
+		aux.executeProg(wk1, wk2, arrayJson);
 		//aux.executeFrecuencias(wk);
 		//aux.executeFrecInicial(wk, arrayJson);
 		//aux.exFrecuencias(wk,2);

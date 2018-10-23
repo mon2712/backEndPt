@@ -152,9 +152,10 @@ public class ProyeccionAnual {
 	public static String crearProyeccionAnual(String array) throws JSONException, SQLException, IOException {
 		
 		Auxiliar aux= new Auxiliar();
+		String ruleFile = "../rules/proyeccionNivel.drl";
 				WorkingMemory wk;
 				try {
-					wk = aux.conexionDrools();
+					wk = aux.conexionDrools(ruleFile);
 					aux.executeFrecInicial(wk, array);
 				} catch (DroolsParserException e) {
 					// TODO Auto-generated catch block

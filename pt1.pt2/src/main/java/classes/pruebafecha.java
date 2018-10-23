@@ -54,13 +54,13 @@ public class pruebafecha {
 		//System.out.print(alumnosLlamada);
 		//recepcion.NotaLlamada(3, "hola", "23/04/2018");
 
-		/*Auxiliar aux= new Auxiliar();
+		Auxiliar aux= new Auxiliar();
 		
-		//String fileRules1="../rules/proyeccionNivel.drl";
+		String fileRules1="../rules/proyeccionNivel.drl";
 		//String fileRules2="../rules/desempeño.drl";
 		String arrayJson=aux.crearJson();
 		JSONObject obj = new JSONObject(arrayJson);
-		WorkingMemory wk=aux.conexionDrools();
+		WorkingMemory wk=aux.conexionDrools(fileRules1);
 		JSONObject results = obj.getJSONObject("resultsTest");
 		//aux.executeFrecuencias(wk);
 		aux.executeFrecInicial(wk, arrayJson);/*
@@ -76,15 +76,15 @@ public class pruebafecha {
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}*/
-          
+		}
+         /* 
 		Auxiliar aux= new Auxiliar();
 		
-		//String fileRules1="../rules/proyeccionNivel.drl";
+		String fileRules1="../rules/proyeccionNivel.drl";
 		//String fileRules2="../rules/desempeño.drl";
 		String arrayJson=aux.crearJsonRegistro();
 		JSONObject obj = new JSONObject(arrayJson);
-		WorkingMemory wk=aux.conexionDrools();
+		WorkingMemory wk=aux.conexionDrools(fileRules1);
 		JSONObject results = obj.getJSONObject("resultsRegistro");
 		aux.executeProgramacion(wk, arrayJson);
 		//aux.executeFrecuencias(wk);
