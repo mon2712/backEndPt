@@ -28,11 +28,11 @@ public class Recepcion {
 		StringWriter swriter = new StringWriter();
 		String resultado="";
 		try {
-			String getQueryStatement = "CALL alumnosConFalta();";
-			CallableStatement cStmt = conn.prepareCall("{call listaNuevasLlamadas(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)}");
-			String getQueryStatement2 = "call getLlamadasEnNotificaciones();";
+			String getQueryStatement = "CALL alumnosConFalta();"; //Devuelbe alumnos con una flata(faltaron el día actual)
+			CallableStatement cStmt = conn.prepareCall("{call listaNuevasLlamadas(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)}"); //devuelve el estado del alumno, 1  con dos o mas faltas de cada alumno 
+			String getQueryStatement2 = "call getLlamadasEnNotificaciones();"; // Devuelbe todos los alumnos que tinen una notificacion de tipo llamada
 
-		    //Otiene alumnos con una falta
+		    //Obtiene alumnos con una falta
 			prepareStat = conn.prepareStatement(getQueryStatement);
             ResultSet rs = prepareStat.executeQuery(); //devuelbe nombre, apellido, idAlumno, lunes, miercoles, jueves, sabado
             
@@ -40,13 +40,13 @@ public class Recepcion {
             prepareStat = conn.prepareStatement(getQueryStatement2);
             ResultSet rs2 = prepareStat.executeQuery();
             
-            //Alumno alumn= new Alumno();
             String nota= "", ultimaAsistencia="", active="false", done="",fechaLlamada="";
             int estatus=0, activacion=0; 
             int[] arrayDays = new int[4];
             String old="";
 
             //Fecha actual desglosada://///////////////////////////////////////
+            
             Calendar fecha = Calendar.getInstance();
             int año = fecha.get(Calendar.YEAR);
             int mes = fecha.get(Calendar.MONTH) + 1;
@@ -70,24 +70,27 @@ public class Recepcion {
             String hoy= año + "-" + mesString + "-" + diaString;
             
             //////////////////////////////////////////////////////////////////
+            
+            //Creación deJson con llamadas
             try (JsonGenerator gen = Json.createGenerator(swriter)) {
             gen.writeStartObject();
             gen.writeStartArray("listOfCalls");
             	//notificaciones ya cargadas (llamadas viejas)
             	while(rs2.next()) {
-            		if(hoy.equals(rs2.getString(4))) {
+            		if(hoy.equals(rs2.getString(4))) { //si la fecha de la notifición es del día actual, la llamada no esvieja
             			old="false";
             		}
-            		else {
+            		else { //la llamada es vieja
             			old="true";
             		}
-            		if( rs2.getString(5).equals(null) || rs2.getString(5).equals("") ) {
-            			done="false";
+            		if( rs2.getString(5).equals(null) || rs2.getString(5).equals("") ) { //Si no tiene una nota
+            			done="false"; //La llamada no se ha realizado
             		}
             		else{
-            			done="true";
+            			done="true";//La llamda ya se realizó
             		}
-	            	if((old.equals("true") && done.equals("false")) || (old.equals("false"))){	
+	            	if((old.equals("true") && done.equals("false")) || (old.equals("false"))){	//Si es una llamada vieja y no se ha realizado o si es nueva
+	            		//debe aparecer en llamadas por realizar
 	            		gen.writeStartObject();
 		    	            gen.write("idStudent", rs2.getInt(1));
 		    	            gen.write("name", ""+rs2.getString(2)+  " " + rs2.getString(3));
@@ -104,22 +107,24 @@ public class Recepcion {
             	
             	//notificaciones para cargar (llamadas nuevas)
             	if(hora>=19) { //PARA QUE SE EJECUTE DESPUES DE LAS 7 PM
-            		if(diaSemana!=1 && diaSemana!=3 && diaSemana!=6) {
-	            		if(rs.getRow()==1 && rs.getInt(9)==1){ //no hay faltas
+            		if(diaSemana!=1 && diaSemana!=3 && diaSemana!=6) {//Si el dia actual es un día laboral(no es domingo, martes ni viernes)
+	            		if(rs.getRow()==1 && rs.getInt(9)==1){ // si no hay faltas del día de hoy
 		            			System.out.println("recibo elerror" + rs.getString(9) );
-		                }else { //si hay faltas
-		                    while(rs.next()){
-			            		old= "false";
+		                }else { //si hay faltas del día de hoy
+		                    while(rs.next()){ //recorriendo todos los registros que tienen una falta
+		                    	old= "false";
 			            		List<Integer> diasQueViene = new ArrayList<Integer> ();
 			
 			            		int diaAnterior=0;
 			            		int today=0;
 			            		
+			            		//Evaluando el día actual
 			            		if(rs.getInt(8)==2) today=0;
 			            		if(rs.getInt(8)==4) today=1;
 			            		if(rs.getInt(8)==5) today=2;
 			            		if(rs.getInt(8)==7) today=3;
 			            		
+			            		//Creando un array con los días que viene el alumno
 			            		// 2 lunes, 3 miercoles, 4 jueves, 6 sabado
 			            		arrayDays[0] = rs.getInt(4); //lunes
 			            		arrayDays[1] = rs.getInt(5); //miercoles
@@ -128,9 +133,9 @@ public class Recepcion {
 			            		
 			            		int count=0;
 			            		
-			            		for(int i=0; i<4; i++) {
+			            		for(int i=0; i<4; i++) { //recorrer días laborales
 			            			
-			            			if(today != i && arrayDays[i] == 1) {
+			            			if(today != i && arrayDays[i] == 1) { //Si el alumno asiste, se agrega al array
 			            				if(i == 0) diasQueViene.add(2);
 			            				if(i == 1) diasQueViene.add(4);
 			            				if(i == 2) diasQueViene.add(5);
@@ -138,14 +143,13 @@ public class Recepcion {
 			            			}
 			            		}
 			            		int size=diasQueViene.size();
-			            		
-			            		if(size == 0) {
-			            			diaAnterior=rs.getInt(8);
+			            		//sacando el dia inmediato anterior que le toca asistir
+			            		if(size == 0) { //si no viene ningun día
+			            			diaAnterior=rs.getInt(8); //solo vine un dia, el día anterior es el mismo
 			
 			            		}else {
-			            			diaAnterior=diasQueViene.get(size-1);
+			            			diaAnterior=diasQueViene.get(size-1);//vinee mas de un día, el día anterior es el correspondiente
 			            		}
-			            		
 			            		//Ejecutando uno a uno los alumnos para ver si pertenecen a la lista dellamdas por realizar (es su segunda falta)
 			            		cStmt.setInt(1, diaAnterior); //dìa anterior
 			        		    cStmt.setInt(2, rs.getInt(3)); //id del alumno
@@ -161,9 +165,8 @@ public class Recepcion {
 			        		    cStmt.registerOutParameter(12, Types.VARCHAR); // MENSAJE DE ERROR
 		
 			        		    
-			        		    cStmt.execute();    
-		
-			        		   if (cStmt.getInt(11) == 0){
+			        		    cStmt.execute(); 
+			        		   if (cStmt.getInt(11) == 0){//si no  hay errores
 				        		    
 				        		    nota=""+cStmt.getString(6);
 				        		    fechaLlamada=""+cStmt.getString(7);
@@ -174,7 +177,7 @@ public class Recepcion {
 				        		    else done="false";
 				        		    if(activacion == 1) active="true";	
 				        		    else active="false";
-				        		    if(cStmt.getInt(11)==0 && cStmt.getInt(3)!=0){
+				        		    if(cStmt.getInt(3)!=0){ //si  existe un idDeAlumno
 				        		    	gen.writeStartObject();
 						    	            gen.write("idStudent", cStmt.getInt(3));
 						    	            gen.write("name", cStmt.getString(4) +  " " + cStmt.getString(5));
@@ -338,7 +341,7 @@ public class Recepcion {
     public static String getNotificacion() throws SQLException {
     		StringWriter swriter = new StringWriter();
     
-	    	String qryLlamadas = "SELECT COUNT(*) FROM Notificacion WHERE tipo='llamada' AND fecha IS NULL AND nota IS NULL GROUP BY tipo;";
+	    	String qryLlamadas = "SELECT COUNT(*) FROM Notificacion WHERE tipo='llamada' AND nota='' GROUP BY tipo;";
 	    	String qryPagos = "SELECT * FROM Notificacion as noti JOIN Alumno as alu ON noti.Alumno_idAlumno=alu.idAlumno WHERE fecha=CURDATE() AND tipo='pago';";
 	    	
 	
