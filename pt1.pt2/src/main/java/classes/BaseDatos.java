@@ -12,8 +12,8 @@ public class BaseDatos {
 
     public static Connection conectarBD() {
     		Connection conn = null;
-    		//String pass ="dBoy6Ap281015";
-    		String pass = "vfcnmm2201";
+    		String pass ="dBoy6Ap281015";
+    		//String pass = "vfcnmm2201";
 
         try {
             Class.forName("com.mysql.jdbc.Driver");
