@@ -1028,10 +1028,9 @@ public class Alumno {
     		StringWriter swriter = new StringWriter();
     		
 	    try {
-	        String getQueryStatement = "Select re.idRegistro, DAY(re.fecha) as dia, MONTH(re.fecha) as mes, YEAR(re.fecha) as año, se.`set`, re.tipo, re.tiempo, niv.nombre \r\n" + 
-	        		"	        		from Registro as re JOIN Usuario as us JOIN `Set` as se JOIN Nivel as niv\r\n" + 
-	        		"	        		ON re.Asistente_Usuario_idUsuario=us.idUsuario AND se.idSet=re.Set_idSet AND se.Nivel_idNivel=niv.idNivel\r\n" + 
-	        		"	        		WHERE Alumno_idAlumno=1 ORDER BY fecha ASC;";
+	        String getQueryStatement = "Select re.idRegistro, DAY(re.fecha) as dia, MONTH(re.fecha) as mes, YEAR(re.fecha) as año, se.`set`, re.tipo, re.tiempo, niv.nombre from \r\n" + 
+	        		"Registro as re  JOIN `Set` as se JOIN Nivel as niv ON  se.idSet=re.Set_idSet AND se.Nivel_idNivel=niv.idNivel \r\n" + 
+	        		"WHERE Alumno_idAlumno="+ id +" ORDER BY fecha ASC;";
 	
 	        prepareStat = conn.prepareStatement(getQueryStatement);
 	
