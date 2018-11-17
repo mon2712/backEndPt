@@ -1,5 +1,14 @@
 package classes;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.sql.CallableStatement;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Types;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 
 import org.drools.core.WorkingMemory;
@@ -22,15 +31,24 @@ public class Registro {
 	private int numFlecha;
 	private int numTriangulo;
 	private Nivel nivel;
-	private float frec;
+	private double frec;
+	private String TipoFrec;
+	private int indice;
 	
+	
+	public int getIndice() {
+		return indice;
+	}
+	public void setIndice(int indice) {
+		this.indice = indice;
+	}
 	public void setAccion(String accion) {
 		this.accion = accion;
 	}
 	public String getAccion() {
 		return accion;
 	}
-	public float getFrec() {
+	public double getFrec() {
 		return frec;
 	}
 	public void setFrec(float frec) {
@@ -193,6 +211,12 @@ public class Registro {
 	public void setEvaluacion(String evaluacion) {
 		this.evaluacion = evaluacion;
 	}
+	public String getTipoFrec() {
+		return TipoFrec;
+	}
+	public void setTipoFrec(String tipoFrec) {
+		TipoFrec = tipoFrec;
+	}
 	//public int[] getCalificaciones() {
 		//return calificaciones;
 	//}
@@ -238,5 +262,26 @@ public class Registro {
 		 //wm.fireAllRules();
 		 //System.out.println(r.getEvaluacion());
 	 }
+	 
+	 public void setearValores(int idAlumno, String nivel, Connection conn) throws SQLException{
+		 	int idNivel=0;
+		 	String getQueryStatement = "select idNivel from Nivel where nombre='"+nivel+"';";
+			PreparedStatement prepareStat = conn.prepareStatement(getQueryStatement);
+			ResultSet rs = prepareStat.executeQuery();
+			while(rs.next()) {
+				idNivel=rs.getInt(1);
+			}
+		 	CallableStatement cS2 = conn.prepareCall("{call getLastFrecuencia(?, ?, ?, ?)}");
+			cS2.setInt(1, idAlumno);
+		 	cS2.setInt(2, idNivel);
+		 	cS2.registerOutParameter(3, Types.DOUBLE);
+		 	cS2.registerOutParameter(4, Types.VARCHAR);
+		 	cS2.execute();
+
+		 	this.frec=cS2.getDouble(3);
+		 	this.TipoFrec=cS2.getString(4);
+		 	
+	 }
+	
 	
 }

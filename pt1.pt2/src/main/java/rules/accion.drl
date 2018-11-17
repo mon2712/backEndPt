@@ -5,16 +5,29 @@ package rules
 import classes.Registro;
 
 //---Cambio de Prog Diaria-----------------------------------------------------------------------------------------------------------------------------------------------
+rule "Mantener frecuencia"
+    salience 2
+	dialect "java"
+    when
+       registroObject: Registro(getEvaluacion()=="Excelente")
+       Registro((getTiempo() <= (getNivel().getMaxTime()*10) && getIndice()==0) || 
+       (getEvaluacion()=="Excelente" && (getTiempo() > (getNivel().getMaxTime()*10))) ||  //falta probar
+       (getEvaluacion()=="Buena" && (getTiempo() <= (getNivel().getMaxTime()*10)))) //falta probar
+    then 
+       registroObject.setAccion("PERMANECE");
+end	
 rule "Disminuir frecuencia"
-    salience 0
+    salience 1
 	dialect "java"
     when
        registroObject: Registro(getEvaluacion()=="Excelente")
        Registro(getTiempo() <= (getNivel().getMaxTime()*10))
-       //Registro(getNivel().getFrecuencias().indexOf(getFrec())>0)
+       Registro(getIndice()>0)
     then 
+       registroObject.setIndice(registroObject.getIndice()-1);
        registroObject.setAccion("DISMINUYE");
 end
+
 /*
 rule "Disminuir frecuencia"
     salience 0

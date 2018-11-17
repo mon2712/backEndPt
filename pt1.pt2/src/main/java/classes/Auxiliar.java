@@ -406,60 +406,75 @@ public class Auxiliar {
 			
 	}
 	//PARA UN SOLO REGISTRO
-	public void executeProg(WorkingMemory workingMemory, WorkingMemory workingMemory2, String array) {
+	public void executeProg(WorkingMemory workingMemory, WorkingMemory workingMemory2, String array) throws SQLException {
 		JSONObject obj = new JSONObject(array);
-		
+		//leer el json
 		JSONObject results = obj.getJSONObject("resultsRegistro");
 		
 			JSONObject infoStudent = results.getJSONObject("infoStudent");
 
 			JSONArray cal = results.getJSONArray("calificaciones");
-			int time = results.getInt("time");
-			String n;
+			int time = results.getInt("time"), today=0, lunes=0, miercoles=0, jueves=0, sabado=0;
+			
 			System.out.println("tiempo " + time);
 			System.out.println("calificaciones " + cal );
 			System.out.println("infoStudent" +infoStudent.toString());
 			//System.out.println("para frecuencia inicial" + frecuenciaIncial.toString());
 			System.out.println("nivel " + infoStudent.getString("level"));
-			
-			n=infoStudent.getString("level");
+			//obtener informacion del alumno
+			String n=infoStudent.getString("level");
 			String g=infoStudent.getString("grade");
 			String idStudent=infoStudent.getString("idStudent");
+			
+			//objeto de la clase alumno, registro & nivel
 			Alumno alumn = new Alumno();
 			Registro reg =  new Registro();
-			//reg.setIdAlumno(idStudent);
-			reg.setTiempo(time);
 			Nivel niv =  new Nivel();
-			try {
-				niv.setearValores(n, conn);
-				reg.setNivel(niv);
+
+			reg.setTiempo(time);
+			
+				niv.setearValores(n, conn); //inicializando valores del objeto nivel
+				reg.setNivel(niv); //asociandolo al objeto registro
 				System.out.println("Tiempo maximo del nivel: " + reg.getNivel().getMaxTime());
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			
 			//alumn.setPuntajeDesempeño(desempeñoGeneral);
 		//workingMemory.insert(alumn);
 		//workingMemory.fireAllRules();
 			//System.out.println("Desempeño general: " +  alumn.getDesempeño());
+			
+			//seteando valores del objeto alumno
 			alumn.setNivelActual(n);
 			alumn.setGrado(g);
 			alumn.setIdAlumno(idStudent);
-			String id;
-			reg.setIdAlumno(Integer.parseInt(alumn.getIdAlumno()));
+			
+			//seteando vaores del objeto registro
+			try {
+				reg.setearValores(Integer.parseInt(alumn.getIdAlumno()), n, conn); //revisar si se debe mandar el nivel
+			} catch (NumberFormatException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} 
+
+			reg.setIdAlumno(Integer.parseInt(alumn.getIdAlumno())); //esto deberia estar asociado al objeto alumno
 			int calif[] = new  int [10];
+			//guardando las 10 calificaciones en un arreglo
 			for(int i=0; i<10;i++) {
 				JSONObject res = (JSONObject) cal.get(i);
 				calif[i]=res.getInt("calif");
 				//System.out.println("Hoja: " + (i+1) + " calficacion: " + calif[i]);
 			}
+			//seteando calificaciones del registro
 			reg.setCalificaciones(calif);
 			reg.setCantidadCalificaciones();
 			//if (reg.getEvaluacion() == "Buena") {	
 			//reg.setEvaluacion("Excelente");
+			
+			//lanzando las reglas para clasificar la evaluacion por la cantidad de calificaciones
 			workingMemory.insert(reg);
 			workingMemory.fireAllRules();
+			
 				contadorMala++;
+				
 				System.out.print(
 				" Num100:" + reg.getNumCien() +
 				" Num90:" + reg.getNumNoventa() +
@@ -471,16 +486,68 @@ public class Auxiliar {
 				//sSystem.out.println(reg.getTiempo() +"<= ("+ reg.getNivel().getMaxTime()*10);
 				//System.out.println(reg.getEvaluacion());
 				//if(reg.getEvaluacion().equals("Exce")){
-				workingMemory2.insert(reg);
-				workingMemory2.fireAllRules();
+				
+				//workingMemory.insert(reg);
+				//workingMemory.fireAllRules();
 				//if(reg.getNivel().getFrecuencias().indexOf(reg.getFrec())>0) {
 					
-					System.out.println("Hola"+ reg.getFrec());
-				//}
+					System.out.println(" Frecuencia y tipo actual: "+ reg.getFrec() + " "+ reg.getTipoFrec());
+					//inidicetemporal de la frecuencia actual
+					int indexF=reg.getNivel().getFrecuencias().indexOf(reg.getFrec());
+					
+					//verificando que para ese indice coincida la frecuencia y el tipo, si no va aumentando
+					if(!reg.getNivel().getTipos().get(indexF).equals(reg.getTipoFrec()))  {
+						while(!reg.getNivel().getTipos().get(indexF).equals(reg.getTipoFrec())) {
+							//System.out.println("No " + reg.getNivel().getTipos().get(indexF));
+							indexF=indexF+1;
+						}
+					}
+					//seteando el inidice
+					reg.setIndice(indexF);
+				//System.out.println("Frecuencias: " + reg.getNivel().getFrecuencias() + "Tipos: " + reg.getNivel().getTipos());
+					
+				//lanzando las reglas para cambio de frecuencia
+				workingMemory2.insert(reg);
+				workingMemory2.fireAllRules();
+				
+				System.out.println("Index:"+ reg.getIndice());
 				System.out.println(" Accion: " + reg.getAccion());
-				//AQUI HAY QUE AGREGAR LA CONSULTA
-				//this.getFrecuencias(alumn.getn ), reg.getNivel());
-				System.out.println("Frecuencias: " + reg.getNivel().getFrecuencias() + "Tipos: " + reg.getNivel().getTipos());
+				
+				////////Obtener día siguiente que le corresponde venir al alumno
+				String getQueryStatementN ="SELECT lunes, miercoles, jueves, sabado,  dayofweek(CURDATE()) from Alumno WHERE idAlumno="+alumn.getIdAlumno()+";";
+		        prepareStat = conn.prepareStatement(getQueryStatementN);
+		        ResultSet rsN = prepareStat.executeQuery();
+		        while(rsN.next()) {
+		        	
+			        today=rsN.getInt(5);
+					
+					lunes = rsN.getInt(1); //lunes
+					miercoles = rsN.getInt(2); //miercoles
+					jueves = rsN.getInt(3); //jueves
+					sabado = rsN.getInt(4); //sabado
+		        }
+				
+				
+				/*
+				CallableStatement cStmt = conn.prepareCall("{call getDiasAlumno(?, ?, ?, ?, ?, ?)}");
+				cStmt.setInt(1, Integer.parseInt(alumn.getIdAlumno()));
+				cStmt.registerOutParameter(2, Types.INTEGER);
+			    cStmt.registerOutParameter(3, Types.INTEGER);
+			    cStmt.registerOutParameter(4, Types.VARCHAR);
+			    cStmt.registerOutParameter(5, Types.VARCHAR);
+			    cStmt.registerOutParameter(6, Types.VARCHAR);
+			    cStmt.execute();   
+			    int today=cStmt.getInt(6);
+				
+				int lunes = cStmt.getInt(2); //lunes
+				int miercoles = cStmt.getInt(3); //miercoles
+				int jueves = cStmt.getInt(4); //jueves
+				int sabado = cStmt.getInt(5); //sabado*/
+
+					//int diaAnterior  =alumn.getDiaInmediato(/*alumn.getIdAlumno()*/"anterior",1,1,1,1,7);
+					int diaSiguiente=alumn.getDiaInmediato("siguiente",lunes,miercoles,jueves,sabado,today);
+					//System.out.println("Dia anterior: " + diaAnterior);
+					System.out.println("Dia proximo: " + diaSiguiente);
 				//}
 			//workingMemory.insert(pn);
 			//workingMemory.fireAllRules();
