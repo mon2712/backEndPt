@@ -14,7 +14,7 @@ rule "Evaluacion mala"
        registroObject: Registro(evaluacion == null)
     then 
     	registroObject.setEvaluacion("Mala");
-end
+end*/
 rule "Evaluacion buena"
     salience 2
 	dialect "java"
@@ -24,7 +24,7 @@ rule "Evaluacion buena"
        //Registro((numOchenta + numNoventa + numSetenta)>=2)
     then 
     	registroObject.setEvaluacion("Buena");
-end*/
+end
 rule "Evaluacion excelente"
 	salience 3
 	dialect "java"

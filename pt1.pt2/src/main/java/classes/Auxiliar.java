@@ -435,7 +435,7 @@ public class Auxiliar {
 			
 				niv.setearValores(n, conn); //inicializando valores del objeto nivel
 				reg.setNivel(niv); //asociandolo al objeto registro
-				System.out.println("Tiempo maximo del nivel: " + reg.getNivel().getMaxTime());
+				System.out.println("Tiempo maximo del nivel: " + reg.getNivel().getMaxTime()*10);
 			
 			//alumn.setPuntajeDesempeño(desempeñoGeneral);
 		//workingMemory.insert(alumn);
@@ -447,7 +447,7 @@ public class Auxiliar {
 			alumn.setGrado(g);
 			alumn.setIdAlumno(idStudent);
 			
-			//seteando vaores del objeto registro
+			//seteando valores del objeto registro, nivel, frecuencia y tipo
 			try {
 				reg.setearValores(Integer.parseInt(alumn.getIdAlumno()), n, conn); //revisar si se debe mandar el nivel
 			} catch (NumberFormatException e) {
@@ -492,7 +492,7 @@ public class Auxiliar {
 				//if(reg.getNivel().getFrecuencias().indexOf(reg.getFrec())>0) {
 					
 					System.out.println(" Frecuencia y tipo actual: "+ reg.getFrec() + " "+ reg.getTipoFrec());
-					//inidicetemporal de la frecuencia actual
+					//inidice temporal de la frecuencia actual
 					int indexF=reg.getNivel().getFrecuencias().indexOf(reg.getFrec());
 					
 					//verificando que para ese indice coincida la frecuencia y el tipo, si no va aumentando
@@ -505,13 +505,15 @@ public class Auxiliar {
 					//seteando el inidice
 					reg.setIndice(indexF);
 				//System.out.println("Frecuencias: " + reg.getNivel().getFrecuencias() + "Tipos: " + reg.getNivel().getTipos());
-					
+				
+				System.out.println("Indice actual:"+ reg.getIndice());
 				//lanzando las reglas para cambio de frecuencia
 				workingMemory2.insert(reg);
 				workingMemory2.fireAllRules();
 				
-				System.out.println("Index:"+ reg.getIndice());
-				System.out.println(" Accion: " + reg.getAccion());
+				
+				System.out.println("Accion: " + reg.getAccion());
+				System.out.println("Indice actual:"+ reg.getIndice());
 				
 				////////Obtener día siguiente que le corresponde venir al alumno
 				String getQueryStatementN ="SELECT lunes, miercoles, jueves, sabado,  dayofweek(CURDATE()) from Alumno WHERE idAlumno="+alumn.getIdAlumno()+";";
@@ -548,6 +550,53 @@ public class Auxiliar {
 					int diaSiguiente=alumn.getDiaInmediato("siguiente",lunes,miercoles,jueves,sabado,today);
 					//System.out.println("Dia anterior: " + diaAnterior);
 					System.out.println("Dia proximo: " + diaSiguiente);
+					
+					//obtener todas las programaciones que ha tenido de ese nivel
+				    getQueryStatementN =" SELECT Nivel_idNivel, ProgramacionDiaria_frecuencia, ProgramacionDiaria_idProgramacionDiaria \r\n" + 
+				    		" FROM Nivel_has_ProgramacionDiaria WHERE Alumno_idAlumno="+alumn.getIdAlumno()+ " AND Nivel_idNivel="+reg.getNivel().getIdNivel()+
+				    		" GROUP BY Nivel_idNivel, ProgramacionDiaria_frecuencia, ProgramacionDiaria_idProgramacionDiaria;";
+			        prepareStat = conn.prepareStatement(getQueryStatementN);
+			        rsN = prepareStat.executeQuery();
+			        int contadorCambiosFrec=0, frecAnterior=0;
+			        
+			        while(rsN.next()) {
+			        	System.out.println(rsN.getInt(1));
+			        	if(frecAnterior!=0) {//Si no es la primera o unica frecuencia de ese nivel 
+			        		if(rsN.getInt(1)>frecAnterior) { //si cambio a una frecuencia mayor
+			        			contadorCambiosFrec++;
+			        		}
+			        		else {//si no cambio a una frecuencia mayor
+			        			contadorCambiosFrec=0; //se reestablece el contador
+			        		}
+			        	}
+			        	frecAnterior=rsN.getInt(1);// guardamos la frecuenncia en la variable auxiliar
+			        }
+			        System.out.println("Se cambió " + contadorCambiosFrec + " veces de frecuencia");
+			        if(contadorCambiosFrec>=2 && reg.getAccion()=="AUMENTA") {
+			        	System.out.println("Repaso lineal (sin repeticiones) del bloque anterior al que se encuentra actualmente, a una frecuencia menor a la actual.");
+			        	
+			        	CallableStatement cS = conn.prepareCall("{call getRepeticionBloque(?, ?, ?)}");
+					 	
+						cS.setInt(1, Integer.parseInt(alumn.getIdAlumno()));
+					 	cS.setInt(2, reg.getNivel().getIdNivel());
+					 	cS.registerOutParameter(3, Types.INTEGER);
+					 	cS.execute();
+					 	
+					 	if(cS.getInt(3)>=2) {
+					 		System.out.println("Se debe hacer repetición dependiendo el nivel");
+					 	}
+					 	else {
+					 		System.out.println("Repite el bloque");
+					 		/*cS = conn.prepareCall("{call setRepeticionBloque(?,?,?,?,?,?,?,?,?,?)}");
+					 		
+					 		cS.setInt(1, Integer.parseInt(alumn.getIdAlumno()));
+						 	cS.setInt(2, reg.getNivel().getIdNivel());
+						 	cS.setInt(2, reg.getNivel().getIdNivel());
+						 	cS.registerOutParameter(3, Types.INTEGER);
+						 	cS.execute();
+					 		7,4, 1.5, "a", dayofweek(curdate()),4, 4, "BLOQUE", @e, @msgErr*/
+					 	}
+			        }
 				//}
 			//workingMemory.insert(pn);
 			//workingMemory.fireAllRules();
@@ -635,7 +684,7 @@ public class Auxiliar {
             	gen.writeStartObject();
                 gen.writeStartObject("resultsRegistro");
 	                gen.write("set", "21");
-	                gen.write("time", "20");
+	                gen.write("time", "30");
 	                gen.writeStartObject("infoStudent");
 	                    //gen.writeStartObject();
 		                gen.write("level", "B");
@@ -663,19 +712,19 @@ public class Auxiliar {
 			             gen.writeEnd();
 			             gen.writeStartObject();
 			            	 gen.write("hoja","5");
-			                 gen.write("calif", "100");
+			                 gen.write("calif", "110");
 			             gen.writeEnd();
 			             gen.writeStartObject();
 			            	 gen.write("hoja","6");
-			                 gen.write("calif", "100");
+			                 gen.write("calif", "110");
 		                 gen.writeEnd();
 			             gen.writeStartObject();
 			            	 gen.write("hoja","7");
-			                 gen.write("calif", "100");
+			                 gen.write("calif", "110");
 		                 gen.writeEnd();
 				         gen.writeStartObject();
 			            	 gen.write("hoja","8");
-			                 gen.write("calif", "90");
+			                 gen.write("calif", "110");
 			             gen.writeEnd();
 			             gen.writeStartObject();
 			            	 gen.write("hoja","9");
