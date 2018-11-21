@@ -551,10 +551,10 @@ public class Alumno {
     	List<Integer> diasQueViene = new ArrayList<Integer> ();
     	int todayNew=0;
     	
-		if(today<=2) todayNew=0;
-		if(today>2 && today<=4) todayNew=1;
+		if(today==2) todayNew=0;
+		if(today==4) todayNew=1;
 		if(today==5) todayNew=2;
-		if(today>5 && today==7) todayNew=3;
+		if(today==7) todayNew=3;
 		
 		arrayDays[0] = lunes; //lunes
 		arrayDays[1] = miercoles; //miercoles
@@ -609,9 +609,10 @@ public class Alumno {
 					dia=diasQueViene.get(0);
 				}
 			}
-			return dia;
+			
 		}
-
+		return dia;
+    }
     public static String getBoleta(String alumno) {
     		System.out.println(alumno);
     		//JSONObject obj2 = new JSONObject(alumno);
