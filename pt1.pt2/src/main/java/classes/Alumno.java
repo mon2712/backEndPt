@@ -479,6 +479,7 @@ public class Alumno {
     
     public static String getAlumnosSinProyeccion() {
 		StringWriter swriter = new StringWriter();
+		
 	    try {
 	        String getQueryStatement = "SELECT * FROM Alumno AS al\r\n" + 
 	        		"WHERE NOT EXISTS (\r\n" + 
