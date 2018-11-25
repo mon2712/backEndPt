@@ -306,4 +306,130 @@ public class Test {
         return swriter.toString();
 	}
 	
+	public static String testDesempeño(String level) throws SQLException {
+		StringWriter swriter = new StringWriter();
+		List<String> questionsPI=new ArrayList<>();
+		
+		String getQueryStatementStartPoint = "Select * from Nivel_has_PreguntaTest_has_Respuesta as nivelPR JOIN PreguntaTest as pt JOIN Respuesta as resp JOIN nivel as niv\n" + 
+        		"ON nivelPR.P_has_R_idpreguntaTest=pt.idpreguntaTest AND nivelPR.P_has_R_IdRespuesta=resp.IdRespuesta AND nivelPR.Nivel_idNivel=niv.idNivel\n" + 
+        		"WHERE nivelPR.puntoInicio=1 AND niv.nombre='"+level+"';";
+
+        prepareStat = conn.prepareStatement(getQueryStatementStartPoint);
+
+        ResultSet rsStartPointTest = prepareStat.executeQuery();
+        
+        try (JsonGenerator gen = Json.createGenerator(swriter)) {
+        		gen.writeStartObject();
+	        		gen.writeStartArray("testDesempeño");
+	        		int bandera=0;
+		            if (!rsStartPointTest.isBeforeFirst()){
+		            		/*gen.writeStartObject();
+			        			gen.write("err", 4);
+			        			gen.write("messageError", "No se tienen datos para una proyección de ese nivel");
+			        		gen.writeEnd();
+			        		
+						gen.writeEnd();*/
+		            	}else {
+				        while(rsStartPointTest.next()) {
+					        	if(questionsPI.isEmpty()) {
+					        		questionsPI.add(rsStartPointTest.getString(2));
+					        		gen.writeStartObject();
+					        		gen.write("id", rsStartPointTest.getInt(2));
+					        		gen.write("idNivel", rsStartPointTest.getInt(1));
+					        		gen.write("question", rsStartPointTest.getString(7));
+					        		gen.write("identification", rsStartPointTest.getString(5));
+					        		gen.write("selected", rsStartPointTest.getString(3));
+				        			gen.writeStartArray("answers");
+					        			gen.writeStartObject();
+						        			gen.write("id", rsStartPointTest.getInt(8));
+						        			gen.write("answer", rsStartPointTest.getString(9));
+						        			gen.write("score", rsStartPointTest.getInt(10));
+					        			gen.writeEnd(); //Cierra el objeto de 1 
+					        	}else {
+					        		for(int i=0; i<questionsPI.size(); i++) {
+					        			if(questionsPI.get(i).equals(rsStartPointTest.getString(2))) {
+					        			
+					        				gen.writeStartObject();
+					        					gen.write("id", rsStartPointTest.getInt(8));
+					        					gen.write("answer", rsStartPointTest.getString(9));
+					        					gen.write("score", rsStartPointTest.getInt(10));
+						        			gen.writeEnd();
+						        		
+					        				bandera=0;
+					        			}else {
+					        				bandera=1;
+					        			}
+				        			}
+				        			
+				        			if(bandera==1) {	     
+				        				gen.writeEnd();
+				        				gen.writeEnd();
+				        				
+				        				gen.writeStartObject();
+				        				gen.write("id", rsStartPointTest.getInt(2));
+				        				gen.write("idNivel", rsStartPointTest.getInt(1));
+						        		gen.write("question", rsStartPointTest.getString(7));
+						        		gen.write("identification", rsStartPointTest.getString(5));
+						        		gen.write("selected", rsStartPointTest.getString(3));
+					        			gen.writeStartArray("answers");
+						        			gen.writeStartObject();
+							        			gen.write("id", rsStartPointTest.getInt(8));
+							        			gen.write("answer", rsStartPointTest.getString(9));
+							        			gen.write("score", rsStartPointTest.getInt(10));
+							        			gen.write("real", 0);
+						        			gen.writeEnd(); //Cierra el objeto de 1 alumno
+		
+						        			questionsPI.add(rsStartPointTest.getString(2));
+				        			}
+					        	}
+				        	}
+						gen.writeEnd();
+						gen.writeEnd();
+		            	}
+	        		gen.writeEnd();
+        		gen.writeEnd();
+        }
+        
+        return swriter.toString();
+
+	}
+	
+	public static String getResultadosDesempeño(int idRegistro) throws SQLException {
+		StringWriter swriter = new StringWriter();
+		String query = "SELECT pr.pregunta, rsp.respuesta, rsp.puntaje FROM Registro_has_Nivel_has_PreguntaTest_has_Respuesta  as rpr JOIN PreguntaTest as pr JOIN Respuesta as rsp\n" + 
+				"ON rpr.Nivel_has_P_has_R_idpreguntaTest=pr.idpreguntaTest AND rpr.Nivel_has_P_has_R_IdRespuesta=rsp.IdRespuesta\n" + 
+				"WHERE Registro_idRegistro="+Integer.toString(idRegistro)+";";
+		
+		prepareStat = conn.prepareStatement(query);
+
+        ResultSet rsResults = prepareStat.executeQuery();
+        
+        try (JsonGenerator gen = Json.createGenerator(swriter)) {
+    		gen.writeStartObject();
+    
+	            if (!rsResults.isBeforeFirst()){
+	            		//gen.writeStartObject();
+		        			gen.write("success", 0);
+		        			gen.write("msg", "No se tienen datos de desempeño");
+		        		//gen.writeEnd();
+	            	}else {
+	            		gen.write("success", 1);
+	            		gen.writeStartArray("desempeñoStudent");
+	            		 while(rsResults.next()) {
+		            		gen.writeStartObject();
+			        			gen.write("pregunta", rsResults.getString(1));
+			        			gen.write("respuesta", rsResults.getString(2));
+			        			gen.write("puntaje", rsResults.getString(3));
+			        		gen.writeEnd();
+	            		 }
+	            		 gen.writeEnd();
+	            	}
+	      
+	      gen.writeEnd();
+	    }
+        
+        return swriter.toString();
+		
+	}
+	
 }

@@ -31,4 +31,20 @@ public class resTest {
     		return test.obtenerTestProyeccion(array);
     }
     
+    @GET
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/getTestPerformance")
+	public String getTestDesempeño(@QueryParam("level") String level) throws WriterException, IOException, SQLException {
+    		return test.testDesempeño(level);
+    }
+    
+    @GET
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/getResultsPerformance")
+	public String getResultadosDesempeño(@QueryParam("idRegistro") String idRegistro) throws WriterException, IOException, SQLException {
+    		return test.getResultadosDesempeño(Integer.parseInt(idRegistro));
+    }
+    
 }

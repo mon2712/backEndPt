@@ -49,4 +49,11 @@ public class resAsistente {
     		return asistente.setAssistant(array);
     }
             
+    @GET
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/getAssignedStudents")
+	public String getStudents(@QueryParam("id") int id) {
+    		return asistente.getAssignedStudents(id);
+	}
 }

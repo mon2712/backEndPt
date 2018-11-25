@@ -78,7 +78,7 @@ public class Centro {
 			StringWriter swriter = new StringWriter();
 	    try {
 	        String getQueryStatement = "SELECT a.idAlumno, a.nombre, a.apellido, a.nivel, asis.horaEntrada, TIME_TO_SEC(subtime(curtime(), horaEntrada))/60 ,asis.Asistente_Usuario_idUsuario, us.nombre, us.apellido, asis.tiempoReducido, ass.nivel\r\n" + 
-	        		"FROM asistencia as asis JOIN alumno as a JOIN usuario as us JOIN Asistente as ass\r\n" + 
+	        		"FROM Asistencia as asis JOIN Alumno as a JOIN Usuario as us JOIN Asistente as ass\r\n" + 
 	        		"ON asis.Asistente_Usuario_idUsuario=us.idUsuario AND ass.Usuario_idUsuario=us.idUsuario AND a.idAlumno=asis.Alumno_idAlumno\r\n" + 
 	        		"WHERE  asis.fecha=CURDATE() AND asis.horaSalida='00:00:00' ORDER BY asis.Asistente_Usuario_idUsuario;";
 	

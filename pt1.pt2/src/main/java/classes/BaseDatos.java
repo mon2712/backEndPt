@@ -14,7 +14,7 @@ public class BaseDatos {
     		Connection conn = null;
     		String pass ="dBoy6Ap281015";
     		//String pass = "vfcnmm2201";
-
+    		//String pass = "trabajoterminal2";
         try {
             Class.forName("com.mysql.jdbc.Driver");
             System.out.print("Congrats - Seems your MySQL JDBC Driver Registered!");
@@ -25,6 +25,7 @@ public class BaseDatos {
 
         try {
         		conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/db_pt2?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC&useSSL=false", "root", pass);
+        		//conn = DriverManager.getConnection("jdbc:mysql://aa1u3v882i8bqbk.c9d6vjdqsvjb.us-east-2.rds.amazonaws.com:3306/dbpt2?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC&useSSL=false", "mon2712", pass);
             
             if (conn != null) {
                 System.out.println("Connection Successful! Enjoy. Now it's time to push data");

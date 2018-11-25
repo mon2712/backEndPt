@@ -18,7 +18,7 @@ public class Personal {
     private static Connection conn = BaseDatos.conectarBD();
     
     public static String iniciarSesion(String username, String password) {
-    		String type="", name="";
+    		String type="", name="", finalResult="";
     		int id;
     		StringWriter swriter = new StringWriter();
     		try {
@@ -35,6 +35,8 @@ public class Personal {
     		    type = cStmt.getString(3);
     		    name = cStmt.getString(4);
     		    id = cStmt.getInt(5);
+    		    
+    		    System.out.println("type " + type + " name " + name + " id " + id);
 
     		    if(id == 0) {
     		    		try (JsonGenerator gen = Json.createGenerator(swriter)) {
@@ -46,23 +48,32 @@ public class Personal {
     	    	            gen.writeEnd();
     	    	        }
     		    }else {
-	    	        try (JsonGenerator gen = Json.createGenerator(swriter)) {
-	    	            gen.writeStartObject();
-	    	            gen.writeStartObject("infoLogin");
-	    	            gen.write("code", 1);
-	    	            gen.write("name", name);
-	    	            gen.write("type", type);
-	    	            gen.write("id", id);
-	    	            gen.writeEnd();
-	    	            gen.writeEnd();
-	    	        }
+    		    		if(type.equals("asistente")) {
+    		    			Asistente asis = new Asistente();
+    		    			finalResult = asis.getAssignedStudents(id);   			
+    		    			System.out.println(finalResult);
+    		    		}else {
+    		    			try (JsonGenerator gen = Json.createGenerator(swriter)) {
+    		    	            gen.writeStartObject();
+    		    	            gen.writeStartObject("infoLogin");
+    		    	            gen.write("code", 1);
+    		    	            gen.write("name", name);
+    		    	            gen.write("type", type);
+    		    	            gen.write("id", id);
+    		    	            gen.writeEnd();
+    		    	            gen.writeEnd();
+    		    	        }
+    		    			
+    		    			finalResult = swriter.toString();
+    		    			
+    		    		}
     		    }
     	        
     		} catch (SQLException e) {
     			e.printStackTrace();
     		}
     		
-    		return swriter.toString();
+    		return finalResult;
     }
     
     public static String getPersonal() {

@@ -18,10 +18,78 @@ public class Asistente {
 	static PreparedStatement prepareStat = null;
     private static Connection conn = BaseDatos.conectarBD();
     
+    private int idAsistente;
+	private String nombre;
+	private String apellido;
+	private String telefono;
+	private String estatus;
+	private String horaLlegada;
+	private int lunes;
+	private int miercoles;
+	private int jueves;
+	private int sabado;
+	private String nivel;
+    
+	public static Asistente getInfoAsistente(int id) {
+
+		StringWriter swriter = new StringWriter();
+	    try {
+	        String getQueryStatement = "SELECT * FROM Asistente as asis JOIN Usuario as us "
+	        		+ "ON us.idUsuario=asis.Usuario_idUsuario WHERE us.idUsuario=" + Integer.toString(id) + ";";
+	
+	        prepareStat = conn.prepareStatement(getQueryStatement);
+	
+	        // Execute the Query, and get a java ResultSet
+	        ResultSet rs = prepareStat.executeQuery();
+	
+	        
+	        /*try (JsonGenerator gen = Json.createGenerator(swriter)) {
+	        		gen.writeStartObject();
+		            while(rs.first()) {
+		                gen.writeStartObject();
+		                		gen.write("name", ""+rs.getString(4));
+		                		gen.write("idAssistant", ""+rs.getString(2));
+		                		gen.write("lastName", rs.getString(9));
+		                		gen.write("level" + rs.getString(1));
+		                		gen.write("arrivingTime", rs.getString(10));
+		                		gen.write("monday", rs.getInt(11));
+		                		gen.write("wednesday", rs.getInt(12));
+		                		gen.write("thursday", rs.getInt(13));
+		                		gen.write("saturday", rs.getInt(14));
+		                gen.writeEnd();
+		            }
+	            gen.writeEnd();
+	        }*/
+	        Asistente asis = new Asistente();
+	        
+	        if(rs.first()) {
+	        		System.out.println("hola");
+	        		
+	        		asis.setNombre(rs.getString(4));
+	        		asis.setEstatus(rs.getString(8));
+	        		asis.setApellido(rs.getString(9));
+	        		asis.setIdAsistente(rs.getInt(3));
+	        		asis.setHoraLlegada(rs.getString(10));
+	        		asis.setNivel(rs.getString(1));
+	        		asis.setLunes(11);
+	        		asis.setMiercoles(12);
+	        		asis.setJueves(13);
+	        		asis.setSabado(14);
+	        }
+	        return asis;
+	        
+	        
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	        return null;
+	    }
+	
+	} 
+    
     public static String getAsistentes() {
 		StringWriter swriter = new StringWriter();
 	    try {
-	        String getQueryStatement = "SELECT * FROM asistente as asis JOIN usuario as us WHERE us.idUsuario=asis.Usuario_idUsuario;";
+	        String getQueryStatement = "SELECT * FROM Asistente as asis JOIN Usuario as us WHERE us.idUsuario=asis.Usuario_idUsuario;";
 	
 	        prepareStat = conn.prepareStatement(getQueryStatement);
 	
@@ -56,7 +124,7 @@ public class Asistente {
 			JSONObject asis = selectedPeople.getJSONObject(0);
 			
 	    		if(asis.has("idAssistant")) {
-		        String getQueryStatement = "SELECT * FROM asistente as asis JOIN usuario as us WHERE us.idUsuario=asis.Usuario_idUsuario AND us.idUsuario="+asis.getString("idAssistant")+";";
+		        String getQueryStatement = "SELECT * FROM Asistente as asis JOIN Usuario as us WHERE us.idUsuario=asis.Usuario_idUsuario AND us.idUsuario="+asis.getString("idAssistant")+";";
 		
 		        prepareStat = conn.prepareStatement(getQueryStatement);
 		
@@ -95,9 +163,6 @@ public class Asistente {
 	    }
 	}
     
-    /**
-     * @param array
-     */
     public static String setAssistant(String array) {
 		StringWriter swriter = new StringWriter();
 	    try {
@@ -207,5 +272,153 @@ public class Asistente {
 	        e.printStackTrace();
 	        return null;
 	    }
+	}
+    
+    public static String getAssignedStudents(int id) {
+    	System.out.println("enra a assigned");
+    	
+    	StringWriter swriter = new StringWriter();
+    	String queryAlumnos = "SELECT a.idAlumno, a.nombre, a.apellido, a.nivel, asis.horaEntrada,subtime(curtime(), horaEntrada) ,asis.Asistente_Usuario_idUsuario, us.nombre, us.apellido, asis.tiempoReducido, asist.nivel, a.nombreMadre, a.apellidoMadre, a.telCasa, a.celMadre \n" + 
+    			"FROM Asistencia as asis JOIN Alumno as a JOIN Usuario as us JOIN Asistente as asist ON asis.Alumno_idAlumno=a.idAlumno AND us.idUsuario=asis.Asistente_Usuario_idUsuario \n" + 
+    			"AND asist.Usuario_idUsuario=us.idUsuario WHERE asis.fecha=CURDATE() AND asis.horaSalida = '00:00:00' AND us.idUsuario="+ Integer.toString(id)+ ";";
+    	
+    	Asistente asis = new Asistente();
+    	
+    	asis = asis.getInfoAsistente(id);
+    	
+		try {
+			prepareStat = conn.prepareStatement(queryAlumnos);
+		
+			System.out.println("query alumnos " + queryAlumnos);
+			ResultSet rsAlumnos = prepareStat.executeQuery();
+			
+			
+				try (JsonGenerator gen = Json.createGenerator(swriter)) {
+		            	gen.writeStartObject();
+		            		gen.writeStartObject("infoLogin");
+		            			gen.write("code", 1);
+		            			gen.write("id", id);
+		            			gen.write("type", "asistente");
+		            			gen.write("name", asis.getNombre());
+		            			gen.write("level", asis.getNivel());
+		            			gen.writeStartArray("students");
+			            			if(rsAlumnos.isBeforeFirst()) {
+			            				System.out.println("si hay");
+			            				while(rsAlumnos.next()) {
+					    		    			gen.writeStartObject();
+					    			    			gen.write("id",rsAlumnos.getInt(1));
+					    			    			gen.write("name",rsAlumnos.getString(2));
+					    			    			gen.write("level",rsAlumnos.getString(4));
+					    			    			gen.write("lastName",rsAlumnos.getString(3));
+					    			    			gen.write("entranceTime",rsAlumnos.getString(5));
+					    			    			gen.write("time",rsAlumnos.getString(6));
+					    			    			gen.write("reducedTime",rsAlumnos.getString(10));
+					    			    			gen.write("nameMother", rsAlumnos.getString(12));
+					    			    			gen.write("lastNameMother", rsAlumnos.getString(13));
+					    			    			gen.write("telHome", rsAlumnos.getString(14));
+					    			    			gen.write("celMother", rsAlumnos.getString(15));
+					    			    		gen.writeEnd();
+				    		    			}
+			    				    }else {
+				    		    			System.out.println("No hay");
+				    		    		}
+		            			gen.writeEnd();
+			            gen.writeEnd();
+		            gen.writeEnd();
+		        }
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	
+    		return swriter.toString();
+    }
+
+	public int getIdAsistente() {
+		return idAsistente;
+	}
+
+	public void setIdAsistente(int idAsistente) {
+		this.idAsistente = idAsistente;
+	}
+
+	public String getNombre() {
+		return nombre;
+	}
+
+	public void setNombre(String nombre) {
+		this.nombre = nombre;
+	}
+
+	public String getApellido() {
+		return apellido;
+	}
+
+	public void setApellido(String apellido) {
+		this.apellido = apellido;
+	}
+
+	public String getTelefono() {
+		return telefono;
+	}
+
+	public void setTelefono(String telefono) {
+		this.telefono = telefono;
+	}
+
+	public String getEstatus() {
+		return estatus;
+	}
+
+	public void setEstatus(String estatus) {
+		this.estatus = estatus;
+	}
+
+	public String getHoraLlegada() {
+		return horaLlegada;
+	}
+
+	public void setHoraLlegada(String horaLlegada) {
+		this.horaLlegada = horaLlegada;
+	}
+
+	public int getLunes() {
+		return lunes;
+	}
+
+	public void setLunes(int lunes) {
+		this.lunes = lunes;
+	}
+
+	public int getMiercoles() {
+		return miercoles;
+	}
+
+	public void setMiercoles(int miercoles) {
+		this.miercoles = miercoles;
+	}
+
+	public int getJueves() {
+		return jueves;
+	}
+
+	public void setJueves(int jueves) {
+		this.jueves = jueves;
+	}
+
+	public int getSabado() {
+		return sabado;
+	}
+
+	public void setSabado(int sabado) {
+		this.sabado = sabado;
+	}
+
+	public String getNivel() {
+		return nivel;
+	}
+
+	public void setNivel(String nivel) {
+		this.nivel = nivel;
 	}
 }

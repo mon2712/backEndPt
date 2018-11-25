@@ -315,7 +315,7 @@ public class Instructor {
     		
 		StringWriter swriter = new StringWriter();
 	    try {
-	        String getQueryStatement = "SELECT * FROM alumno as al WHERE al.adeudo=1;";
+	        String getQueryStatement = "SELECT * FROM Alumno as al WHERE al.adeudo=1;";
 	
 	        prepareStat = conn.prepareStatement(getQueryStatement);
 	
@@ -347,7 +347,7 @@ public class Instructor {
     public static String getPagosAlumno(String idStudent) {
 		StringWriter swriter = new StringWriter();
 	    try {
-	        String getQueryStatement = "Select * from colegiatura where Alumno_idAlumno='"+idStudent+"' order by año ASC , mes ASC;";
+	        String getQueryStatement = "Select * from Colegiatura where Alumno_idAlumno='"+idStudent+"' order by año ASC , mes ASC;";
 	
 	        prepareStat = conn.prepareStatement(getQueryStatement);
 	

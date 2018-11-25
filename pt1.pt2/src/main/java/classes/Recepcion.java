@@ -275,7 +275,12 @@ public class Recepcion {
 	    		    			 gen.writeStartObject();
 	    		    			if(!rsRecomendaciones.isBeforeFirst()) {
 	    				    		System.out.println("vacio");
+	    				    		
+		    			    			gen.write("code",1);
+		    			    			gen.write("msg","No hay recomendaciones");
+		    			    		
 	    				    }else {
+	    				    		gen.write("code", 0);
 	    				    		gen.writeStartArray("recomendaciones");
 			    		    		while(rsRecomendaciones.next()) {
 			    		    			System.out.println("entro" + rsRecomendaciones.getString(2));
@@ -292,7 +297,20 @@ public class Recepcion {
 	    		    			gen.writeEnd();
 	    		    		}
 	    		    		
-	    		    		String recomendacionesArray = aux.analisisRecomendaciones(swriter.toString(), nivel);
+	    		    		System.out.println("recomendaciones antes de llamar " + swriter.toString());
+	    		    		JSONObject recommendationsInfo;
+	    		    		
+	    		    		JSONObject reco = new JSONObject(swriter.toString());
+	    		    		if(reco.getInt("code") == 0) {
+	    		    			String recomendacionesArray = aux.analisisRecomendaciones(swriter.toString(), nivel);
+	    		    			System.out.println("recomendaciones en recepcion respuesta " + recomendacionesArray);
+	    		    			recommendationsInfo = new JSONObject(recomendacionesArray);
+		    		    		
+	    		    		}else {
+	    		    			recommendationsInfo = new JSONObject();
+	    		    		}
+	    		    		
+	    		    		//String recomendacionesArray = aux.analisisRecomendaciones(swriter.toString(), nivel);
 	    		    		
 	    		    		
 	    		    		if(infoAssistant.getBoolean("missingPayment") == true) {
@@ -305,7 +323,6 @@ public class Recepcion {
 	    		    		
 	    		    		JSONObject studentInfo = new JSONObject(alumnoInfo);
 	    		    		JSONObject assistantInfo = new JSONObject(asistente);
-	    		    		JSONObject recommendationsInfo = new JSONObject(recomendacionesArray);
 	    		    		
 	    		    		JSONObject combined = new JSONObject();
 	    		    	

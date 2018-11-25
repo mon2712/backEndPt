@@ -16,6 +16,7 @@ import java.util.List;
 import javax.json.Json;
 import javax.json.stream.JsonGenerator;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class Alumno {
@@ -447,7 +448,7 @@ public class Alumno {
     public static String getAlumnos(String filter) {
     		StringWriter swriter = new StringWriter();
         try {
-            String getQueryStatement = "SELECT * FROM alumno WHERE CONCAT(nombre, ' ',apellido) LIKE '%"+filter+"%';";
+            String getQueryStatement = "SELECT * FROM Alumno WHERE CONCAT(nombre, ' ',apellido) LIKE '%"+filter+"%';";
 
             prepareStat = conn.prepareStatement(getQueryStatement);
 
@@ -549,7 +550,7 @@ public class Alumno {
     		
 		StringWriter swriter = new StringWriter();
 	    try {
-	        String getQueryStatement = "Select re.idRegistro, DAY(re.fecha) as dia, MONTH(re.fecha) as mes, YEAR(re.fecha) as año, us.nombre, se.`set`, re.tipo, re.tiempo, re.`1`, re.`2`,re.`3`,re.`4`,re.`5`,re.`6`,re.`7`,re.`8`,re.`9`,re.`10` \r\n" + 
+	        String getQueryStatement = "Select re.idRegistro, DAY(re.fecha) as dia, MONTH(re.fecha) as mes, YEAR(re.fecha) as año, us.nombre, se.`set`, re.tipo, re.tiempo, re.`1`, re.`2`,re.`3`,re.`4`,re.`5`,re.`6`,re.`7`,re.`8`,re.`9`,re.`10`, niv.nombre \r\n" + 
 	        		"from Registro as re JOIN Usuario as us JOIN `Set` as se JOIN Nivel as niv\r\n" + 
 	        		"ON re.Asistente_Usuario_idUsuario=us.idUsuario AND se.idSet=re.Set_idSet AND se.Nivel_idNivel=niv.idNivel\r\n" + 
 	        		"WHERE Alumno_idAlumno="+alumno+ " ORDER BY fecha ASC;";
@@ -611,6 +612,7 @@ public class Alumno {
 							        				gen.write("8", rs.getInt(16));
 							        				gen.write("9", rs.getInt(17));
 							        				gen.write("10", rs.getInt(18));
+							        				gen.write("nivel", rs.getString(19));
 							        			gen.writeEnd(); //Cierra el objeto de 1 día
 					        		}else {
 					        			System.out.println("si no entra a a empty");
@@ -647,6 +649,7 @@ public class Alumno {
 								        				gen.write("8", rs.getInt(16));
 								        				gen.write("9", rs.getInt(17));
 								        				gen.write("10", rs.getInt(18));
+								        				gen.write("nivel", rs.getString(19));
 								        			gen.writeEnd();
 								        			
 								        			bandera2=0;
@@ -698,6 +701,7 @@ public class Alumno {
 						        				gen.write("8", rs.getInt(16));
 						        				gen.write("9", rs.getInt(17));
 						        				gen.write("10", rs.getInt(18));
+						        				gen.write("nivel", rs.getString(19));
 
 						        			gen.writeEnd();
 						        			
@@ -736,6 +740,7 @@ public class Alumno {
 								        				gen.write("8", rs.getInt(16));
 								        				gen.write("9", rs.getInt(17));
 								        				gen.write("10", rs.getInt(18));
+								        				gen.write("nivel", rs.getString(19));
 								        			gen.writeEnd(); //Cierra el objeto de 1 alumno
 		
 					        			
@@ -770,6 +775,98 @@ public class Alumno {
 	    }
     }
 
-    
+    public static String setRegistro(String infoRegistration) throws SQLException {
+    		System.out.println("info " +  infoRegistration);
+    		JSONObject info = new JSONObject(infoRegistration);
+    		JSONObject calificaciones = info.getJSONObject("grades");
+    		StringWriter swriter = new StringWriter();
+    		
+    		int idStudent = info.getInt("idStudent");
+    		int idRegistro = info.getInt("idRegistro");
+    		int idAssistant = info.getInt("idAssistant");
+    		
+    		String updateQuery = "UPDATE Registro SET fecha=CURDATE(), Asistente_Usuario_idUsuario=?, tiempo=?, "
+    				+ "`1`="+calificaciones.getString("0") + ", `2`="+calificaciones.getString("1") + ", `3`="+calificaciones.getString("2")+", "
+    				+ "`4`="+calificaciones.getString("3") + ", `5`="+calificaciones.getString("4") + ", `6`="+calificaciones.getString("5")+", "
+    				+ "`7`="+calificaciones.getString("6") + ", `8`="+calificaciones.getString("7") + ", `9`="+calificaciones.getString("8")+", "
+    				+ "`10`="+calificaciones.getString("9") +" WHERE idRegistro=? AND Alumno_idAlumno=?";
+    		
+    		prepareStat = conn.prepareStatement(updateQuery);
+    		
+    		prepareStat.setInt(1, idAssistant);
+    		prepareStat.setInt(2, info.getInt("time"));
+    		prepareStat.setInt(3,idRegistro);
+    		prepareStat.setInt(4,idStudent);
+	
+    		int count = prepareStat.executeUpdate();
+    		prepareStat.close();
+    		
+    		if(count>0) {
+    			System.out.println("Succesful");
+    			try (JsonGenerator gen = Json.createGenerator(swriter)) {
+    	            gen.writeStartObject();
+	    	            gen.writeStartObject("response");
+		    	            gen.write("success", 1);
+		    	            gen.write("idStudent", info.getInt("idStudent"));
+		    	            gen.write("idRegistro", info.getInt("idRegistro"));
+		    	            gen.write("idAssistant", info.getInt("idAssistant"));
+		    	            gen.write("tipo", info.getString("tipo"));
+	    	            gen.writeEnd();
+    	            gen.writeEnd();
+    	        }
+    	    
+    		}else {
+    			System.out.println("Error");
+    			try (JsonGenerator gen = Json.createGenerator(swriter)) {
+    	            gen.writeStartObject();
+	    	            gen.writeStartObject("response");
+		    	            gen.write("success", 0);
+		    	            gen.write("idStudent", info.getInt("idStudent"));
+		    	            gen.write("idRegistro", info.getInt("idRegistro"));
+		    	            gen.write("idAssistant", info.getInt("idAssistant"));
+		    	            gen.write("tipo", info.getString("tipo"));
+	    	            gen.writeEnd();
+    	            gen.writeEnd();
+    	        }
+    		}
+    		
+    		//System.out.println("obj " + swriter.toString());
+    		String finalResult;
+    		
+    		if(info.getString("tipo").compareTo("T") == 0) {
+    			System.out.println("Es tarea");
+    			finalResult=swriter.toString();
+    		}else {
+    			System.out.println("Es centro");
+    			JSONObject finalS = new JSONObject(swriter.toString());
+    			JSONArray testResults = info.getJSONArray("testResultados");
+    			
+    			String insertQuery = "INSERT INTO Registro_has_Nivel_has_PreguntaTest_has_Respuesta (Registro_idRegistro, Registro_Asistente_Usuario_idUsuario, Registro_Alumno_idAlumno, "
+    					+ "Nivel_has_P_has_R_Nivel_idNivel, Nivel_has_P_has_R_idpreguntaTest, Nivel_has_P_has_R_IdRespuesta, Nivel_has_P_has_R_puntoInicio)" +
+    			        "VALUES (?, ?, ?, ?, ?, ?, ?)";
+    			
+    			System.out.println("test size "+testResults.length());
+    			for(int i=0; i<testResults.length(); i++) {
+    				prepareStat = conn.prepareStatement(insertQuery);
+    	    		
+	    	    		prepareStat.setInt(1, info.getInt("idRegistro"));
+	    	    		prepareStat.setInt(2, info.getInt("idAssistant"));
+	    	    		prepareStat.setInt(3,info.getInt("idStudent"));
+	    	    		prepareStat.setInt(4,testResults.getJSONObject(i).getInt("idNivel"));
+	    	    		prepareStat.setInt(5, testResults.getJSONObject(i).getInt("id"));
+	    	    		prepareStat.setInt(6, testResults.getJSONObject(i).getInt("selected"));
+	    	    		prepareStat.setInt(7, 1);
+	    		
+	    	    		int count2 = prepareStat.executeUpdate();
+	    	    		prepareStat.close();
+    				
+    			}
+    			
+    			finalResult = finalS.toString();
+    			
+    		}
+    		
+    		return finalResult;	
+    }
 }
 
