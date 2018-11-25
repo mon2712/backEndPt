@@ -14,7 +14,7 @@ public class BaseDatos {
     		Connection conn = null;
 
     		//String pass ="dBoy6Ap281015";
-    		String pass = "vfcnmm2201";v
+    		String pass = "vfcnmm2201";
         try {
             Class.forName("com.mysql.jdbc.Driver");
             System.out.print("Congrats - Seems your MySQL JDBC Driver Registered!");

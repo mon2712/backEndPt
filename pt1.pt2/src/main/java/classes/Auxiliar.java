@@ -31,7 +31,7 @@ import org.kie.internal.KnowledgeBaseFactory;
 public class Auxiliar {
 	
 	static PreparedStatement prepareStat = null;
-    Connection conn = BaseDatos.conectarBD();
+    static Connection conn = BaseDatos.conectarBD();
     
 	public float frecuenciaInicial;
 	public String nivelInicial;
@@ -84,13 +84,14 @@ public class Auxiliar {
 		//para obtener las frecuencias de estudio de cada nivel
 		for(int x =nivelUbicacion; x<=6; x++) {
 	        niveles[x-nivelUbicacion] = new Nivel();
+	        niveles[x-nivelUbicacion].setNombreNivel(n[x-nivelUbicacion]);
 	        niveles[x-nivelUbicacion].setearValores(n[x-nivelUbicacion], conn);
 			niveles[x-nivelUbicacion].setDesempeñoGeneral(pn.getAlumno().getDesempeño());
 			niveles[x-nivelUbicacion].setDesempeñoNivel(desempeñosNivel[x-nivelUbicacion]);
 			
 			workingMemory.insert(niveles[x-nivelUbicacion]);
 			workingMemory.fireAllRules();
-	        
+	        System.out.println("Nombre nivel "+ niveles[x-nivelUbicacion].getNombreNivel());
 		}
 		
 		
@@ -151,7 +152,8 @@ public class Auxiliar {
 	        
 
 		}*/
-		double []frecProy = new double [6-nivelUbicacion+1];
+		//double []frecProy = new double [6-nivelUbicacion+1];
+		String []frecProy = new String [6-nivelUbicacion+1];
 
 		String []frecProyTipo = new String [6-nivelUbicacion+1];
 		int size, frecOriginal, s=0, indiceActual=0, mov=0, totalF=0, err;
@@ -257,6 +259,8 @@ public class Auxiliar {
 			alumn.setIdAlumno(idStudent);
 			String id;
 			//String desempeñosNivel[] = new String [exams.length()];
+			
+			//checar
 			String desNivel[] = new String [exams.length()];
 			String [] level = new String [exams.length()];
 			//List<Double> Frec=new ArrayList<Double>();
@@ -284,18 +288,18 @@ public class Auxiliar {
 			int newIndice=indexOfIntArray(level,n);
 			
 
-			int newIndice=Arrays.binarySearch(level, n);
+			//int newIndice=Arrays.binarySearch(level, n);
 			//System.out.println("New indice: " + newIndice);
 			//String desempeñosNivel[] = new String [exams.length()- newIndice];
 			//String nivel[] = new String [exams.length()- newIndice];
-			String desempeñosNivel[]=Arrays.copyOf(desNivel, newIndice);
-			String nivel[]=Arrays.copyOf(level, newIndice);
+			//String desempeñosNivel[]=Arrays.copyOf(desNivel, newIndice);
+			//String nivel[]=Arrays.copyOf(level, newIndice);
 			//System.out.println("Examenes desempeños:  "+ Arrays.asList(desempeñosNivel) + " Niveles: " + Arrays.asList(nivel));
 
 		//cambio de dev checar si va	
-			/*//buscando indie de nivel final (D)
+			//buscando indie de nivel final (D)
 			String fin="D";
-			int newIndice2=indexOfIntArray(level,fin);*/
+			int newIndice2=indexOfIntArray(level,fin);
 		/////
 			
 			
@@ -378,6 +382,7 @@ public class Auxiliar {
 			//System.out.println("para frecuencia inicial" + frecuenciaIncial.toString());
 			System.out.println("nivel " + infoStudent.getString("level"));
 			*/
+			System.out.println("nivel " + infoStudent.getString("level"));
 			n=infoStudent.getString("level");
 			String g=infoStudent.getString("grade");
 			String idStudent=infoStudent.getString("idStudent");
@@ -698,11 +703,13 @@ public class Auxiliar {
 								 			dias=diaSiguiente+7-today;
 								 		}
 								 		
-								 		
+								 		System.out.println("DiaSiguiente: "+ diaSiguiente);
+								 		System.out.println("Diferencia de días: "+ dias);
+								 		System.out.println("Numero de sets: "+ cS.getInt(6));
 									 	int diaSiguienteAux=diaSiguiente, dif=0, dias2=0;
 									 	diaSiguiente2=0;
 									 	if(cS.getInt(6)>=dias) {
-									 		while(dias2<dias) {
+									 		while(dias2<=cS.getInt(6)) {
 									 			diaSiguiente2=Alumno.getDiaInmediato("siguiente",lunes,miercoles,jueves,sabado,diaSiguienteAux);
 									 			dias2=0;
 									 			if(diaSiguiente2>today) {
@@ -711,6 +718,9 @@ public class Auxiliar {
 										 			dias2=diaSiguiente2+7-today;
 										 		}
 									 			diaSiguienteAux=diaSiguiente2;
+									 			
+									 			System.out.println("Nueva diferencia de días: "+ dias2);
+										 		System.out.println("Nuevo dia Siguiente: "+ diaSiguiente2);
 									 		}
 									 	}
 									 	System.out.println("DiaSiguiente2: "+ diaSiguiente2);
@@ -968,10 +978,7 @@ public class Auxiliar {
             }
         return swriter.toString(); 
 	}
-	
-	
-	
-}
+
 	public static int indexOfIntArray(String[] array, String key) {
 	    int returnvalue = -1;
 	    for (int i = 0; i < array.length; ++i) {
