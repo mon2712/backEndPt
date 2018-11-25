@@ -543,6 +543,75 @@ public class Alumno {
 	    }
     }
     
+
+    
+    public static int getDiaInmediato(String condicion,int lunes, int miercoles, int jueves, int sabado, int today) throws SQLException{
+    	int dia=0;
+    	int[] arrayDays = new int[4];
+    	List<Integer> diasQueViene = new ArrayList<Integer> ();
+    	int todayNew=0;
+    	
+		if(today<=2) todayNew=0;
+		if(today>2 && today<=4) todayNew=1;
+		if(today==5) todayNew=2;
+		if(today>5 && today==7) todayNew=3;
+		
+		arrayDays[0] = lunes; //lunes
+		arrayDays[1] = miercoles; //miercoles
+		arrayDays[2] = jueves; //jueves
+		arrayDays[3] = sabado; //sabado
+		
+		int count=0;
+		//guardando en orden de ascendente los dias que viene que no sean hoy
+		for(int i=0; i<4; i++) {
+			if(todayNew != i && arrayDays[i] == 1) {
+						if(i == 0) diasQueViene.add(2);
+						if(i == 1) diasQueViene.add(4); 
+						if(i == 2) diasQueViene.add(5); 
+						if(i == 3) diasQueViene.add(7); 
+			}
+			
+		}
+		int size=diasQueViene.size();
+		//si solo viene un dia (hoy), el dia anterior o siguiente sera el mismo
+		if(size == 0) {
+				dia=today;
+		}
+		else {
+			
+			int auxiliar=0;
+			
+			for(int j=0;j<size;j++) {
+				if(condicion=="anterior"){
+					//guardando en auxiliar mientras el dia sea menor que hoy
+					if(diasQueViene.get(j)<today) {
+						auxiliar=diasQueViene.get(j);
+					}
+				}
+				else {//dia siguiente
+					//guardando en auxiliar mientras el dia sea mayor que hoy
+					if(diasQueViene.get(j)>today) {
+						auxiliar=diasQueViene.get(j);
+						break;
+					}
+				}
+			}
+			//Primer dia menor(anterior), mayor(siguiente) que hoy
+			if(auxiliar!=0) {
+				dia=auxiliar;
+			}
+			//si no hay dias menores(anterior), mayores(siguiente) que hoy
+			else {
+				if(condicion=="anterior"){
+					dia=diasQueViene.get(size-1);
+				}
+				else { //dia siguiente
+					dia=diasQueViene.get(0);
+				}
+			}
+			return dia;
+		}
+
     public static String getBoleta(String alumno) {
     		System.out.println(alumno);
     		//JSONObject obj2 = new JSONObject(alumno);
@@ -771,5 +840,6 @@ public class Alumno {
     }
 
     
+
 }
 

@@ -1,0 +1,40 @@
+//A continuación escribimos nuestras reglas en un archivo REGISTRO_PROGDIARIA.drl
+
+
+package rules
+import classes.Registro;
+
+//---Prog Diaria-----------------------------------------------------------------------------------------------------------------------------------------------
+//---CLASIFICACIÓN DE LA EVALUACIÓN-----------------------------------------------------------------------------------------------------------------------------------------------
+rule "Evaluacion mala"
+    salience 3
+	dialect "java"
+    when
+       registroObject: Registro(evaluacion == null)
+    then 
+    	registroObject.setEvaluacion("Mala");
+end
+rule "Evaluacion buena"
+    salience 3
+	dialect "java"
+    when
+       registroObject: Registro((numTriangulo  + numFlecha)<=4)
+       Registro(numCien >=4)
+       Registro(evaluacion!="Excelente")
+       //Registro((numOchenta + numNoventa + numSetenta)>=2)
+    then 
+    	registroObject.setEvaluacion("Buena");
+end
+rule "Evaluacion excelente"
+	salience 2
+	dialect "java"
+    when
+       registroObject: Registro(numNoventa <=4)
+       Registro(numCien >=6)
+       Registro(numTriangulo ==0)
+       Registro(numOchenta ==0)
+       Registro(numSetenta ==0)
+       Registro(numFlecha ==0)
+    then 
+       registroObject.setEvaluacion("Excelente");
+end

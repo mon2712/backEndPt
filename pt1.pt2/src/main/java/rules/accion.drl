@@ -1,0 +1,40 @@
+//A continuación escribimos nuestras reglas en un archivo REGISTRO_PROGDIARIA.drl
+
+
+package rules
+import classes.Registro;
+
+//---Cambio de Prog Diaria-----------------------------------------------------------------------------------------------------------------------------------------------
+rule "Mantener frecuencia"
+    salience 2
+	dialect "java"
+    when
+       registroObject: Registro((getEvaluacion()=="Excelente" && getTiempo() <= (getNivel().getMaxTime()*10) && getIndice()==0) || 
+       							(getEvaluacion()=="Excelente" && getTiempo() >  (getNivel().getMaxTime()*10) ) ||
+       							(getEvaluacion()=="Buena" && getTiempo() <= (getNivel().getMaxTime()*10) ) ) 
+    then 
+       registroObject.setAccion("PERMANECE");
+end	
+rule "Disminuir frecuencia"
+    salience 1
+	dialect "java"
+    when
+       registroObject: Registro(getEvaluacion()=="Excelente")
+       				   Registro(getTiempo() <= (getNivel().getMaxTime()*10))
+       				   Registro(getIndice()>0)
+    then 
+       registroObject.setIndice(registroObject.getIndice()-1);
+       registroObject.setAccion("DISMINUYE");
+end
+rule "Aumentar frecuencia"
+    salience 0
+	dialect "java"
+    when
+       registroObject: Registro((getEvaluacion() =="Buena" && getTiempo() > (getNivel().getMaxTime()*10)) ||  
+      							(getEvaluacion() =="Mala"))
+    then 
+    	registroObject.setIndice(registroObject.getIndice()+1);
+    	registroObject.setAccion("AUMENTA");
+    	 //System.out.println("AUMENTAR");
+end
+
