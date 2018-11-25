@@ -60,32 +60,21 @@ public class pruebafecha {
 		//System.out.print(alumnosLlamada);
 		//recepcion.NotaLlamada(3, "hola", "23/04/2018");
 
-		/*Auxiliar aux= new Auxiliar();
 
-		ProyeccionAnual pa= new ProyeccionAnual();
-		pa.crearProyeccionAnual(arrayJson);*/
-		/*String[] examenes={"3A", "2A", "B", "C", "D", "E"};
-		String inicia="C";
-		String fin="D";
-		int index=aux.indexOfIntArray(examenes, inicia);
-		int index2=aux.indexOfIntArray(examenes, fin);
-		System.out.println("Nivel inicial: "+ inicia + " index incial: "+ index + " Nivel final: "+ fin + "index final: " + index2);
-		*/
-		//String fileRules1="../rules/proyeccionNivel.drl";
+		Auxiliar aux= new Auxiliar();
+		
+		String fileRules1="../rules/proyeccionNivel.drl";
 		//String fileRules2="../rules/desempeño.drl";
 
 		/*String arrayJson=aux.crearJson();
 		JSONObject obj = new JSONObject(arrayJson);
-		WorkingMemory wk=aux.conexionDrools();
-		JSONObject results = obj.getJSONObject("resultsTest");*/
 
-
-		//JSONObject results = obj.getJSONObject("resultsTest");
+		WorkingMemory wk=aux.conexionDrools(fileRules1);
+		JSONObject results = obj.getJSONObject("resultsTest");
 
 		//aux.executeFrecuencias(wk);
 
-		//aux.executeFrecInicial(wk, arrayJson);
-
+		aux.executeFrecInicial(wk, arrayJson);/*
 		//aux.exFrecuencias(wk,2);
 		/*pruebaDSL prueba = new pruebaDSL();
 		
@@ -98,8 +87,23 @@ public class pruebafecha {
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}*/
 
+		}
+         /* 
+		Auxiliar aux= new Auxiliar();
+		
+		String fileRules1="../rules/proyeccionNivel.drl";
+		//String fileRules2="../rules/desempeño.drl";
+		String arrayJson=aux.crearJsonRegistro();
+		JSONObject obj = new JSONObject(arrayJson);
+		WorkingMemory wk=aux.conexionDrools(fileRules1);
+		JSONObject results = obj.getJSONObject("resultsRegistro");
+		aux.executeProgramacion(wk, arrayJson);
+		//aux.executeFrecuencias(wk);
+		//aux.executeFrecInicial(wk, arrayJson);
+		//aux.exFrecuencias(wk,2);
+		System.out.println("Hola");
+		/*pruebaDSL prueba = new pruebaDSL();
 		
 		//Asistente asistente = new Asistente();
 		//String asistentes = asistente.getAsistentes();
@@ -138,13 +142,25 @@ public class pruebafecha {
             gen.writeEnd();
 		}*/
 
-        
-		/*Recepcion recepcion = new Recepcion();
+		/*Registro rs= new Registro();
+		rs.setUno(100);
+		rs.setDos(100);
+		rs.setTres(100);
+		rs.setCuatro(110);
+		rs.setCinco(110);
+		rs.setSeis(110);
+		rs.setSiete(100);
+		rs.setOcho(100);
+		rs.setNueve(110);
+		rs.setDiez(110);
+		//System.out.println(rs.getUno() + " " + rs.getDos()  + " " + rs.getTres()  + " " + rs.getCuatro() + " " + rs.getCinco() + " " +  rs.getSeis()  + " " +  rs.getSiete()  + " " +  rs.getOcho() + " " + rs.getNueve() + " " + rs.getDiez());
+		Auxiliar aux=new Auxiliar();
+		WorkingMemory wm=aux.conexionDrools();
+		rs.setCantidadCalificaciones(rs, wm);
+		System.out.println("Num 70: " +  rs.getNumSetenta() + " Num 80: " + rs.getNumOchenta() + " Num 90: " + rs.getNumNoventa() +" Num 100: " + rs.getNumCien()+ " Num flechas:" + rs.getNumFlecha() + "  Num triangulo: " + rs.getNumTriangulo());
 
-		String notificaciones = recepcion.getNotificacion();
+		System.out.println("La evaluacion es: "+ rs.getEvaluacion());*/
 
-		System.out.println("noti" + notificaciones);*/
-			
 	}
 
 }
