@@ -1024,10 +1024,10 @@ public class Auxiliar {
 			}
 		}
 			
-			String getQueryStatement = "SELECT pas.Asistente_Usuario_idUsuario, users.nombre, users.apellido, users.telefono, COUNT(pas.Alumno_idAlumno) FROM asistencia as pas JOIN usuario as users JOIN Asistente as asiste\r\n" + 
+			String getQueryStatement = "SELECT pas.Asistente_Usuario_idUsuario, users.nombre, users.apellido, users.telefono, COUNT(pas.Alumno_idAlumno) FROM Asistencia as pas JOIN Usuario as users JOIN Asistente as asiste\r\n" + 
 					"ON pas.Asistente_Usuario_idUsuario=users.idUsuario AND asiste.Usuario_idUsuario=users.idUsuario \r\n" + 
 					"WHERE fecha=CURDATE() AND Asistente_Usuario_idUsuario IN (\r\n" + 
-					"	SELECT asist.Usuario_idUsuario FROM asistencia as lista JOIN asistente as asist ON lista.Asistente_Usuario_idUsuario=asist.Usuario_idUsuario \r\n" + 
+					"	SELECT asist.Usuario_idUsuario FROM Asistencia as lista JOIN Asistente as asist ON lista.Asistente_Usuario_idUsuario=asist.Usuario_idUsuario \r\n" + 
 					"	WHERE fecha=CURDATE() AND horaSalida='00:00:00' AND asist.nivel IN ("+nivelesToCheck+") )\r\n" + 
 					"GROUP BY pas.Asistente_Usuario_idUsuario ORDER BY COUNT(pas.Alumno_idAlumno);";
 	
@@ -1037,7 +1037,7 @@ public class Auxiliar {
 	
 	        if (!rs.isBeforeFirst()){
 	        		
-	        		String queryAsistentes = "SELECT asist.Usuario_idUsuario, users.nombre, users.apellido, users.telefono, asist.nivel FROM asistencia as lista JOIN asistente as asist JOIN usuario as users\r\n" + 
+	        		String queryAsistentes = "SELECT asist.Usuario_idUsuario, users.nombre, users.apellido, users.telefono, asist.nivel FROM Asistencia as lista JOIN Asistente as asist JOIN Usuario as users\r\n" + 
 	        				"ON lista.Asistente_Usuario_idUsuario=asist.Usuario_idUsuario  AND asist.usuario_idUsuario=users.idUsuario\r\n" + 
 	        				"WHERE fecha=CURDATE() AND horaSalida='00:00:00' AND asist.nivel IN ("+nivelesToCheck+") GROUP BY asist.Usuario_idUsuario;";
 	
@@ -1047,10 +1047,10 @@ public class Auxiliar {
 	            
 	            if (!rsAsistentes.isBeforeFirst()){
 	            		
-	            		String queryNoCalificadas = "SELECT pas.Asistente_Usuario_idUsuario, users.nombre, users.apellido, users.telefono, asist.nivel, COUNT(pas.Alumno_idAlumno) FROM asistencia as pas JOIN usuario as users JOIN Asistente as asist\r\n" + 
+	            		String queryNoCalificadas = "SELECT pas.Asistente_Usuario_idUsuario, users.nombre, users.apellido, users.telefono, asist.nivel, COUNT(pas.Alumno_idAlumno) FROM Asistencia as pas JOIN Usuario as users JOIN Asistente as asist\r\n" + 
 	            				"ON pas.Asistente_Usuario_idUsuario=users.idUsuario AND asist.Usuario_idUsuario=users.idUsuario\r\n" + 
 	            				"WHERE  fecha=CURDATE() AND horaSalida='00:00:00' AND Asistente_Usuario_idUsuario IN (\r\n" + 
-	            				"	SELECT asist.Usuario_idUsuario FROM asistencia as lista JOIN asistente as asist ON lista.Asistente_Usuario_idUsuario=asist.Usuario_idUsuario \r\n" + 
+	            				"	SELECT asist.Usuario_idUsuario FROM Asistencia as lista JOIN Asistente as asist ON lista.Asistente_Usuario_idUsuario=asist.Usuario_idUsuario \r\n" + 
 	            				"	WHERE fecha=CURDATE()  )\r\n" + 
 	            				"GROUP BY pas.Asistente_Usuario_idUsuario ORDER BY asist.nivel DESC;";
 	
@@ -1167,9 +1167,12 @@ public class Auxiliar {
     
     public static String analisisRecomendaciones(String recomendaciones, String nivel) {
     		StringWriter swriter = new StringWriter();
+    		System.out.println("nivel " + nivel);
     		
     		JSONObject obj2 = new JSONObject(recomendaciones);
     		JSONArray recom = obj2.getJSONArray("recomendaciones");
+    		
+    		int bandera=0;
     		
 	    	switch (nivel) {
 	    		case "3A":
@@ -1183,6 +1186,7 @@ public class Auxiliar {
 								switch (pregunta.getInt("idPregunta")) {
 									case 21:
 										if(pregunta.getString("respuesta").equals("No")) {
+											bandera=1;
 											gen.writeStartObject();
 									    			gen.write("recomendacion", "Medir tus tiempos");
 									    		gen.writeEnd();
@@ -1190,6 +1194,7 @@ public class Auxiliar {
 									break;
 									case 22:
 										if(pregunta.getString("respuesta").equals("No")) {
+											bandera=1;
 											gen.writeStartObject();
 									    			gen.write("recomendacion", "Concentrarte en tu trabajo");
 									    		gen.writeEnd();
@@ -1197,12 +1202,19 @@ public class Auxiliar {
 									break;
 									case 24:
 										if(pregunta.getString("respuesta").equals("No")) {
+											bandera=1;
 											gen.writeStartObject();
 									    			gen.write("recomendacion", "No utilizar dedos al contar");
 									    		gen.writeEnd();
 										}
 									break;
 								}
+						}
+						
+						if(bandera==0) {
+							gen.writeStartObject();
+					    			gen.write("recomendacion", "Buen trabajo sigue así");
+					    		gen.writeEnd();
 						}
 					gen.writeEnd();
 					gen.writeEnd();
@@ -1219,6 +1231,7 @@ public class Auxiliar {
 								switch (pregunta.getInt("idPregunta")) {
 									case 21:
 										if(pregunta.getString("respuesta").equals("No")) {
+											bandera=1;
 											gen.writeStartObject();
 									    			gen.write("recomendacion", "Medir tus tiempos");
 									    		gen.writeEnd();
@@ -1226,6 +1239,7 @@ public class Auxiliar {
 									break;
 									case 22:
 										if(pregunta.getString("respuesta").equals("No")) {
+											bandera=1;
 											gen.writeStartObject();
 									    			gen.write("recomendacion", "Concentrarte en tu trabajo");
 									    		gen.writeEnd();
@@ -1233,12 +1247,18 @@ public class Auxiliar {
 									break;
 									case 24:
 										if(pregunta.getString("respuesta").equals("No")) {
+											bandera=1;
 											gen.writeStartObject();
 									    			gen.write("recomendacion", "No utilizar dedos al contar");
 									    		gen.writeEnd();
 										}
 									break;
 								}
+						}
+						if(bandera==0) {
+							gen.writeStartObject();
+					    			gen.write("recomendacion", "Buen trabajo sigue así");
+					    		gen.writeEnd();
 						}
 					gen.writeEnd();
 					gen.writeEnd();
@@ -1255,6 +1275,7 @@ public class Auxiliar {
 								switch (pregunta.getInt("idPregunta")) {
 									case 25:
 										if(pregunta.getString("respuesta").equals("No")) {
+											bandera=1;
 											gen.writeStartObject();
 									    			gen.write("recomendacion", "Medir tus tiempos");
 									    		gen.writeEnd();
@@ -1262,6 +1283,7 @@ public class Auxiliar {
 									break;
 									case 26:
 										if(pregunta.getString("respuesta").equals("No")) {
+											bandera=1;
 											gen.writeStartObject();
 									    			gen.write("recomendacion", "No anotar la que se lleva y no utilizar dedos al contar");
 									    		gen.writeEnd();
@@ -1269,12 +1291,18 @@ public class Auxiliar {
 									break;
 									case 22:
 										if(pregunta.getString("respuesta").equals("No")) {
+											bandera=1;
 											gen.writeStartObject();
 									    			gen.write("recomendacion", "Concentrarte en tu trabajo");
 									    		gen.writeEnd();
 										}
 									break;
 								}
+						}
+						if(bandera==0) {
+							gen.writeStartObject();
+					    			gen.write("recomendacion", "Buen trabajo sigue así");
+					    		gen.writeEnd();
 						}
 					gen.writeEnd();
 					gen.writeEnd();
@@ -1291,6 +1319,7 @@ public class Auxiliar {
 								switch (pregunta.getInt("idPregunta")) {
 									case 21:
 										if(pregunta.getString("respuesta").equals("No")) {
+											bandera=1;
 											gen.writeStartObject();
 									    			gen.write("recomendacion", "Medir tus tiempos");
 									    		gen.writeEnd();
@@ -1298,6 +1327,7 @@ public class Auxiliar {
 									break;
 									case 26:
 										if(pregunta.getString("respuesta").equals("No")) {
+											bandera=1;
 											gen.writeStartObject();
 									    			gen.write("recomendacion", "No anotar la que se lleva, ni utilizar dedos para contar");
 									    		gen.writeEnd();
@@ -1305,6 +1335,7 @@ public class Auxiliar {
 									break;
 									case 22:
 										if(pregunta.getString("respuesta").equals("No")) {
+											bandera=1;
 											gen.writeStartObject();
 									    			gen.write("recomendacion", "Concentrarte en tu trabajo");
 									    		gen.writeEnd();
@@ -1312,14 +1343,21 @@ public class Auxiliar {
 									break;
 								}
 						}
+						if(bandera==0) {
+							gen.writeStartObject();
+					    			gen.write("recomendacion", "Buen trabajo sigue así");
+					    		gen.writeEnd();
+						}
 					gen.writeEnd();
 					gen.writeEnd();
 				}
 			break;
 			case "C":
+				System.out.println("entra al case");
 				try (JsonGenerator gen = Json.createGenerator(swriter)) {
 					gen.writeStartObject();
 					gen.writeStartArray("recomendations");
+						System.out.println("long "+recom.length());
 				
 						for(int i=0; i<recom.length(); i++) {
 							JSONObject pregunta = recom.getJSONObject(i);
@@ -1327,6 +1365,7 @@ public class Auxiliar {
 								switch (pregunta.getInt("idPregunta")) {
 									case 27:
 										if(pregunta.getString("respuesta").equals("No")) {
+											bandera=1;
 											gen.writeStartObject();
 									    			gen.write("recomendacion", "Repasar las tablas en casa");
 									    		gen.writeEnd();
@@ -1334,6 +1373,7 @@ public class Auxiliar {
 									break;
 									case 28:
 										if(pregunta.getString("respuesta").equals("No")) {
+											bandera=1;
 											gen.writeStartObject();
 									    			gen.write("recomendacion", "No utilizar dedos al contar");
 									    		gen.writeEnd();
@@ -1341,6 +1381,7 @@ public class Auxiliar {
 									break;
 									case 29:
 										if(pregunta.getString("respuesta").equals("Largos")) {
+											bandera=1;
 											gen.writeStartObject();
 									    			gen.write("recomendacion", "Utilizar procedimiento enseñado en centro");
 									    		gen.writeEnd();
@@ -1348,9 +1389,15 @@ public class Auxiliar {
 									break;
 								}
 						}
+						if(bandera==0) {
+							gen.writeStartObject();
+					    			gen.write("recomendacion", "Buen trabajo sigue así");
+					    		gen.writeEnd();
+						}
 					gen.writeEnd();
 					gen.writeEnd();
 				}
+				System.out.println("swirter " + swriter.toString());
 			break;
 			case "D":
 				try (JsonGenerator gen = Json.createGenerator(swriter)) {
@@ -1363,6 +1410,7 @@ public class Auxiliar {
 								switch (pregunta.getInt("idPregunta")) {
 									case 30:
 										if(pregunta.getString("respuesta").equals("No")) {
+											bandera=1;
 											gen.writeStartObject();
 									    			gen.write("recomendacion", "Realizar el procedimiento de división con resta");
 									    		gen.writeEnd();
@@ -1370,12 +1418,18 @@ public class Auxiliar {
 									break;
 									case 31:
 										if(pregunta.getString("respuesta").equals("No")) {
+											bandera=1;
 											gen.writeStartObject();
 									    			gen.write("recomendacion", "Simplificar");
 									    		gen.writeEnd();
 										}
 									break;
 								}
+						}
+						if(bandera==0) {
+							gen.writeStartObject();
+					    			gen.write("recomendacion", "Buen trabajo sigue así");
+					    		gen.writeEnd();
 						}
 					gen.writeEnd();
 					gen.writeEnd();
