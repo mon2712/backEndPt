@@ -16,6 +16,8 @@ import java.util.List;
 import javax.json.Json;
 import javax.json.stream.JsonGenerator;
 
+import org.json.JSONObject;
+
 public class Alumno {
 	public static final String DESEMPEÑO_ALTO= "bueno";
 	public static final String DESEMPEÑO_MEDIO = "medio";
@@ -55,6 +57,8 @@ public class Alumno {
 	private String ultimaAusencia;
 	private String statusAnterior;
 	private String statusActual;
+	private int adeudo;
+	private int asistencias;
 	private int set;
 	private int numHojas;
 	private int gradoNum;
@@ -71,7 +75,6 @@ public class Alumno {
 	private int anteSuc;
 	private int puntajeDesempeño;
 	private String desempeño;
-	
 	
 	public String getDesempeño() {
 		return desempeño;
@@ -142,7 +145,6 @@ public class Alumno {
 	public void setTrabajoB(int trabajoB) {
 		this.trabajoB = trabajoB;
 	}
-
 	
 	public int getFluidezResta() {
 		return fluidezResta;
@@ -340,6 +342,18 @@ public class Alumno {
 			
 		}
 	}
+	public int getAdeudo() {
+		return adeudo;
+	}
+	public void setAdeudo(int adeudo) {
+		this.adeudo = adeudo;
+	}
+	public int getAsistencias() {
+		return asistencias;
+	}
+	public void setAsistencias(int asistencias) {
+		this.asistencias = asistencias;
+	}
 
 
 	static PreparedStatement prepareStat = null;
@@ -349,7 +363,7 @@ public class Alumno {
     		
     		StringWriter swriter = new StringWriter();
     		try {
-    		    CallableStatement cStmt = conn.prepareCall("{call getStudentFile(?,?,?,?,?,?,?,?,?)}");
+    		    CallableStatement cStmt = conn.prepareCall("{call getFichaAlumno(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}");
 	
     		    cStmt.setInt(1, idAlumno);
     		    cStmt.registerOutParameter(2, Types.INTEGER);
@@ -360,47 +374,64 @@ public class Alumno {
     		    cStmt.registerOutParameter(7, Types.VARCHAR);
     		    cStmt.registerOutParameter(8, Types.VARCHAR);
     		    cStmt.registerOutParameter(9, Types.INTEGER);
+    		    cStmt.registerOutParameter(10, Types.VARCHAR);
+    		    cStmt.registerOutParameter(11, Types.VARCHAR);
+    		    cStmt.registerOutParameter(12, Types.VARCHAR);
+    		    cStmt.registerOutParameter(13, Types.VARCHAR);
+    		    cStmt.registerOutParameter(14, Types.INTEGER);
+    		    cStmt.registerOutParameter(15, Types.INTEGER);
     		    cStmt.execute();    
     		    
-    		    int err, debeColegiatura, asistencias;
-    		    String nombre, tutor, telefono, apellido, nivel,debe;
-    		    err=cStmt.getInt(9);
-    		    debeColegiatura=cStmt.getInt(2);
-    		    asistencias=cStmt.getInt(3);
-    		    nombre = cStmt.getString(5);
-    		    apellido = cStmt.getString(6);
-    		    nivel = cStmt.getString(7);
-    		    telefono = cStmt.getString(8);
-    		    tutor=cStmt.getString(4);
+    		    int err, debeColegiatura;
+    		    String telefono="",debe;
     		    
-    		    System.out.println("usuario: "+nombre + " " + apellido + " " + nivel+"telefono"+telefono);
-    		    if (debeColegiatura == 1) debe="true"; else debe="false";
-    		    if (telefono == null) telefono="";
+    		    err=cStmt.getInt(15);
+    		    debeColegiatura=cStmt.getInt(2);
+    		    
+    		    Alumno alumno = new Alumno();
+    		    
+    		    
+    		    alumno.setNombre(cStmt.getString(11));
+    		    alumno.setApellidoPaterno(cStmt.getString(12));
+    		    alumno.setNivelActual(cStmt.getString(13));
+    		    alumno.setTel(cStmt.getString(8));
+    		    alumno.setNombreMadre(cStmt.getString(6));
+    		    alumno.setApellidoMadre(cStmt.getString(7));
+    		    alumno.setCelMadre(cStmt.getString(9));
+    		    alumno.setAdeudo(cStmt.getInt(10));
+    		    alumno.setAsistencias(cStmt.getInt(3));
+    		    alumno.setTutorNombre(cStmt.getString(4));
+    		    alumno.setCelTutor(cStmt.getString(5));
+    		    
+    		    if (alumno.getAdeudo() == 1) debe="true"; else debe="false";
+    		    if (alumno.getTel() == null) telefono=""; else telefono=alumno.getTel();
     		    
     		    if(err == 1) {
-    		    		System.out.println("no existe alumno");
     		    		try (JsonGenerator gen = Json.createGenerator(swriter)) {
     	    	            gen.writeStartObject();
     	    	            gen.writeStartObject("student");
-    	    	            gen.write("code", 1);
-    	    	            gen.write("type", "No existen alumnos con ese id");
+    	    	            		gen.write("code", 1);
+    	    	            		gen.write("type", "No existe alumno con ese id");
     	    	            gen.writeEnd();
     	    	            gen.writeEnd();
     	    	        }
     		    }else if(err == 0) {
-    		    		System.out.println("existe un alumno"+nombre);
 	    	        try (JsonGenerator gen = Json.createGenerator(swriter)) {
 	    	            gen.writeStartObject();
 	    	            gen.writeStartObject("student");
-	    	            gen.write("code", 0);
-	    	            gen.write("name", nombre);
-	    	            gen.write("lastName", apellido);
-	    	            gen.write("level", nivel);
-	    	            gen.write("tutor", tutor);
-	    	            gen.write("phone", telefono);
-	    	            gen.write("cellphone", "5564555656");
-	    	            gen.write("missingPayment", debe);
-	    	            gen.write("assistances", asistencias);
+	    	            		gen.write("code", 0);
+	    	            		gen.write("type","student");
+	    	            		gen.write("name", alumno.getNombre());
+	    	            		gen.write("lastName", alumno.getApellidoPaterno());
+	    	            		gen.write("level", alumno.getNivelActual());
+	    	            		gen.write("tutor", alumno.getTutorNombre());
+	    	            		gen.write("cellTutor", alumno.getCelTutor());
+	    	            		gen.write("missingPayment", debe);
+	    	            		gen.write("assistances", alumno.getAsistencias());
+	    	            		gen.write("nameMom", ""+alumno.getNombreMadre());
+	    	            		gen.write("lastNameMom", ""+alumno.getApellidoMadre());
+	    	            		gen.write("phoneHouse", telefono);
+	    	            		gen.write("cellMom", alumno.getCelMadre());
 	    	            gen.writeEnd();
 	    	            gen.writeEnd();
 	    	        }
@@ -414,7 +445,6 @@ public class Alumno {
     }
     
     public static String getAlumnos(String filter) {
-    		System.out.println("filter en funcion"+filter);
     		StringWriter swriter = new StringWriter();
         try {
             String getQueryStatement = "SELECT * FROM alumno WHERE CONCAT(nombre, ' ',apellido) LIKE '%"+filter+"%';";
@@ -428,7 +458,6 @@ public class Alumno {
             	gen.writeStartObject();
 	            gen.writeStartArray("allStudents");
 	            while(rs.next()) {
-	            		System.out.println(rs.getString(1) + " " + rs.getString(3)+" "+rs.getString(2));
 	                gen.writeStartObject();
 		                gen.write("name", rs.getString(3)+ " " + rs.getString(2));
 		                gen.write("idStudent", rs.getString(1));
@@ -464,7 +493,6 @@ public class Alumno {
 	        	gen.writeStartObject();
 	            gen.writeStartArray("allStudents");
 	            while(rs.next()) {
-	            		System.out.println(rs.getString(1) + " " + rs.getString(3)+" "+rs.getString(2));
 	                gen.writeStartObject();
 		                gen.write("name", rs.getString(3)+ " " + rs.getString(2));
 		                gen.write("idStudent", rs.getString(1));
@@ -497,7 +525,6 @@ public class Alumno {
 	        	gen.writeStartObject();
 	            gen.writeStartArray("allStudents");
 	            while(rs.next()) {
-	            		System.out.println(rs.getString(1) + " " + rs.getString(3)+" "+rs.getString(2));
 	                gen.writeStartObject();
 		                gen.write("name", rs.getString(3)+ " " + rs.getString(2));
 		                gen.write("idStudent", rs.getString(1));
@@ -516,6 +543,7 @@ public class Alumno {
 	    }
     }
     
+
     
     public static int getDiaInmediato(String condicion,int lunes, int miercoles, int jueves, int sabado, int today) throws SQLException{
     	int dia=0;
@@ -580,10 +608,238 @@ public class Alumno {
 				else { //dia siguiente
 					dia=diasQueViene.get(0);
 				}
-			}	
+			}
+			return dia;
 		}
-    
-		return dia;
+
+    public static String getBoleta(String alumno) {
+    		System.out.println(alumno);
+    		//JSONObject obj2 = new JSONObject(alumno);
+    		
+		StringWriter swriter = new StringWriter();
+	    try {
+	        String getQueryStatement = "Select re.idRegistro, DAY(re.fecha) as dia, MONTH(re.fecha) as mes, YEAR(re.fecha) as año, us.nombre, se.`set`, re.tipo, re.tiempo, re.`1`, re.`2`,re.`3`,re.`4`,re.`5`,re.`6`,re.`7`,re.`8`,re.`9`,re.`10` \r\n" + 
+	        		"from Registro as re JOIN Usuario as us JOIN `Set` as se JOIN Nivel as niv\r\n" + 
+	        		"ON re.Asistente_Usuario_idUsuario=us.idUsuario AND se.idSet=re.Set_idSet AND se.Nivel_idNivel=niv.idNivel\r\n" + 
+	        		"WHERE Alumno_idAlumno="+alumno+ " ORDER BY fecha ASC;";
+	
+	        prepareStat = conn.prepareStatement(getQueryStatement);
+	
+	        // Execute the Query, and get a java ResultSet
+	        ResultSet rs = prepareStat.executeQuery();
+	        
+	        int i=0;
+	        List<String> grades=new ArrayList<>();
+	        List<String> mes=new ArrayList<>();
+	        
+	        try (JsonGenerator gen = Json.createGenerator(swriter)) {
+	        		gen.writeStartObject();
+	        		gen.writeStartArray("gradesStudent"); //Contiene el array de calificaciones
+		        int bandera=0, bandera2=0;
+		            if (!rs.isBeforeFirst()){
+		            		//ResultSet is empty
+		            		
+		            		gen.writeStartObject();
+				        		gen.write("err", 1);
+				        		gen.write("messageError", "No tiene calificaciones registrados");
+			        		gen.writeEnd();
+			        		
+			        		gen.writeEnd();
+						gen.writeEnd();
+		    				//gen.writeEnd();
+		            	}else {
+				        while(rs.next()) {
+					        	if(grades.isEmpty()) {
+					        		grades.add(rs.getString(4));
+					        		
+					        		gen.writeStartObject(); //Empieza el objeto de un año
+					        		gen.write("year", rs.getString(4));
+					        		
+					        		if(mes.isEmpty()) {
+					        			mes.add(rs.getString(3));
+					        			
+					        			gen.writeStartArray("months"); //Empieza el array que contiene los meses
+						        			gen.writeStartObject(); //Empieza el objeto de 1 mes
+							        		gen.write("month", rs.getString(3));
+						        			gen.writeStartArray("days"); //Empieza el array de los días
+						        			
+						        				gen.writeStartObject(); //Empieza el objeto de 1 día 
+						        					gen.write("idRegister", rs.getInt(1));
+								        			gen.write("day", rs.getInt(2));
+								        			gen.write("set", rs.getInt(6));
+								        			gen.write("typeSet", ""+rs.getString(7));
+								        			gen.write("time", rs.getInt(8));
+								        			gen.write("assistant", rs.getString(5));
+							        				gen.write("1", rs.getInt(9));
+							        				gen.write("2", rs.getInt(10));
+							        				gen.write("3", rs.getInt(11));
+							        				gen.write("4", rs.getInt(12));
+							        				gen.write("5", rs.getInt(13));
+							        				gen.write("6", rs.getInt(14));
+							        				gen.write("7", rs.getInt(15));
+							        				gen.write("8", rs.getInt(16));
+							        				gen.write("9", rs.getInt(17));
+							        				gen.write("10", rs.getInt(18));
+							        			gen.writeEnd(); //Cierra el objeto de 1 día
+					        		}else {
+					        			System.out.println("si no entra a a empty");
+					        		}
+					        	}else {
+					        		
+				        			for(i=0; i<grades.size(); i++) {
+				        				
+					        			if(grades.get(i).equals(rs.getString(4))) { //donde el año sea igual 
+					        				
+					        				//System.out.println("año en for " + rs.getString(4));
+					        				
+					        				for(int j=0; j<mes.size(); j++) { //buscar meses 
+						        				
+					        					if(mes.get(j).equals(rs.getString(3))) { // si mes ya existe agrego un día
+					        						//System.out.println("mes en for " + rs.getString(3));
+
+					        						//System.out.println("el mes es igual en el if");
+					        						
+					        						gen.writeStartObject();
+						        						gen.write("idRegister", rs.getInt(1));
+									        			gen.write("day", rs.getInt(2));
+									        			gen.write("set", rs.getInt(6));
+									        			gen.write("typeSet", ""+rs.getString(7));
+									        			gen.write("time", rs.getInt(8));
+									        			gen.write("assistant", rs.getString(5));
+								        				gen.write("1", rs.getInt(9));
+								        				gen.write("2", rs.getInt(10));
+								        				gen.write("3", rs.getInt(11));
+								        				gen.write("4", rs.getInt(12));
+								        				gen.write("5", rs.getInt(13));
+								        				gen.write("6", rs.getInt(14));
+								        				gen.write("7", rs.getInt(15));
+								        				gen.write("8", rs.getInt(16));
+								        				gen.write("9", rs.getInt(17));
+								        				gen.write("10", rs.getInt(18));
+								        			gen.writeEnd();
+								        			
+								        			bandera2=0;
+						        				}else {
+						        					//System.out.println("mes en for cuando bandera2 se vuelve 1 " + rs.getString(3));
+						        					bandera2=1;
+						        					//System.out.println("entra al else año: " + rs.getString(4) + "mes " + rs.getString(3));
+						        				}
+					        					
+					        										        					
+					        				}
+					        				
+					        				
+					        				bandera=0;
+					        				
+					        				
+
+					        			}else {
+					        				bandera=1;
+					        			}
+				        			}
+				        			
+				        			if(bandera2==1) { 
+			        					System.out.println("si entra al bandera2 a mes diferente de if");
+			        					System.out.println("entra al else año: " + rs.getString(4) + "mes " + rs.getString(3));
+			        					gen.writeEnd();
+				        				gen.writeEnd();
+
+				        				//gen.writeEnd();
+				        				
+				        				
+				        				gen.writeStartObject();
+			        					gen.write("month", rs.getString(3));
+				        				gen.writeStartArray("days");
+					        				gen.writeStartObject();
+						        				gen.write("idRegister", rs.getInt(1));
+							        			gen.write("day", rs.getInt(2));
+							        			gen.write("set", rs.getInt(6));
+							        			gen.write("typeSet", ""+rs.getString(7));
+							        			gen.write("time", rs.getInt(8));
+							        			gen.write("assistant", rs.getString(5));
+						        				gen.write("1", rs.getInt(9));
+						        				gen.write("2", rs.getInt(10));
+						        				gen.write("3", rs.getInt(11));
+						        				gen.write("4", rs.getInt(12));
+						        				gen.write("5", rs.getInt(13));
+						        				gen.write("6", rs.getInt(14));
+						        				gen.write("7", rs.getInt(15));
+						        				gen.write("8", rs.getInt(16));
+						        				gen.write("9", rs.getInt(17));
+						        				gen.write("10", rs.getInt(18));
+
+						        			gen.writeEnd();
+						        			
+						        		mes.add(rs.getString(3));
+				        			}
+
+				        							        			
+				        			if(bandera==1) {
+				        				System.out.println("entra a bandera 1");
+				        				gen.writeEnd();
+				        				gen.writeEnd();
+				        				gen.writeEnd();
+
+				        				
+				        				
+				        				gen.writeStartObject();
+				        					gen.write("year", rs.getString(4));
+				        					gen.writeStartArray("months");
+				        					gen.writeStartObject();
+					        					gen.write("month", rs.getString(3));
+						        				gen.writeStartArray("days");
+							        				gen.writeStartObject();
+								        				gen.write("idRegister", rs.getInt(1));
+									        			gen.write("day", rs.getInt(2));
+									        			gen.write("set", rs.getInt(6));
+									        			gen.write("typeSet", ""+rs.getString(7));
+									        			gen.write("time", rs.getInt(8));
+									        			gen.write("assistant", rs.getString(5));
+								        				gen.write("1", rs.getInt(9));
+								        				gen.write("2", rs.getInt(10));
+								        				gen.write("3", rs.getInt(11));
+								        				gen.write("4", rs.getInt(12));
+								        				gen.write("5", rs.getInt(13));
+								        				gen.write("6", rs.getInt(14));
+								        				gen.write("7", rs.getInt(15));
+								        				gen.write("8", rs.getInt(16));
+								        				gen.write("9", rs.getInt(17));
+								        				gen.write("10", rs.getInt(18));
+								        			gen.writeEnd(); //Cierra el objeto de 1 alumno
+		
+					        			
+				        				grades.add(rs.getString(4));
+				        				mes.add(rs.getString(3));
+				        			}
+					        	}
+				        	}
+
+				        //gen.writeEnd();
+						//gen.writeEnd();
+				        gen.writeEnd();
+						gen.writeEnd();
+						gen.writeEnd();
+						gen.writeEnd();
+						gen.writeEnd();
+						gen.writeEnd();
+						/*gen.writeEnd();*/
+						//gen.writeEnd();
+						
+						
+						
+		            	}
+	        }
+	        
+	        
+	        
+	        return swriter.toString();
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	        return null;
+	    }
     }
+
+    
+
 }
 

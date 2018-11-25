@@ -49,20 +49,31 @@ public class pruebafecha {
 
 		//Instructor instructor = new Instructor();
 		//instructor.obtenerGafetesAlumnos();	
+		
+		Recepcion recepcion = new Recepcion();
+		String alumnosLlamada= recepcion.getAlumnosLlamadas();
+		System.out.print(alumnosLlamada);
+		//recepcion.NotaLlamada(2, "hola", "2018-04-23");
+
 		//Recepcion recepcion = new Recepcion();
 		//String alumnosLlamada= recepcion.getAlumnosLlamadas();
 		//System.out.print(alumnosLlamada);
 		//recepcion.NotaLlamada(3, "hola", "23/04/2018");
 
+
 		Auxiliar aux= new Auxiliar();
 		
 		String fileRules1="../rules/proyeccionNivel.drl";
 		//String fileRules2="../rules/desempeño.drl";
-		String arrayJson=aux.crearJson();
+
+		/*String arrayJson=aux.crearJson();
 		JSONObject obj = new JSONObject(arrayJson);
+
 		WorkingMemory wk=aux.conexionDrools(fileRules1);
 		JSONObject results = obj.getJSONObject("resultsTest");
+
 		//aux.executeFrecuencias(wk);
+
 		aux.executeFrecInicial(wk, arrayJson);/*
 		//aux.exFrecuencias(wk,2);
 		/*pruebaDSL prueba = new pruebaDSL();
@@ -76,6 +87,7 @@ public class pruebafecha {
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+
 		}
          /* 
 		Auxiliar aux= new Auxiliar();
@@ -129,8 +141,7 @@ public class pruebafecha {
             gen.writeEnd();
             gen.writeEnd();
 		}*/
-        
-		
+
 		/*Registro rs= new Registro();
 		rs.setUno(100);
 		rs.setDos(100);
@@ -149,6 +160,7 @@ public class pruebafecha {
 		System.out.println("Num 70: " +  rs.getNumSetenta() + " Num 80: " + rs.getNumOchenta() + " Num 90: " + rs.getNumNoventa() +" Num 100: " + rs.getNumCien()+ " Num flechas:" + rs.getNumFlecha() + "  Num triangulo: " + rs.getNumTriangulo());
 
 		System.out.println("La evaluacion es: "+ rs.getEvaluacion());*/
+
 	}
 
 }

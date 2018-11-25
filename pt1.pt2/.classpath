@@ -6,6 +6,7 @@
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
+<<<<<<< HEAD
 	<classpathentry kind="src" output="target/classes" path="src/test/java">
 		<attributes>
 			<attribute name="optional" value="true"/>
@@ -14,6 +15,11 @@
 	</classpathentry>
 	<classpathentry excluding="**" kind="src" output="target/classes" path="src/main/resources">
 		<attributes>
+=======
+	<classpathentry kind="src" output="target/test-classes" path="src/test/java">
+		<attributes>
+			<attribute name="optional" value="true"/>
+>>>>>>> refs/remotes/origin/dev
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
