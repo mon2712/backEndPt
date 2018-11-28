@@ -117,39 +117,11 @@ public class Recepcion {
 			
 			            		int diaAnterior=0;
 			            		int today=0;
+
+			            		Alumno alum= new Alumno();
+			            		alum.setIdAlumno(Integer.toString(rs.getInt(3)));
+			            		diaAnterior=alum.getDiaInmediato("anterior",rs.getInt(4), rs.getInt(5),rs.getInt(6),rs.getInt(7), today);
 			            		
-			            		//Evaluando el día actual
-			            		if(rs.getInt(8)==2) today=0;
-			            		if(rs.getInt(8)==4) today=1;
-			            		if(rs.getInt(8)==5) today=2;
-			            		if(rs.getInt(8)==7) today=3;
-			            		
-			            		//Creando un array con los días que viene el alumno
-			            		// 2 lunes, 3 miercoles, 4 jueves, 6 sabado
-			            		arrayDays[0] = rs.getInt(4); //lunes
-			            		arrayDays[1] = rs.getInt(5); //miercoles
-			            		arrayDays[2] = rs.getInt(6); //jueves
-			            		arrayDays[3] = rs.getInt(7); //sabado
-			            		
-			            		int count=0;
-			            		
-			            		for(int i=0; i<4; i++) { //recorrer días laborales
-			            			
-			            			if(today != i && arrayDays[i] == 1) { //Si el alumno asiste, se agrega al array
-			            				if(i == 0) diasQueViene.add(2);
-			            				if(i == 1) diasQueViene.add(4);
-			            				if(i == 2) diasQueViene.add(5);
-			            				if(i == 3) diasQueViene.add(7);
-			            			}
-			            		}
-			            		int size=diasQueViene.size();
-			            		//sacando el dia inmediato anterior que le toca asistir
-			            		if(size == 0) { //si no viene ningun día
-			            			diaAnterior=rs.getInt(8); //solo vine un dia, el día anterior es el mismo
-			
-			            		}else {
-			            			diaAnterior=diasQueViene.get(size-1);//vinee mas de un día, el día anterior es el correspondiente
-			            		}
 			            		//Ejecutando uno a uno los alumnos para ver si pertenecen a la lista dellamdas por realizar (es su segunda falta)
 			            		cStmt.setInt(1, diaAnterior); //dìa anterior
 			        		    cStmt.setInt(2, rs.getInt(3)); //id del alumno
@@ -415,7 +387,7 @@ public class Recepcion {
     public static String getNotificacion() throws SQLException {
     		StringWriter swriter = new StringWriter();
     
-	    	String qryLlamadas = "SELECT COUNT(*) FROM Notificacion WHERE tipo='llamada' AND fecha='' AND nota='' GROUP BY tipo;";
+	    	String qryLlamadas = "SELECT COUNT(*) FROM Notificacion WHERE tipo='llamada' AND nota='' GROUP BY tipo;";
 	    	String qryPagos = "SELECT * FROM Notificacion as noti JOIN Alumno as alu ON noti.Alumno_idAlumno=alu.idAlumno WHERE fecha=CURDATE() AND tipo='pago';";
 	    	
 	
