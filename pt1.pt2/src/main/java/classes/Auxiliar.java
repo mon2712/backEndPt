@@ -187,6 +187,7 @@ public class Auxiliar {
 			frecProyTipo[x]= niveles[x].getTipos().get(indiceActual);
 		  }
 		int idAl=Integer.parseInt(pn.getAlumno().getIdAlumno());
+		int error=0;
 		for(int x=0; x<6-nivelUbicacion+1; x++) {
 			System.out.println("Frecuencia " + (x+1) + " : " + frecProy[x] + " " + frecProyTipo[x] + " " + niveles[x].getNombreNivel());
 				CallableStatement cS = conn.prepareCall("{call setProyeccionAnual(?, ?, ?, ?, ?, ?)}");
@@ -200,7 +201,9 @@ public class Auxiliar {
 			 	cS.registerOutParameter(6, Types.VARCHAR);
 			 	cS.execute();
 			 	
+			 	
 		 	if(cS.getInt(5)==1 && x==0) {
+		 		error= cS.getInt(5);
 		 		System.out.println("Error: " + cS.getInt(5) + " " + cS.getString(6) );
 		 		break;
 		 	}
@@ -216,12 +219,39 @@ public class Auxiliar {
 			 	cS2.registerOutParameter(5, Types.INTEGER);
 			 	cS2.registerOutParameter(6, Types.VARCHAR);
 			 	cS2.execute();
-			 	System.out.println("Error: " + cS2.getInt(5) + " " + cS2.getString(6));
+			 						 	
 		 	}
 		 	
 			
 			//String insertProyeccionPS="call setProyeccionAnual(4,"+ frecProy[x] +"," + niveles[x].getNombreNivel() + "," + frecProyTipo[x] + ", @mensaje, @err);";
 		}
+		if(error==0) {
+			int lunes=0,miercoles=0,jueves=0,sabado=0,today=0;
+			String getQueryStatementN ="SELECT lunes, miercoles, jueves, sabado,  dayofweek(CURDATE()) from Alumno WHERE idAlumno="+pn.getAlumno().getIdAlumno()+";";
+	        prepareStat = conn.prepareStatement(getQueryStatementN);
+	        ResultSet rsN = prepareStat.executeQuery();
+	        while(rsN.next()) {
+	        	
+		        today=rsN.getInt(5);
+				
+				lunes = rsN.getInt(1); //lunes
+				miercoles = rsN.getInt(2); //miercoles
+				jueves = rsN.getInt(3); //jueves
+				sabado = rsN.getInt(4); //sabado
+	        }
+	        System.out.println("idAlumno"+idAl+" nivel: "+ niveles[0].getIdNivel()+" frecuencia: "+frecProy[0] + " "+ frecProyTipo[0]);
+	        int diaSiguiente=pn.getAlumno().getDiaInmediato("siguiente", lunes, miercoles, jueves, sabado, today);
+			CallableStatement cS2=conn.prepareCall("{call setPrimerProgramacion(?,?,?,?,?)}");
+		 	cS2.setInt(1, idAl);
+		 	cS2.setInt(2, niveles[0].getIdNivel() );
+		 	cS2.setString(3, frecProy[0]);
+		 	cS2.setString(4, frecProyTipo[0] );
+		 	cS2.setInt(5, diaSiguiente);
+		 	cS2.execute();
+		 	//setPrimerProgramacion(in idAlumn int(11), in idNivel int(11), in frec varchar(45), in tip varchar(25), in diaSiguiente varchar(25), out msg int(11))
+	        
+        }
+	 	
 	}
 
 	
