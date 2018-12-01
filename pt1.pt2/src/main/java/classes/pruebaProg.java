@@ -24,6 +24,7 @@ public class pruebaProg {
 		//aux.executeProg(wk1, wk2, arrayJson);
 		//aux.executeFrecuencias(wk);
 		//aux.executeFrecInicial(wk, arrayJson);
+		
 		//aux.exFrecuencias(wk,2);
 
 	}

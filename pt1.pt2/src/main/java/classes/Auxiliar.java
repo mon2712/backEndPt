@@ -552,73 +552,122 @@ public class Auxiliar {
 					System.out.println("Dia proximo: " + diaSiguiente);
 					
 					//obtener todas las programaciones que ha tenido de ese nivel
-				    getQueryStatementN =" SELECT Nivel_idNivel, ProgramacionDiaria_frecuencia, ProgramacionDiaria_idProgramacionDiaria \r\n" + 
+				    /*getQueryStatementN =" SELECT Nivel_idNivel, ProgramacionDiaria_frecuencia, ProgramacionDiaria_idProgramacionDiaria \r\n" + 
 				    		" FROM Nivel_has_ProgramacionDiaria WHERE Alumno_idAlumno="+alumn.getIdAlumno()+ " AND Nivel_idNivel="+reg.getNivel().getIdNivel()+
 				    		" GROUP BY Nivel_idNivel, ProgramacionDiaria_frecuencia, ProgramacionDiaria_idProgramacionDiaria;";
-			        prepareStat = conn.prepareStatement(getQueryStatementN);
-			        rsN = prepareStat.executeQuery();
-			        int contadorCambiosFrec=0, frecAnterior=0;
-			        System.out.println("Fecuencia" + rsN.getInt(1));
-			        while(rsN.next()) {
-			        	System.out.println(rsN.getInt(1));
-			        	if(frecAnterior!=0) {//Si no es la primera o unica frecuencia de ese nivel 
-			        		System.out.println("No es la primera o unica frecuencia de este nivel");
-			        		if(rsN.getInt(1)>frecAnterior) { //si cambio a una frecuencia mayor
-				        		System.out.println("Cambio a una frecuencia mayor");
-			        			contadorCambiosFrec++;
-			        		}
-			        		else {//si no cambio a una frecuencia mayor
+				    */
+					getQueryStatementN =" SELECT Nivel_idNivel, ProgramacionDiaria_frecuencia, ProgramacionDiaria_idProgramacionDiaria, numSecuencia, programacionDiaria_idProgramacionDiaria \r\n" + 
+				    		" FROM Nivel_has_ProgramacionDiaria WHERE Alumno_idAlumno="+alumn.getIdAlumno()+ " AND Nivel_idNivel="+reg.getNivel().getIdNivel()+
+				    		" ORDER BY numSecuencia DESC;";
 
-				        		System.out.println("El contador se reestableció");
-			        			contadorCambiosFrec=0; //se reestablece el contador
+				    
+				    prepareStat = conn.prepareStatement(getQueryStatementN);
+				    rsN = prepareStat.executeQuery();
+			        int contadorCambiosFrec=0;
+			        double frecAnterior=0;
+			        
+			        while(rsN.next()) {
+			        	
+			        	//System.out.println(rsN.getInt(1));
+			        	if(frecAnterior!=0) {//Si no es la primera o unica frecuencia de ese nivel 
+			        		if(frecAnterior!=rsN.getInt(5)) {
+			        			System.out.println("Fecuencia " + rsN.getInt(5));
+				        		if(rsN.getInt(5)<frecAnterior) { //si cambio a una frecuencia mayor
+					        		System.out.println("Cambio a una frecuencia mayor");
+				        			contadorCambiosFrec++;
+				        		}
+				        		else {//si no cambio a una frecuencia mayor
+	
+					        		System.out.println("El contador se reestableció");
+				        			contadorCambiosFrec=0; //se reestablece el contador
+				        			break;
+				        		}
 			        		}
 			        	}
-			        	frecAnterior=rsN.getInt(1);// guardamos la frecuenncia en la variable auxiliar
+			        	frecAnterior=rsN.getInt(5);// guardamos la frecuenncia en la variable auxiliar
 			        }
 			        System.out.println("Se cambió " + contadorCambiosFrec + " veces de frecuencia");
 			        //if(reg.getAccion()=="AUMENTA") {  
 			        String mensajeError="";
 			        int err=0;
-				        if(reg.getAccion()=="AUMENTA" && contadorCambiosFrec>=2) {
-				        	System.out.println("Repaso lineal (sin repeticiones) del bloque anterior al que se encuentra actualmente, a una frecuencia menor a la actual.");
-				        	
-				        	/*CallableStatement cS = conn.prepareCall("{call getRepeticionBloque(?, ?, ?)}");
-						 	
-							cS.setInt(1, Integer.parseInt(alumn.getIdAlumno()));
+				        if(reg.getAccion()=="AUMENTA" && contadorCambiosFrec>=2) { //repeticion de bloque
+				        	//Obtener nuemero de bloque al que pertenece el set actual
+				        	CallableStatement cS = conn.prepareCall("{call getBloque(?,?,?,?,?,?)}");
+					 		
+					 		cS.setInt(1, Integer.parseInt(alumn.getIdAlumno()));
 						 	cS.setInt(2, reg.getNivel().getIdNivel());
 						 	cS.registerOutParameter(3, Types.INTEGER);
+						 	cS.registerOutParameter(4, Types.VARCHAR);//obtener el tipo
+						 	cS.registerOutParameter(5, Types.INTEGER);
+						 	cS.registerOutParameter(6, Types.INTEGER);
+						 	
 						 	cS.execute();
-						 	*/
-						 	if(cS.getInt(3)>=2) { //se ha repetido dos veces el bloque
-						 		System.out.println("Se debe hacer repetición dependiendo el nivel");
-						 	}
-						 	else {
-						 		System.out.println("Repite el bloque");
-						 		String topo="BLOQUE";
-						 		//verificar que el repaso no exceda el dia siguiente
-						 		
-						 		//obtener el tipo
-						 		/*cS = conn.prepareCall("{call setRepeticionBloque(?,?,?,?,?,?,?,?,?,?)}");
-						 		
-						 		call setRepeticionBloque(7,4, 1.4, "a", 5, 4, "BLOQUE", @e, @msgErr);
-						 		
-						 		cS.setInt(1, Integer.parseInt(alumn.getIdAlumno()));
-							 	cS.setInt(2, reg.getNivel().getIdNivel());
-							 	cS.setString(3, String.valueOf(reg.getNivel().getFrecuencias().get(reg.getIndice()-1))); //FRECUENCIA NO AUMENTA POR QUE REPITE EL BLOQUE
-							 	cS.setString(4, String.valueOf(reg.getNivel().getTipos().get(reg.getIndice()-1)));//TIPO
-							 	cS.setInt(5, diaSiguiente); //DIA SIGUIENTE
-							 	cS.setInt(6, reg.getNivel().getIdNivel()); //PROXIMO DIA SI EL NUMERO DE SETS D EBLOQUE EXCEDE A SU DIA SIGUINETE
-							 	cS.setString(7, Tipo);
-							 	cS.registerOutParameter(8, Types.INTEGER);
-							 	cS.registerOutParameter(9, Types.VARCHAR);
-							 	
-							 	cS.execute();
-							 	
-							 	err=cS.getInt(11);
-							 	mensajeError=cS.getString(12);*/
-						 		/*7,4, 1.5, "a", dayofweek(curdate()),4, 4, "BLOQUE", @e, @msgErr*/
-						 	}
-				        }else {
+				        	
+				        	
+				        	System.out.println("Repaso lineal (sin repeticiones) del bloque anterior al que se encuentra actualmente.");
+				        	//Numero de veces que ha repetido el bloque
+				        	getQueryStatementN="SELECT count(*) \r\n" + 
+				        			"		FROM Registro  join  `Set` on Set_idSet=idSet WHERE  Registro.Alumno_idAlumno="+alumn.getIdAlumno()+" AND `Set`.Nivel_idNivel="+reg.getNivel().getIdNivel()+" AND Registro.tipo='"+ cS.getString(4)+"';";
+				        	
+				        	prepareStat = conn.prepareStatement(getQueryStatementN);
+						     rsN = prepareStat.executeQuery();
+				        	
+				        	 while(rsN.next()) {
+				        		 
+								 	if(rsN.getInt(1)>=2) { //se ha repetido dos veces el bloque
+								 		System.out.println("Se debe hacer repetición dependiendo el nivel");
+								 	}
+								 	else {
+								 		System.out.println("Repite el bloque");
+								 		String tipo="BLOQUE";
+								 		
+								 		//verificar que el repaso no exceda el dia siguiente
+								 		int dias=0;
+								 		if(diaSiguiente>today) {
+								 			dias=diaSiguiente-today;
+								 		}else {
+								 			dias=diaSiguiente+7-today;
+								 		}
+								 		
+								 		
+									 	int diaSiguiente2=0, diaSiguienteAux=diaSiguiente, dif=0, dias2=0;
+									 	if(cS.getInt(6)>=dias) {
+									 		while(dias2<dias) {
+									 			diaSiguiente2=alumn.getDiaInmediato("siguiente",lunes,miercoles,jueves,sabado,diaSiguienteAux);
+									 			dias2=0;
+									 			if(diaSiguiente2>today) {
+										 			dias2=diaSiguiente2-today;
+										 		}else {
+										 			dias2=diaSiguiente2+7-today;
+										 		}
+									 			diaSiguienteAux=diaSiguiente2;
+									 		}
+									 	}
+									 	System.out.println("DiaSiguiente2: "+ diaSiguiente2);
+								 		//7,4,@numS, @tipoReg , @setBloqueInicial , @numSets
+								 		
+								 		cS = conn.prepareCall("{call setRepeticionBloque(?,?,?,?,?,?,?,?,?)}");
+								 		
+								 		//call setRepeticionBloque(7,4, 1.4, "a", 5, 4, "BLOQUE", @e, @msgErr);
+								 		
+								 		cS.setInt(1, Integer.parseInt(alumn.getIdAlumno()));
+									 	cS.setInt(2, reg.getNivel().getIdNivel());
+									 	cS.setString(3, String.valueOf(reg.getNivel().getFrecuencias().get(reg.getIndice()-1))); //FRECUENCIA NO AUMENTA POR QUE REPITE EL BLOQUE
+									 	cS.setString(4, String.valueOf(reg.getNivel().getTipos().get(reg.getIndice()-1)));//TIPO
+									 	cS.setInt(5, diaSiguiente); //DIA SIGUIENTE
+									 	cS.setInt(6, diaSiguiente2); //PROXIMO DIA SI EL NUMERO DE SETS D EBLOQUE EXCEDE A SU DIA SIGUINETE
+									 	cS.setString(7, tipo);
+									 	cS.registerOutParameter(8, Types.INTEGER);
+									 	cS.registerOutParameter(9, Types.VARCHAR);
+									 	
+									 	cS.execute();
+									 	
+									 	err=cS.getInt(8);
+									 	mensajeError=cS.getString(9);
+								 		/*7,4, 1.5, "a", dayofweek(curdate()),4, 4, "BLOQUE", @e, @msgErr*/
+								 	}
+						        }
+				        }else { //aumento de frecuencia
 				        	//set max_sp_recursion_depth=255;
 				        	CallableStatement cS = conn.prepareCall("{call setProgramacionDiaria(?,?,?,?,?,?,?,?,?,?,?,?)}");
 						 	
