@@ -556,25 +556,27 @@ public class Auxiliar {
 				    		" FROM Nivel_has_ProgramacionDiaria WHERE Alumno_idAlumno="+alumn.getIdAlumno()+ " AND Nivel_idNivel="+reg.getNivel().getIdNivel()+
 				    		" GROUP BY Nivel_idNivel, ProgramacionDiaria_frecuencia, ProgramacionDiaria_idProgramacionDiaria;";
 				    */
-					getQueryStatementN =" SELECT Nivel_idNivel, ProgramacionDiaria_frecuencia, ProgramacionDiaria_idProgramacionDiaria, numSecuencia, programacionDiaria_idProgramacionDiaria \r\n" + 
+					getQueryStatementN =" SELECT Nivel_idNivel, ProgramacionDiaria_frecuencia, ProgramacionDiaria_idProgramacionDiaria, numSecuencia \r\n" + 
 				    		" FROM Nivel_has_ProgramacionDiaria WHERE Alumno_idAlumno="+alumn.getIdAlumno()+ " AND Nivel_idNivel="+reg.getNivel().getIdNivel()+
 				    		" ORDER BY numSecuencia DESC;";
 
 				    
 				    prepareStat = conn.prepareStatement(getQueryStatementN);
 				    rsN = prepareStat.executeQuery();
-			        int contadorCambiosFrec=0;
-			        double frecAnterior=0;
+			        int contadorCambiosFrec=0, frecAnterior=0;
 			        
 			        while(rsN.next()) {
 			        	
 			        	//System.out.println(rsN.getInt(1));
 			        	if(frecAnterior!=0) {//Si no es la primera o unica frecuencia de ese nivel 
-			        		if(frecAnterior!=rsN.getInt(5)) {
-			        			System.out.println("Fecuencia " + rsN.getInt(5));
-				        		if(rsN.getInt(5)<frecAnterior) { //si cambio a una frecuencia mayor
+			        		if(frecAnterior!=rsN.getInt(3)) {
+			        			System.out.println("idFecuencia " + rsN.getInt(3));
+				        		if(rsN.getInt(3)<frecAnterior) { //si cambio a una frecuencia mayor
 					        		System.out.println("Cambio a una frecuencia mayor");
 				        			contadorCambiosFrec++;
+				        			if(contadorCambiosFrec==2) {
+				        				break;
+				        			}
 				        		}
 				        		else {//si no cambio a una frecuencia mayor
 	
@@ -584,7 +586,10 @@ public class Auxiliar {
 				        		}
 			        		}
 			        	}
-			        	frecAnterior=rsN.getInt(5);// guardamos la frecuenncia en la variable auxiliar
+			        	else {
+		        			System.out.println("idFecuencia " + rsN.getInt(3));
+		        		}
+			        	frecAnterior=rsN.getInt(3);// guardamos la frecuenncia en la variable auxiliar
 			        }
 			        System.out.println("Se cambió " + contadorCambiosFrec + " veces de frecuencia");
 			        //if(reg.getAccion()=="AUMENTA") {  
@@ -633,7 +638,7 @@ public class Auxiliar {
 									 	int diaSiguiente2=0, diaSiguienteAux=diaSiguiente, dif=0, dias2=0;
 									 	if(cS.getInt(6)>=dias) {
 									 		while(dias2<dias) {
-									 			diaSiguiente2=alumn.getDiaInmediato("siguiente",lunes,miercoles,jueves,sabado,diaSiguienteAux);
+									 			diaSiguiente2=Alumno.getDiaInmediato("siguiente",lunes,miercoles,jueves,sabado,diaSiguienteAux);
 									 			dias2=0;
 									 			if(diaSiguiente2>today) {
 										 			dias2=diaSiguiente2-today;
@@ -646,24 +651,25 @@ public class Auxiliar {
 									 	System.out.println("DiaSiguiente2: "+ diaSiguiente2);
 								 		//7,4,@numS, @tipoReg , @setBloqueInicial , @numSets
 								 		
-								 		cS = conn.prepareCall("{call setRepeticionBloque(?,?,?,?,?,?,?,?,?)}");
+									 	CallableStatement cS2 = conn.prepareCall("{call setRepeticionBloque(?,?,?,?,?,?,?,?,?)}");
 								 		
 								 		//call setRepeticionBloque(7,4, 1.4, "a", 5, 4, "BLOQUE", @e, @msgErr);
 								 		
-								 		cS.setInt(1, Integer.parseInt(alumn.getIdAlumno()));
-									 	cS.setInt(2, reg.getNivel().getIdNivel());
-									 	cS.setString(3, String.valueOf(reg.getNivel().getFrecuencias().get(reg.getIndice()-1))); //FRECUENCIA NO AUMENTA POR QUE REPITE EL BLOQUE
-									 	cS.setString(4, String.valueOf(reg.getNivel().getTipos().get(reg.getIndice()-1)));//TIPO
-									 	cS.setInt(5, diaSiguiente); //DIA SIGUIENTE
-									 	cS.setInt(6, diaSiguiente2); //PROXIMO DIA SI EL NUMERO DE SETS D EBLOQUE EXCEDE A SU DIA SIGUINETE
-									 	cS.setString(7, tipo);
-									 	cS.registerOutParameter(8, Types.INTEGER);
-									 	cS.registerOutParameter(9, Types.VARCHAR);
+								 		cS2.setInt(1, Integer.parseInt(alumn.getIdAlumno()));
+									 	cS2.setInt(2, reg.getNivel().getIdNivel());
+									 	cS2.setString(3, String.valueOf(reg.getNivel().getFrecuencias().get(reg.getIndice()-1))); //FRECUENCIA NO AUMENTA POR QUE REPITE EL BLOQUE
+									 	cS2.setString(4, String.valueOf(reg.getNivel().getTipos().get(reg.getIndice()-1)));//TIPO
+									 	cS2.setInt(5, diaSiguiente); //DIA SIGUIENTE
+									 	cS2.setInt(6, diaSiguiente2); //PROXIMO DIA SI EL NUMERO DE SETS D EBLOQUE EXCEDE A SU DIA SIGUINETE
+									 	cS2.setString(7, tipo);
+									 	cS2.registerOutParameter(8, Types.INTEGER);
+									 	cS2.registerOutParameter(9, Types.VARCHAR);
+									 	System.out.println("Parametros: "+alumn.getIdAlumno() +", "+ reg.getNivel().getIdNivel()+", "+ reg.getNivel().getFrecuencias().get(reg.getIndice()-1)+", "+reg.getNivel().getTipos().get(reg.getIndice()-1)+", "+diaSiguiente+", "+diaSiguiente2+", "+tipo);
 									 	
-									 	cS.execute();
+									 	cS2.execute();
 									 	
-									 	err=cS.getInt(8);
-									 	mensajeError=cS.getString(9);
+									 	err=cS2.getInt(8);
+									 	mensajeError=cS2.getString(9);
 								 		/*7,4, 1.5, "a", dayofweek(curdate()),4, 4, "BLOQUE", @e, @msgErr*/
 								 	}
 						        }
