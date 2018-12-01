@@ -345,6 +345,9 @@ public class Auxiliar {
 	}
 	//PARA COMBINACIONES
 	public void executeProgramacion(WorkingMemory workingMemory, String array) {
+		
+		
+		
 		JSONObject obj = new JSONObject(array);
 		
 		JSONObject results = obj.getJSONObject("resultsRegistro");
@@ -407,6 +410,7 @@ public class Auxiliar {
 	}
 	//PARA UN SOLO REGISTRO
 	public void executeProg(WorkingMemory workingMemory, WorkingMemory workingMemory2, String array) throws SQLException {
+		int entendimiento=0;
 		JSONObject obj = new JSONObject(array);
 		//leer el json
 		JSONObject results = obj.getJSONObject("resultsRegistro");
@@ -482,14 +486,6 @@ public class Auxiliar {
 				" Num70:" + reg.getNumSetenta() +
 				" NumTriangulo:" + reg.getNumTriangulo() +
 				" NumFlecha:" + reg.getNumFlecha() + " Evaluacion:" + reg.getEvaluacion());
-				//System.out.println("Resutado consulta: " + reg.getNivel().getIdNivel() + " minTime: " + reg.getNivel().getMintime() + " maxTime " + reg.getNivel().getMaxTime());
-				//sSystem.out.println(reg.getTiempo() +"<= ("+ reg.getNivel().getMaxTime()*10);
-				//System.out.println(reg.getEvaluacion());
-				//if(reg.getEvaluacion().equals("Exce")){
-				
-				//workingMemory.insert(reg);
-				//workingMemory.fireAllRules();
-				//if(reg.getNivel().getFrecuencias().indexOf(reg.getFrec())>0) {
 					
 					System.out.println(" Frecuencia y tipo actual: "+ reg.getFrec() + " "+ reg.getTipoFrec());
 					//inidice temporal de la frecuencia actual
@@ -528,23 +524,6 @@ public class Auxiliar {
 					jueves = rsN.getInt(3); //jueves
 					sabado = rsN.getInt(4); //sabado
 		        }
-				
-				
-				/*
-				CallableStatement cStmt = conn.prepareCall("{call getDiasAlumno(?, ?, ?, ?, ?, ?)}");
-				cStmt.setInt(1, Integer.parseInt(alumn.getIdAlumno()));
-				cStmt.registerOutParameter(2, Types.INTEGER);
-			    cStmt.registerOutParameter(3, Types.INTEGER);
-			    cStmt.registerOutParameter(4, Types.VARCHAR);
-			    cStmt.registerOutParameter(5, Types.VARCHAR);
-			    cStmt.registerOutParameter(6, Types.VARCHAR);
-			    cStmt.execute();   
-			    int today=cStmt.getInt(6);
-				
-				int lunes = cStmt.getInt(2); //lunes
-				int miercoles = cStmt.getInt(3); //miercoles
-				int jueves = cStmt.getInt(4); //jueves
-				int sabado = cStmt.getInt(5); //sabado*/
 
 					//int diaAnterior  =alumn.getDiaInmediato(/*alumn.getIdAlumno()*/"anterior",1,1,1,1,7);
 					int diaSiguiente=alumn.getDiaInmediato("siguiente",lunes,miercoles,jueves,sabado,today);
@@ -595,6 +574,9 @@ public class Auxiliar {
 			        //if(reg.getAccion()=="AUMENTA") {  
 			        String mensajeError="";
 			        int err=0;
+			        int diaSiguiente2=0;
+			        String tipo="";
+//________________________________//REPITE BLOQUE
 				        if(reg.getAccion()=="AUMENTA" && contadorCambiosFrec>=2) { //repeticion de bloque
 				        	//Obtener nuemero de bloque al que pertenece el set actual
 				        	CallableStatement cS = conn.prepareCall("{call getBloque(?,?,?,?,?,?)}");
@@ -616,15 +598,82 @@ public class Auxiliar {
 				        	
 				        	prepareStat = conn.prepareStatement(getQueryStatementN);
 						     rsN = prepareStat.executeQuery();
-				        	
+						     
 				        	 while(rsN.next()) {
-				        		 
+				   //________________________________//REPETICION DEPENDIENDO DEL NIVEL
 								 	if(rsN.getInt(1)>=2) { //se ha repetido dos veces el bloque
 								 		System.out.println("Se debe hacer repetición dependiendo el nivel");
+								 		tipo="NIVEL";
+								 		CallableStatement cS3 = conn.prepareCall("{call getRepeticionNivel(?,?,?,?,?,?,?)}");
+								 		//call getRepeticionNivel(7,4, @nivel, @setInic , @tipoRe, @nSets, @dia);
+								 		cS3.setInt(1, Integer.parseInt(alumn.getIdAlumno()));
+									 	cS3.setInt(2, reg.getNivel().getIdNivel());
+									 	cS3.registerOutParameter(3, Types.INTEGER);
+									 	cS3.registerOutParameter(4, Types.INTEGER);
+									 	cS3.registerOutParameter(5, Types.VARCHAR);
+									 	cS3.registerOutParameter(6, Types.INTEGER);
+									 	cS3.registerOutParameter(7, Types.VARCHAR);
+									 	
+									 	cS3.execute();
+								 		
+									 	int diaSiguienteAux=cS3.getInt(7);
+									    diaSiguiente2=Alumno.getDiaInmediato("siguiente",lunes,miercoles,jueves,sabado,diaSiguienteAux);
+
+									 	System.out.println("DiaSiguiente2: "+ diaSiguiente2);
+									 	if(entendimiento==0) {
+									 		CallableStatement cS2 = conn.prepareCall("{call setRepeticionBloque(?,?,?,?,?,?,?,?,?)}");
+									 		
+									 		//call setRepeticionBloque(7,4, 1.4, "a", 5, 4, "BLOQUE", @e, @msgErr);
+									 		
+									 		cS2.setInt(1, Integer.parseInt(alumn.getIdAlumno()));
+										 	cS2.setInt(2, reg.getNivel().getIdNivel());
+										 	cS2.setString(3, String.valueOf(reg.getNivel().getFrecuencias().get(reg.getIndice()-1))); //FRECUENCIA NO AUMENTA POR QUE REPITE EL BLOQUE
+										 	cS2.setString(4, String.valueOf(reg.getNivel().getTipos().get(reg.getIndice()-1)));//TIPO
+										 	cS2.setInt(5, diaSiguiente); //DIA SIGUIENTE
+										 	cS2.setInt(6, diaSiguiente2); //PROXIMO DIA SI EL NUMERO DE SETS DE BLOQUE EXCEDE A SU DIA SIGUINETE
+										 	cS2.setString(7, tipo);
+										 	cS2.registerOutParameter(8, Types.INTEGER);
+										 	cS2.registerOutParameter(9, Types.VARCHAR);
+										 	System.out.println("Parametros: "+alumn.getIdAlumno() +", "+ reg.getNivel().getIdNivel()+", "+ reg.getNivel().getFrecuencias().get(reg.getIndice()-1)+", "+reg.getNivel().getTipos().get(reg.getIndice()-1)+", "+diaSiguiente+", "+diaSiguiente2+", "+tipo);
+										 	
+										 	cS2.execute();
+										 	
+										 	err=cS2.getInt(8);
+										 	mensajeError=cS2.getString(9);
+									 		/*7,4, 1.5, "a", dayofweek(curdate()),4, 4, "BLOQUE", @e, @msgErr*/
+									 	}else {
+									 		CallableStatement cS2 = conn.prepareCall("{call setProgramacionDiaria(?,?,?,?,?,?,?,?,?,?,?,?)}");
+										 	
+											cS2.setInt(1, Integer.parseInt(alumn.getIdAlumno()));
+										 	cS2.setInt(2, reg.getNivel().getIdNivel());
+										 	cS2.setString(3, String.valueOf(reg.getNivel().getFrecuencias().get(reg.getIndice()))); //FRECUENCIA
+										 	cS2.setString(4, String.valueOf(reg.getNivel().getTipos().get(reg.getIndice())));//TIPO
+										 	cS2.setString(5, "CU");
+										 	cS2.setInt(6, 0);
+										 	cS2.setInt(7, diaSiguiente); //proximo día
+										 	cS2.setString(8, "NORMAL");
+										 	cS2.setString(9, "C");
+										 	cS2.setInt(10, 0);
+										 	cS2.registerOutParameter(11, Types.INTEGER);
+										 	cS2.registerOutParameter(12, Types.VARCHAR);
+										 	
+										 	cS2.execute();
+										 	
+										 	err=cS2.getInt(11);
+										 	mensajeError=cS2.getString(12);
+										 	System.out.println("Resultado error: " + err +" mensaje error: " + mensajeError);
+								        	//call setProgramacionDiaria(7,4,1.5,"a",curdate(),dayofweek(curdate()),7,"NORMAL","C", 0,@e, @msgErr);
+
+									 		
+									 	}
+									 	
+									 	
+									 	
 								 	}
+                   //________________________________//REPETICION DEPENDIENDO DEL BLOQUE								 	
 								 	else {
 								 		System.out.println("Repite el bloque");
-								 		String tipo="BLOQUE";
+								 		tipo="BLOQUE";
 								 		
 								 		//verificar que el repaso no exceda el dia siguiente
 								 		int dias=0;
@@ -635,7 +684,8 @@ public class Auxiliar {
 								 		}
 								 		
 								 		
-									 	int diaSiguiente2=0, diaSiguienteAux=diaSiguiente, dif=0, dias2=0;
+									 	int diaSiguienteAux=diaSiguiente, dif=0, dias2=0;
+									 	diaSiguiente2=0;
 									 	if(cS.getInt(6)>=dias) {
 									 		while(dias2<dias) {
 									 			diaSiguiente2=Alumno.getDiaInmediato("siguiente",lunes,miercoles,jueves,sabado,diaSiguienteAux);
@@ -650,7 +700,6 @@ public class Auxiliar {
 									 	}
 									 	System.out.println("DiaSiguiente2: "+ diaSiguiente2);
 								 		//7,4,@numS, @tipoReg , @setBloqueInicial , @numSets
-								 		
 									 	CallableStatement cS2 = conn.prepareCall("{call setRepeticionBloque(?,?,?,?,?,?,?,?,?)}");
 								 		
 								 		//call setRepeticionBloque(7,4, 1.4, "a", 5, 4, "BLOQUE", @e, @msgErr);
@@ -660,7 +709,7 @@ public class Auxiliar {
 									 	cS2.setString(3, String.valueOf(reg.getNivel().getFrecuencias().get(reg.getIndice()-1))); //FRECUENCIA NO AUMENTA POR QUE REPITE EL BLOQUE
 									 	cS2.setString(4, String.valueOf(reg.getNivel().getTipos().get(reg.getIndice()-1)));//TIPO
 									 	cS2.setInt(5, diaSiguiente); //DIA SIGUIENTE
-									 	cS2.setInt(6, diaSiguiente2); //PROXIMO DIA SI EL NUMERO DE SETS D EBLOQUE EXCEDE A SU DIA SIGUINETE
+									 	cS2.setInt(6, diaSiguiente2); //PROXIMO DIA SI EL NUMERO DE SETS DE BLOQUE EXCEDE A SU DIA SIGUINETE
 									 	cS2.setString(7, tipo);
 									 	cS2.registerOutParameter(8, Types.INTEGER);
 									 	cS2.registerOutParameter(9, Types.VARCHAR);
@@ -671,10 +720,12 @@ public class Auxiliar {
 									 	err=cS2.getInt(8);
 									 	mensajeError=cS2.getString(9);
 								 		/*7,4, 1.5, "a", dayofweek(curdate()),4, 4, "BLOQUE", @e, @msgErr*/
-								 	}
+								 	} 	
+								 	
 						        }
-				        }else { //aumento de frecuencia
-				        	//set max_sp_recursion_depth=255;
+				        }
+//________________________________//CAMBIO DE FRECUENCIA (AUMENTA, DISMINUYE O PERMANECE)
+				        else { //cambio de frecuencia, aumenta en una, disminuye o permanece
 				        	CallableStatement cS = conn.prepareCall("{call setProgramacionDiaria(?,?,?,?,?,?,?,?,?,?,?,?)}");
 						 	
 							cS.setInt(1, Integer.parseInt(alumn.getIdAlumno()));
@@ -698,15 +749,6 @@ public class Auxiliar {
 				        	//call setProgramacionDiaria(7,4,1.5,"a",curdate(),dayofweek(curdate()),7,"NORMAL","C", 0,@e, @msgErr);
 
 				        }
-			      //}
-				//}
-			//workingMemory.insert(pn);
-			//workingMemory.fireAllRules();
-				
-			//}
-				
-				
-				//System.out.println(" Evaluaciones malas: " + contadorMala);
 	}
 	
 //Creación deJsons
