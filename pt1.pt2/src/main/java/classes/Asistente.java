@@ -63,7 +63,7 @@ public class Asistente {
 	        Asistente asis = new Asistente();
 	        
 	        if(rs.first()) {
-	        		System.out.println("hola");
+	        		//System.out.println("hola");
 	        		
 	        		asis.setNombre(rs.getString(4));
 	        		asis.setEstatus(rs.getString(8));

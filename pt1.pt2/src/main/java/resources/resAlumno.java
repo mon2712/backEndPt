@@ -19,16 +19,15 @@ import com.google.zxing.WriterException;
 
 import classes.Alumno;
 
-@Path("/alumno")
+@Path("/alumno") //Etiqueta que identifica las funciones pertenecientes a la clase Alumno
 public class resAlumno {
 	Alumno alumno = new Alumno();
 	
 	@GET
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("/getStudentFile")
+    @Path("/getStudentFile") //Etiqueta que invoca el procedimiento de inicio de sesión
 	public String getLoginSession(@QueryParam("id") int idAlumno) {
-    		System.out.println("hola"+idAlumno);
     		return alumno.obtenerFichaAlumno(idAlumno);
 	}
 	

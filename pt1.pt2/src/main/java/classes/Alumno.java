@@ -545,8 +545,6 @@ public class Alumno {
 	    }
     }
     
-
-    
     public static int getDiaInmediato(String condicion,int lunes, int miercoles, int jueves, int sabado, int today) throws SQLException{
     	int dia=0;
     	int[] arrayDays = new int[4];
@@ -615,6 +613,7 @@ public class Alumno {
 		}
 		return dia;
     }
+    
     public static String getBoleta(String alumno) {
     		System.out.println(alumno);
     		//JSONObject obj2 = new JSONObject(alumno);
@@ -938,6 +937,188 @@ public class Alumno {
     		}
     		
     		return finalResult;	
+    }
+
+    public static String getProgramacionDiaria(String id) {
+    		StringWriter swriter = new StringWriter();
+    		
+	    try {
+	        String getQueryStatement = "Select re.idRegistro, DAY(re.fecha) as dia, MONTH(re.fecha) as mes, YEAR(re.fecha) as año, se.`set`, re.tipo, re.tiempo, niv.nombre \r\n" + 
+	        		"	        		from Registro as re JOIN Usuario as us JOIN `Set` as se JOIN Nivel as niv\r\n" + 
+	        		"	        		ON re.Asistente_Usuario_idUsuario=us.idUsuario AND se.idSet=re.Set_idSet AND se.Nivel_idNivel=niv.idNivel\r\n" + 
+	        		"	        		WHERE Alumno_idAlumno=1 ORDER BY fecha ASC;";
+	
+	        prepareStat = conn.prepareStatement(getQueryStatement);
+	
+	        ResultSet rs = prepareStat.executeQuery();
+	        
+	        List<String> nivel=new ArrayList<>();
+	        
+	        JSONObject programacionDiaria = new JSONObject();
+	        int bandera=0, bandera2=0;
+	        
+	        if(!rs.isBeforeFirst()) {
+	        		programacionDiaria.put("success", 0);
+	        }else {
+	        		programacionDiaria.put("success", 1);
+	        		 while(rs.next()) {
+	        			 if(nivel.isEmpty()) {
+	        				 
+	        				 JSONObject level = new JSONObject();
+	        			     JSONArray secuencias = new JSONArray();
+	        			     JSONArray niveles = new JSONArray();
+	        			     
+	        				 nivel.add(rs.getString(8));
+	        				 
+	        				 
+	        				 level.put("nivel", rs.getString(8));
+	        				 
+	        				 JSONArray secuencia = new JSONArray();
+	        				 secuencia.put(rs.getInt(5));
+	        				 
+	        				 secuencias.put(secuencia);
+	        				 
+	        				 level.put("secuencias", secuencias);
+	        				 
+	        				 niveles.put(level);
+	        				 programacionDiaria.put("niveles", niveles);
+	        				 
+	        			 }else { //No esta vacio nivel
+	        				 for(int i=0; i<nivel.size(); i++) {
+	        					 //System.out.println("niv "+ nivel.get(i) + " niv 2 " + rs.getString(8) + " id "+rs.getString(1));
+	        					 
+	        					 if(nivel.get(i).equals(rs.getString(8))) {  //si el nivel ya existe en el array de nivel
+	        						 //System.out.println("es nivel");
+	        						 JSONArray niveles = programacionDiaria.getJSONArray("niveles");
+	        						 //JSONArray secuencias = niveles.getJSONArray(i);
+	        						 
+	        						for(int k=0; k<niveles.length(); k++) {
+	        							if(niveles.getJSONObject(k).getString("nivel").equals(rs.getString(8))) {
+	        								JSONObject level = niveles.getJSONObject(k);
+	        								
+	        								//System.out.println("level " + level.getString("nivel"));
+	        								
+	        								JSONArray secuencias = level.getJSONArray("secuencias");
+	        								//bandera2=0;
+	        								for(int l=0; l<secuencias.length(); l++) {
+	        									System.out.println("sec "+l+" " + secuencias.getJSONArray(l));
+	        									
+	        									JSONArray secuencia = secuencias.getJSONArray(l);
+	        									
+	        									
+	        									for(int p=0; p<secuencia.length(); p++) {
+	        										System.out.println("sec ind " + secuencia.getInt(p) + " ent " + rs.getInt(5));
+	        										
+	        										if(secuencia.getInt(p) == rs.getInt(5)) {
+	        											bandera2=1;
+	        										}else {
+	        											System.out.println("no son iguales");
+	        										}
+	        										
+	        									}
+	        									
+	        									if(bandera2==0) {
+	        										secuencia.put(rs.getInt(5));
+	        										System.out.println("bandera igual a 0");
+	        									}
+	        								}
+	        								
+	        								if(bandera2==1) {
+	        									/*int flag=0;
+	        									
+	        									for(int l=0; l<secuencias.length(); l++) {
+	        										JSONArray secuencia = secuencias.getJSONArray(l);
+		        									
+		        									for(int p=0; p<secuencia.length(); p++) {
+		        										if(secuencia.getInt(p) == rs.getInt(5)) {
+		        											
+		        										}
+		        									}
+	        									}*/
+	        									System.out.println("bandera igual a 1");
+	        									JSONArray newSecuencia = new JSONArray();
+	        									newSecuencia.put(rs.getInt(5));
+	        										
+	        									secuencias.put(newSecuencia);
+	        									
+        										//bandera2=0;
+	        									
+	        								}
+	        								
+	        								
+	        								
+	        							}
+	        							
+	        						}
+	        						 
+	        						
+	        						 bandera=0;
+	        						 //bandera2=0;
+	        						 
+	        					 }else { //Si el nivel no existe en el array de nivel
+	        						 bandera=1;
+	        					 }
+	        					 
+	        				 }
+	        				 
+	        				 if(bandera == 1) {
+	        					 nivel.add(rs.getString(8)); //Se agrega nuevo nivel al array
+        						 System.out.println("no es nivel");
+        						 
+        						 
+        						 JSONObject level = new JSONObject();
+        						 JSONArray secuencias = new JSONArray();
+        						 
+         						 
+        						 level.put("nivel", rs.getString(8));
+        						 
+        						 JSONArray secuencia = new JSONArray();
+    	        				 	 secuencia.put(rs.getInt(5));
+    	        				 
+	    	        				 secuencias.put(secuencia);
+	    	        				 
+	    	        				 level.put("secuencias", secuencias);
+	    	        				 
+	    	        				 JSONArray niveles = programacionDiaria.getJSONArray("niveles");
+	    	        				 
+	    	        				 niveles.put(level);
+	        				 }
+	        			 }
+	        		 }
+	        }
+	        
+	        System.out.println(programacionDiaria.toString());
+	        //System.out.println(level.toString());
+	        
+	       /* try (JsonGenerator gen = Json.createGenerator(swriter)) {
+	        		gen.writeStartObject();
+	        		
+	        		if (!rs.isBeforeFirst()){
+	            		//ResultSet is empty
+	            		
+	            		gen.writeStartObject();
+			        		gen.write("err", 1);
+			        		gen.write("messageError", "No tiene calificaciones registrados");
+		        		gen.writeEnd();
+		        		
+	            	}else {
+		        		gen.writeStartArray("programacionDiaria");
+		        		
+		        		
+		        		gen.writeEnd();
+	            	}
+	        		
+	        		gen.writeEnd();
+        		}*/
+	        
+	        
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	        return null;
+	    }
+	    
+    	
+    	return "hola";
     }
 }
 
