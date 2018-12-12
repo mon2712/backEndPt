@@ -1,6 +1,7 @@
 package resources;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.text.ParseException;
 
 import javax.ws.rs.Consumes;
@@ -34,6 +35,7 @@ public class resFileReport {
 		String pdfPath = System.getProperty("user.home")+"/Desktop/file1";
 		System.out.println("archivo " + "file1:  " + files1 + " files2: " + files2);
 		//int error=1;
+		try {
     		FileReport fr = new FileReport();
     		error1=fr.getBaseInfo(files1);
     		error2=fr.getInfo(files2);
@@ -43,8 +45,13 @@ public class resFileReport {
     			error=1;
     		}else {
     			System.out.println("Si entro a la peticion");
-        		System.out.println("archivo " + "file1:  " + files1 + "  files2:  " + files2);
+        		System.out.println("archivo " + "file1:  " + files1 + "  files2:  " + files2);	
     		}
+		}catch (Exception e) {
+			System.out.println("Hubo un error");
+			error=1;
+			//e.printStackTrace();
+		}
     		//System.out.println("Path1: " + file1+ "Path2: " +file2);
     		return error;
 	}

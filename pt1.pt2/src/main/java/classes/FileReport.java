@@ -23,20 +23,12 @@ import org.apache.poi.ss.usermodel.Row;
 
 public class FileReport {
 	
-	static PreparedStatement prepareStat = null;
-	private static Connection conn = BaseDatos.conectarBD();
+	
 	private static int numCols =0, numCol=0, numRow=0, numRows=0;
 	
-	public static int getBaseInfo(String routeFile1) throws IOException, ParseException {
-		//String getQueryStatement = "CALL resetBaseAlumnos()";
-		//Connection conn = BaseDatos.conectarBD();
-        //try {
-		//	prepareStat = conn.prepareStatement(getQueryStatement);
-		//	ResultSet rs = prepareStat.executeQuery();
-		//} catch (SQLException e) {
-			// TODO Auto-generated catch block
-		//	e.printStackTrace();
-		//}
+	public static int getBaseInfo(String routeFile1) throws IOException, ParseException, SQLException {
+
+		Connection conn = BaseDatos.conectarBD();
 		int error=0;
 		try {
 		
@@ -134,7 +126,7 @@ public class FileReport {
 						break;
 					case 27:
 						int adeudo=((int) cell.getNumericCellValue());
-						fileToDB(alumn.getIdAlumno(),alumn.getApellidoPaterno(),alumn.getNombre(),alumn.getFechaNac(),alumn.getGrado(),alumn.getTel(),alumn.getNombreMadre(),alumn.getApellidoMadre(),alumn.getEmailMadre(),alumn.getCelMadre(),alumn.getTutorNombre(),alumn.getCelTutor(),alumn.getTelTutor(), alumn.getLunes(), alumn.getMiercoles(), alumn.getJueves(), alumn.getSabado(), adeudo);
+						fileToDB(alumn.getIdAlumno(),alumn.getApellidoPaterno(),alumn.getNombre(),alumn.getFechaNac(),alumn.getGrado(),alumn.getTel(),alumn.getNombreMadre(),alumn.getApellidoMadre(),alumn.getEmailMadre(),alumn.getCelMadre(),alumn.getTutorNombre(),alumn.getCelTutor(),alumn.getTelTutor(), alumn.getLunes(), alumn.getMiercoles(), alumn.getJueves(), alumn.getSabado(), adeudo, conn);
 						break;
 					}
 				}
@@ -146,11 +138,18 @@ public class FileReport {
 			  error=1;
 			 // break;
 		}
+		if(!conn.isClosed()) {
+    		conn.close();
+		}
+		
+		
 		return error;
 		
 	}
-	public static int getInfo(String ruteFile){
+	public static int getInfo(String ruteFile) throws SQLException{
 		int numCols =0, numCol=0, numRow=0, error=0;
+		PreparedStatement prepareStat = null;
+		Connection conn = BaseDatos.conectarBD(); 
 		try {
 		FileInputStream fis;
 		fis = new FileInputStream(new File(ruteFile));
@@ -219,7 +218,7 @@ public class FileReport {
 								alumn.getNivelAnterior(),alumn.getNivelActual(),
 								alumn.getSet(),alumn.getNumHojas(),
 								alumn.getUltimaAusencia(),alumn.getStatusAnterior(),
-								alumn.getStatusActual());
+								alumn.getStatusActual(), prepareStat,conn);
 						break;
 					}
 					
@@ -231,6 +230,12 @@ public class FileReport {
 			  error=1;
 			 // break;
 		  }
+		if(!conn.isClosed()) {
+			conn.close();
+		}
+		if(prepareStat!=null) {
+			prepareStat.close();
+		}
 		return error;
 		
 	}
@@ -253,8 +258,9 @@ public class FileReport {
 		
 	}
 	
-	public static void fileToDB(String s1, String s2, String s3, String s4, String s5, String s6, String s7, String s8,String s9,String s10,String s11,String s12,String s13, int s14, int s15, int s16, int s17, int s18 ){
-		 try {
+	public static void fileToDB(String s1, String s2, String s3, String s4, String s5, String s6, String s7, String s8,String s9,String s10,String s11,String s12,String s13, int s14, int s15, int s16, int s17, int s18, Connection conn ){
+		 
+		try {
 			 CallableStatement cS = conn.prepareCall("{CALL setBaseAlumnos(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)}");
 			 	cS.setString(1, s1);
 			 	cS.setString(2, s2);
@@ -278,11 +284,13 @@ public class FileReport {
 				
 	    } catch (SQLException e) {
 			e.printStackTrace();
-		}			
+		}
+		
 	}
 	
-	public static void updateDB(String s1, String s2, String s3, String s4, String s5, String s6, int s7, int s8,String s9,String s10,String s11 ){
-		 try {
+	public static void updateDB(String s1, String s2, String s3, String s4, String s5, String s6, int s7, int s8,String s9,String s10,String s11, PreparedStatement prepareStat, Connection conn) throws SQLException{
+		
+		try {
 			 CallableStatement cS = conn.prepareCall("{CALL setDatosAlumno(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)}");
 			 	String getQueryStatement = "SET sql_mode = ''";
 		    	
@@ -309,5 +317,6 @@ public class FileReport {
 	    } catch (SQLException e) {
 			e.printStackTrace();
 		}			
+		
 	}
 }
