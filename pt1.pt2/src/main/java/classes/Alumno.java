@@ -75,8 +75,37 @@ public class Alumno {
 	private int cuenta;
 	private int anteSuc;
 	private int puntajeDesempeño;
+	private int lunes;
+	private int miercoles;
+	private int jueves;
+	private int sabado;
 	private String desempeño;
 	
+	
+	public int getLunes() {
+		return lunes;
+	}
+	public void setLunes(int lunes) {
+		this.lunes = lunes;
+	}
+	public int getMiercoles() {
+		return miercoles;
+	}
+	public void setMiercoles(int miercoles) {
+		this.miercoles = miercoles;
+	}
+	public int getJueves() {
+		return jueves;
+	}
+	public void setJueves(int jueves) {
+		this.jueves = jueves;
+	}
+	public int getSabado() {
+		return sabado;
+	}
+	public void setSabado(int sabado) {
+		this.sabado = sabado;
+	}
 	public String getDesempeño() {
 		return desempeño;
 	}
