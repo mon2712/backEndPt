@@ -19,16 +19,15 @@ import com.google.zxing.WriterException;
 
 import classes.Alumno;
 
-@Path("/alumno")
+@Path("/alumno") //Etiqueta que identifica las funciones pertenecientes a la clase Alumno
 public class resAlumno {
 	Alumno alumno = new Alumno();
 	
 	@GET
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("/getStudentFile")
-	public String getLoginSession(@QueryParam("id") int idAlumno) {
-    		System.out.println("hola"+idAlumno);
+    @Path("/getStudentFile") //Etiqueta que invoca el procedimiento de inicio de sesión
+	public String getLoginSession(@QueryParam("id") int idAlumno) throws SQLException {
     		return alumno.obtenerFichaAlumno(idAlumno);
 	}
 	
@@ -72,4 +71,20 @@ public class resAlumno {
 	 public String setRegistration(String infoRegistro) throws WriterException, IOException, JSONException, SQLException, DroolsParserException {
 	    	return alumno.setRegistro(infoRegistro);
 	 }
+	 
+	 @GET
+	 @Consumes(MediaType.APPLICATION_JSON)
+	 @Produces(MediaType.APPLICATION_JSON)
+	 @Path("/getDailySchedule")
+	 public String getDailySchedule(@QueryParam("idAlumno") String idAlumno) {
+		 return alumno.getProgramacionDiaria(idAlumno);
+	 }
+	 
+	@GET
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/getSetsToGrade")
+	public String getSetsToGrade(@QueryParam("idAlumno") String idAlumno, @QueryParam("tipo") String tipo) throws SQLException {
+    		return alumno.getCenterHw(idAlumno, tipo);
+	}
 }

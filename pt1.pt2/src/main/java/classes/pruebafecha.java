@@ -61,9 +61,9 @@ public class pruebafecha {
 		//recepcion.NotaLlamada(3, "hola", "23/04/2018");
 
 
-		Auxiliar aux= new Auxiliar();
+		//Auxiliar aux= new Auxiliar();
 		
-		String fileRules1="../rules/proyeccionNivel.drl";
+		//String fileRules1="../rules/proyeccionNivel.drl";
 		//String fileRules2="../rules/desempeño.drl";
 
 		/*String arrayJson=aux.crearJson();
@@ -160,6 +160,10 @@ public class pruebafecha {
 		System.out.println("Num 70: " +  rs.getNumSetenta() + " Num 80: " + rs.getNumOchenta() + " Num 90: " + rs.getNumNoventa() +" Num 100: " + rs.getNumCien()+ " Num flechas:" + rs.getNumFlecha() + "  Num triangulo: " + rs.getNumTriangulo());
 
 		System.out.println("La evaluacion es: "+ rs.getEvaluacion());*/
+		
+		Alumno al = new Alumno();
+		al.getCenterHw("1","C");
+		
 
 	}
 

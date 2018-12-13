@@ -6,6 +6,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.sql.Types;
 
 import javax.json.Json;
@@ -15,13 +16,17 @@ import classes.BaseDatos;
 
 public class Personal {
 	static PreparedStatement prepareStat = null;
-    private static Connection conn = BaseDatos.conectarBD();
+    
     
     public static String iniciarSesion(String username, String password) {
+    		Connection conn = BaseDatos.conectarBD();
+    		
     		String type="", name="", finalResult="";
     		int id;
     		StringWriter swriter = new StringWriter();
     		try {
+    			Statement stmt=conn.createStatement();  
+
     		    CallableStatement cStmt = conn.prepareCall("{call verifyUser(?, ?, ?, ?, ?)}");
 	
     		    cStmt.setString(1, username);
@@ -68,6 +73,10 @@ public class Personal {
     		    			
     		    		}
     		    }
+    		    
+    		    if(!conn.isClosed()) {
+    		    		conn.close();
+    		    }
     	        
     		} catch (SQLException e) {
     			e.printStackTrace();
@@ -79,6 +88,7 @@ public class Personal {
     public static String getPersonal() {
 		StringWriter swriter = new StringWriter();
 	    try {
+	    		Connection conn = BaseDatos.conectarBD();
 	        String getQueryStatement = "SELECT us.idUsuario, us.nombre, us.apellido FROM Usuario as us  JOIN Asistente as asis JOIN Recepcionista as rec  \n" + 
 	        		"ON (us.idUsuario=rec.Usuario_idUsuario) OR (us.idUsuario=asis.Usuario_idUsuario) GROUP BY us.idUsuario;";
 	
