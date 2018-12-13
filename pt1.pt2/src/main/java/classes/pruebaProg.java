@@ -16,7 +16,7 @@ public class pruebaProg {
 		String fileRules1="../rules/registro_progDiaria.drl";
 		String fileRules2="../rules/accion.drl";
 		//int time, int id, String nombre, String nivel, int grado,  int cal1
-		String arrayJson=aux.crearJsonRegistro("3","Itzel Aguilar", "2A", "1",24,90,100,100,90,90,100, 100, 110, 110, 110);
+		String arrayJson=aux.crearJsonRegistro("3","Itzel Aguilar", "2A", "1",15,100,100,100,100,100,100, 80, 70, 110, 120);
 		JSONObject obj = new JSONObject(arrayJson);
 		WorkingMemory wk1=aux.conexionDrools(fileRules1);
 		WorkingMemory wk2=aux.conexionDrools(fileRules2);

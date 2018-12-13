@@ -3,6 +3,7 @@ package classes;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.io.IOException;
 import java.io.StringWriter;
 import java.sql.CallableStatement;
 import java.sql.Connection;
@@ -16,6 +17,8 @@ import java.util.List;
 import javax.json.Json;
 import javax.json.stream.JsonGenerator;
 
+import org.drools.compiler.compiler.DroolsParserException;
+import org.drools.core.WorkingMemory;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -907,7 +910,7 @@ public class Alumno {
 	    }
     }
 
-    public static String setRegistro(String infoRegistration) throws SQLException {
+    public static String setRegistro(String infoRegistration) throws SQLException, DroolsParserException, IOException {
     		Connection conn = BaseDatos.conectarBD();
     		
     		System.out.println("info " +  infoRegistration);
@@ -995,8 +998,21 @@ public class Alumno {
 	    	    		prepareStat.close();
     				
     			}
+    			Auxiliar aux= new Auxiliar();
+    			
+    			String fileRules1="../rules/registro_progDiaria.drl";
+    			String fileRules2="../rules/accion.drl";
+    			//int time, int id, String nombre, String nivel, int grado,  int cal1
+    			String arrayJson=aux.crearJsonRegistro(Integer.toString(idStudent),info.getString("nameStudent"), info.getString("level"), "1",info.getInt("time"),calificaciones.getInt("0"),calificaciones.getInt("1"),calificaciones.getInt("2"),calificaciones.getInt("3"),calificaciones.getInt("4"),calificaciones.getInt("5"), calificaciones.getInt("6"), calificaciones.getInt("7"), calificaciones.getInt("8"), calificaciones.getInt("9"));
+    			//String arrayJson=aux.crearJsonRegistro("3","Itzel Aguilar", "2A", "1",15,100,100,100,100,100,100, 80, 70, 110, 120);
+    			JSONObject obj = new JSONObject(arrayJson);
+    			WorkingMemory wk1=aux.conexionDrools(fileRules1);
+    			WorkingMemory wk2=aux.conexionDrools(fileRules2);
+    			JSONObject results = obj.getJSONObject("resultsRegistro");
+    			aux.executeProg(wk1,wk2,arrayJson);
     			
     			finalResult = finalS.toString();
+    			
     			
     		}
     		
