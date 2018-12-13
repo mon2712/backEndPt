@@ -23,20 +23,14 @@ import org.apache.poi.ss.usermodel.Row;
 
 public class FileReport {
 	
-	static PreparedStatement prepareStat = null;
-	private static Connection conn = BaseDatos.conectarBD();
+	
 	private static int numCols =0, numCol=0, numRow=0, numRows=0;
 	
-	public static void getBaseInfo(String routeFile1) throws IOException, ParseException {
-		String getQueryStatement = "CALL resetBaseAlumnos()";
-    	
-        try {
-			prepareStat = conn.prepareStatement(getQueryStatement);
-			ResultSet rs = prepareStat.executeQuery();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+	public static int getBaseInfo(String routeFile1) throws IOException, ParseException, SQLException {
+
+		Connection conn = BaseDatos.conectarBD();
+		int error=0;
+		try {
 		
 		FileInputStream fis = new FileInputStream(new File(routeFile1));
 		
@@ -50,13 +44,13 @@ public class FileReport {
 		numRows=sheet.getLastRowNum()+2;
 		
 		Alumno alumn= new Alumno();
-		SimpleDateFormat formatter = new SimpleDateFormat("MM/yyyy");
+		//SimpleDateFormat formatter = new SimpleDateFormat("MM/yyyy");
 		
 					
 		//that is for evaluate the cell type
 		FormulaEvaluator formulaEvaluator = wb.getCreationHelper().createFormulaEvaluator();
-		int argIndex[];
-		String value[];
+		//int argIndex[];
+		// value[];
 		
 		for(Row row: sheet) {
 			numRow++;
@@ -70,7 +64,7 @@ public class FileReport {
 					colNames[numCol]=cell.getStringCellValue();
 				}
 				else {
-					
+				
 					switch(numCol) {
 					case 1:
 						alumn.setIdAlumno(cell.getStringCellValue().trim());
@@ -116,20 +110,49 @@ public class FileReport {
 						break;
 					case 20:
 						alumn.setCelTutor(cell.getStringCellValue().trim());
-						fileToDB(alumn.getIdAlumno(),alumn.getApellidoPaterno(),alumn.getNombre(),alumn.getFechaNac(),alumn.getGrado(),alumn.getTel(),alumn.getNombreMadre(),alumn.getApellidoMadre(),alumn.getEmailMadre(),alumn.getCelMadre(),alumn.getTutorNombre(),alumn.getCelTutor(),alumn.getTelTutor());
+						//fileToDB(alumn.getIdAlumno(),alumn.getApellidoPaterno(),alumn.getNombre(),alumn.getFechaNac(),alumn.getGrado(),alumn.getTel(),alumn.getNombreMadre(),alumn.getApellidoMadre(),alumn.getEmailMadre(),alumn.getCelMadre(),alumn.getTutorNombre(),alumn.getCelTutor(),alumn.getTelTutor());
+						break;
+					case 23:
+						alumn.setLunes((int) cell.getNumericCellValue());
+						break;
+					case 24:
+						alumn.setMiercoles((int) cell.getNumericCellValue());
+						break;
+					case 25:
+						alumn.setJueves((int) cell.getNumericCellValue());
+						break;
+					case 26:
+						alumn.setSabado((int) cell.getNumericCellValue());
+						break;
+					case 27:
+						int adeudo=((int) cell.getNumericCellValue());
+						fileToDB(alumn.getIdAlumno(),alumn.getApellidoPaterno(),alumn.getNombre(),alumn.getFechaNac(),alumn.getGrado(),alumn.getTel(),alumn.getNombreMadre(),alumn.getApellidoMadre(),alumn.getEmailMadre(),alumn.getCelMadre(),alumn.getTutorNombre(),alumn.getCelTutor(),alumn.getTelTutor(), alumn.getLunes(), alumn.getMiercoles(), alumn.getJueves(), alumn.getSabado(), adeudo, conn);
 						break;
 					}
-					
-				}	
+				}
 				
 			}
+		  }
+		}catch(Exception e1) {
+			  //e1.printStackTrace();
+			  error=1;
+			 // break;
+		}
+		if(!conn.isClosed()) {
+    		conn.close();
 		}
 		
-	}
-	public static void getInfo(String ruteFile) throws IOException, ParseException {
-		int numCols =0, numCol=0, numRow=0;
 		
-		FileInputStream fis = new FileInputStream(new File(ruteFile));
+		return error;
+		
+	}
+	public static int getInfo(String ruteFile) throws SQLException{
+		int numCols =0, numCol=0, numRow=0, error=0;
+		PreparedStatement prepareStat = null;
+		Connection conn = BaseDatos.conectarBD(); 
+		try {
+		FileInputStream fis;
+		fis = new FileInputStream(new File(ruteFile));
 		
 		//create workbook instance that readers to .xls file
 		HSSFWorkbook wb = new HSSFWorkbook(fis);
@@ -138,14 +161,14 @@ public class FileReport {
 		HSSFSheet sheet = wb.getSheetAt(0);
 		
 		//get total number of rows
-		int numRows=sheet.getLastRowNum()+2;
+		//int numRows=sheet.getLastRowNum()+2;
 		
 		Alumno alumn= new Alumno();
 		
-		SimpleDateFormat formatter = new SimpleDateFormat("MM/yyyy");
+		//SimpleDateFormat formatter = new SimpleDateFormat("MM/yyyy");
 			
 		//that is for evaluate the cell type
-		FormulaEvaluator formulaEvaluator = wb.getCreationHelper().createFormulaEvaluator();
+		//FormulaEvaluator formulaEvaluator = wb.getCreationHelper().createFormulaEvaluator();
 		
 		for(Row row: sheet) {
 			numRow++;
@@ -195,14 +218,25 @@ public class FileReport {
 								alumn.getNivelAnterior(),alumn.getNivelActual(),
 								alumn.getSet(),alumn.getNumHojas(),
 								alumn.getUltimaAusencia(),alumn.getStatusAnterior(),
-								alumn.getStatusActual());
+								alumn.getStatusActual(), prepareStat,conn);
 						break;
 					}
 					
-					
 				}	
 			}
+		  }
+		}catch(Exception e1) {
+			  //e1.printStackTrace();
+			  error=1;
+			 // break;
+		  }
+		if(!conn.isClosed()) {
+			conn.close();
 		}
+		if(prepareStat!=null) {
+			prepareStat.close();
+		}
+		return error;
 		
 	}
 	
@@ -224,9 +258,10 @@ public class FileReport {
 		
 	}
 	
-	public static void fileToDB(String s1, String s2, String s3, String s4, String s5, String s6, String s7, String s8,String s9,String s10,String s11,String s12,String s13 ){
-		 try {
-			 CallableStatement cS = conn.prepareCall("{CALL setBaseAlumnos(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)}");
+	public static void fileToDB(String s1, String s2, String s3, String s4, String s5, String s6, String s7, String s8,String s9,String s10,String s11,String s12,String s13, int s14, int s15, int s16, int s17, int s18, Connection conn ){
+		 
+		try {
+			 CallableStatement cS = conn.prepareCall("{CALL setBaseAlumnos(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)}");
 			 	cS.setString(1, s1);
 			 	cS.setString(2, s2);
 			 	cS.setString(3, s3);
@@ -240,15 +275,22 @@ public class FileReport {
 			 	cS.setString(11, s11);
 			 	cS.setString(12, s12);
 			 	cS.setString(13, s13);
+			 	cS.setInt(14, s14);
+			 	cS.setInt(15, s15);
+			 	cS.setInt(16, s16);
+			 	cS.setInt(17, s17);
+			 	cS.setInt(18, s18);
 			 	cS.execute();		
 				
 	    } catch (SQLException e) {
 			e.printStackTrace();
-		}			
+		}
+		
 	}
 	
-	public static void updateDB(String s1, String s2, String s3, String s4, String s5, String s6, int s7, int s8,String s9,String s10,String s11 ){
-		 try {
+	public static void updateDB(String s1, String s2, String s3, String s4, String s5, String s6, int s7, int s8,String s9,String s10,String s11, PreparedStatement prepareStat, Connection conn) throws SQLException{
+		
+		try {
 			 CallableStatement cS = conn.prepareCall("{CALL setDatosAlumno(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)}");
 			 	String getQueryStatement = "SET sql_mode = ''";
 		    	
@@ -275,5 +317,6 @@ public class FileReport {
 	    } catch (SQLException e) {
 			e.printStackTrace();
 		}			
+		
 	}
 }
