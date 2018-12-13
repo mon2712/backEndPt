@@ -162,7 +162,7 @@ public class pruebafecha {
 		System.out.println("La evaluacion es: "+ rs.getEvaluacion());*/
 		
 		Alumno al = new Alumno();
-		al.getProgramacionDiaria("1");
+		al.getCenterHw("1","C");
 		
 
 	}

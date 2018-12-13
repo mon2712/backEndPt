@@ -358,9 +358,10 @@ public class Alumno {
 
 
 	static PreparedStatement prepareStat = null;
-    private static Connection conn = BaseDatos.conectarBD();
+    //private static Connection conn = BaseDatos.conectarBD();
     
-    public static String obtenerFichaAlumno(int idAlumno) {
+    public static String obtenerFichaAlumno(int idAlumno) throws SQLException {
+    		Connection conn = BaseDatos.conectarBD();
     		
     		StringWriter swriter = new StringWriter();
     		try {
@@ -442,10 +443,16 @@ public class Alumno {
     			e.printStackTrace();
     		}
     		
+    		if(!conn.isClosed()) {
+    			conn.close();
+        }
+        
+    		
     		return swriter.toString();
     }
     
     public static String getAlumnos(String filter) {
+    		Connection conn = BaseDatos.conectarBD();
     		StringWriter swriter = new StringWriter();
         try {
             String getQueryStatement = "SELECT * FROM Alumno WHERE CONCAT(nombre, ' ',apellido) LIKE '%"+filter+"%';";
@@ -470,6 +477,11 @@ public class Alumno {
 	            gen.writeEnd();
 	            gen.writeEnd();
 	        }
+            
+            if(!conn.isClosed()) {
+	    			conn.close();
+	        }
+            
             return swriter.toString();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -478,6 +490,7 @@ public class Alumno {
     }
     
     public static String getAlumnosSinProyeccion() {
+    		Connection conn = BaseDatos.conectarBD();
 		StringWriter swriter = new StringWriter();
 		
 	    try {
@@ -506,6 +519,11 @@ public class Alumno {
 	            gen.writeEnd();
 	            gen.writeEnd();
 	        }
+	        
+	        if(!conn.isClosed()) {
+	    			conn.close();
+	        }
+	        
 	        return swriter.toString();
 	    } catch (SQLException e) {
 	        e.printStackTrace();
@@ -514,6 +532,7 @@ public class Alumno {
     }
     
     public static String getAlumnosConProyeccion() {
+    		Connection conn = BaseDatos.conectarBD();
 		StringWriter swriter = new StringWriter();
 	    try {
 	        String getQueryStatement = "SELECT * FROM Alumno as al RIGHT JOIN ProyeccionAnual as pa ON al.idAlumno=pa.Alumno_idAlumno WHERE al.nivel in ('3A','2A','A','B','C','D');";
@@ -538,6 +557,11 @@ public class Alumno {
 	            gen.writeEnd();
 	            gen.writeEnd();
 	        }
+	        
+	        if(!conn.isClosed()) {
+	    			conn.close();
+	        }
+	        
 	        return swriter.toString();
 	    } catch (SQLException e) {
 	        e.printStackTrace();
@@ -546,6 +570,7 @@ public class Alumno {
     }
     
     public static int getDiaInmediato(String condicion,int lunes, int miercoles, int jueves, int sabado, int today) throws SQLException{
+    	Connection conn = BaseDatos.conectarBD();
     	int dia=0;
     	int[] arrayDays = new int[4];
     	List<Integer> diasQueViene = new ArrayList<Integer> ();
@@ -611,10 +636,16 @@ public class Alumno {
 			}
 			
 		}
+		
+		if(!conn.isClosed()) {
+				conn.close();
+	    }
+		
 		return dia;
     }
     
     public static String getBoleta(String alumno) {
+    		Connection conn = BaseDatos.conectarBD();
     		System.out.println(alumno);
     		//JSONObject obj2 = new JSONObject(alumno);
     		
@@ -836,7 +867,9 @@ public class Alumno {
 		            	}
 	        }
 	        
-	        
+	        if(!conn.isClosed()) {
+	    			conn.close();
+	        }
 	        
 	        return swriter.toString();
 	    } catch (SQLException e) {
@@ -846,6 +879,8 @@ public class Alumno {
     }
 
     public static String setRegistro(String infoRegistration) throws SQLException {
+    		Connection conn = BaseDatos.conectarBD();
+    		
     		System.out.println("info " +  infoRegistration);
     		JSONObject info = new JSONObject(infoRegistration);
     		JSONObject calificaciones = info.getJSONObject("grades");
@@ -855,7 +890,7 @@ public class Alumno {
     		int idRegistro = info.getInt("idRegistro");
     		int idAssistant = info.getInt("idAssistant");
     		
-    		String updateQuery = "UPDATE Registro SET fecha=CURDATE(), Asistente_Usuario_idUsuario=?, tiempo=?, "
+    		String updateQuery = "UPDATE Registro SET Asistente_Usuario_idUsuario=?, tiempo=?, "
     				+ "`1`="+calificaciones.getString("0") + ", `2`="+calificaciones.getString("1") + ", `3`="+calificaciones.getString("2")+", "
     				+ "`4`="+calificaciones.getString("3") + ", `5`="+calificaciones.getString("4") + ", `6`="+calificaciones.getString("5")+", "
     				+ "`7`="+calificaciones.getString("6") + ", `8`="+calificaciones.getString("7") + ", `9`="+calificaciones.getString("8")+", "
@@ -936,10 +971,15 @@ public class Alumno {
     			
     		}
     		
+    		if(!conn.isClosed()) {
+    			conn.close();
+        }
+    		
     		return finalResult;	
     }
 
     public static String getProgramacionDiaria(String id) {
+    		Connection conn = BaseDatos.conectarBD();
     		StringWriter swriter = new StringWriter();
     		
 	    try {
@@ -955,7 +995,7 @@ public class Alumno {
 	        List<String> nivel=new ArrayList<>();
 	        
 	        JSONObject programacionDiaria = new JSONObject();
-	        int bandera=0, bandera2=0;
+	        int bandera=0, existe=0, bandera3=0;
 	        
 	        if(!rs.isBeforeFirst()) {
 	        		programacionDiaria.put("success", 0);
@@ -988,73 +1028,43 @@ public class Alumno {
 	        					 //System.out.println("niv "+ nivel.get(i) + " niv 2 " + rs.getString(8) + " id "+rs.getString(1));
 	        					 
 	        					 if(nivel.get(i).equals(rs.getString(8))) {  //si el nivel ya existe en el array de nivel
-	        						 //System.out.println("es nivel");
-	        						 JSONArray niveles = programacionDiaria.getJSONArray("niveles");
-	        						 //JSONArray secuencias = niveles.getJSONArray(i);
 	        						 
-	        						for(int k=0; k<niveles.length(); k++) {
-	        							if(niveles.getJSONObject(k).getString("nivel").equals(rs.getString(8))) {
-	        								JSONObject level = niveles.getJSONObject(k);
-	        								
-	        								//System.out.println("level " + level.getString("nivel"));
-	        								
-	        								JSONArray secuencias = level.getJSONArray("secuencias");
-	        								//bandera2=0;
-	        								for(int l=0; l<secuencias.length(); l++) {
-	        									System.out.println("sec "+l+" " + secuencias.getJSONArray(l));
-	        									
-	        									JSONArray secuencia = secuencias.getJSONArray(l);
-	        									
-	        									
-	        									for(int p=0; p<secuencia.length(); p++) {
-	        										System.out.println("sec ind " + secuencia.getInt(p) + " ent " + rs.getInt(5));
-	        										
-	        										if(secuencia.getInt(p) == rs.getInt(5)) {
-	        											bandera2=1;
-	        										}else {
-	        											System.out.println("no son iguales");
-	        										}
-	        										
-	        									}
-	        									
-	        									if(bandera2==0) {
-	        										secuencia.put(rs.getInt(5));
-	        										System.out.println("bandera igual a 0");
-	        									}
-	        								}
-	        								
-	        								if(bandera2==1) {
-	        									/*int flag=0;
-	        									
-	        									for(int l=0; l<secuencias.length(); l++) {
-	        										JSONArray secuencia = secuencias.getJSONArray(l);
-		        									
-		        									for(int p=0; p<secuencia.length(); p++) {
-		        										if(secuencia.getInt(p) == rs.getInt(5)) {
-		        											
-		        										}
-		        									}
-	        									}*/
-	        									System.out.println("bandera igual a 1");
-	        									JSONArray newSecuencia = new JSONArray();
+	        						 JSONArray nivs = programacionDiaria.getJSONArray("niveles");
+	        						
+	        						 for(int j=0; j<nivs.length(); j++) {
+	        							 
+	        							 if(nivs.getJSONObject(j).getString("nivel").equals(rs.getString(8))) {
+	        								JSONObject level = nivs.getJSONObject(j);		        								
+		        							JSONArray secuencias = level.getJSONArray("secuencias");
+		        							
+		        							int lastSeq = secuencias.length();
+		        							
+		        							System.out.println("ultima secuencia "+ lastSeq);
+		        							
+		        							JSONArray secuencia = secuencias.getJSONArray(lastSeq-1);
+		        							
+		        							for(int l=0; l<secuencia.length(); l++) {
+		        								System.out.println("s "+secuencia.getInt(l));
+		        								if(secuencia.getInt(l) == rs.getInt(5)) {
+		        									existe=1;
+		        								}
+		        							}
+		        							
+		        							if(existe==1) {
+		        								JSONArray newSecuencia = new JSONArray();
 	        									newSecuencia.put(rs.getInt(5));
-	        										
+	        										      
 	        									secuencias.put(newSecuencia);
-	        									
-        										//bandera2=0;
-	        									
-	        								}
-	        								
-	        								
-	        								
-	        							}
-	        							
-	        						}
-	        						 
+	        									existe=0;
+		        							}else {
+		        								//No existe
+		        								secuencia.put(rs.getInt(5));
+		        							}
+		        									        							
+	        							 }
+	        						 }
 	        						
 	        						 bandera=0;
-	        						 //bandera2=0;
-	        						 
 	        					 }else { //Si el nivel no existe en el array de nivel
 	        						 bandera=1;
 	        					 }
@@ -1090,26 +1100,12 @@ public class Alumno {
 	        System.out.println(programacionDiaria.toString());
 	        //System.out.println(level.toString());
 	        
-	       /* try (JsonGenerator gen = Json.createGenerator(swriter)) {
-	        		gen.writeStartObject();
-	        		
-	        		if (!rs.isBeforeFirst()){
-	            		//ResultSet is empty
-	            		
-	            		gen.writeStartObject();
-			        		gen.write("err", 1);
-			        		gen.write("messageError", "No tiene calificaciones registrados");
-		        		gen.writeEnd();
-		        		
-	            	}else {
-		        		gen.writeStartArray("programacionDiaria");
-		        		
-		        		
-		        		gen.writeEnd();
-	            	}
-	        		
-	        		gen.writeEnd();
-        		}*/
+	        if(!conn.isClosed()) {
+	    			conn.close();
+	        }
+	        
+	        return programacionDiaria.toString();
+	       
 	        
 	        
 	    } catch (SQLException e) {
@@ -1117,8 +1113,52 @@ public class Alumno {
 	        return null;
 	    }
 	    
+	    
     	
-    	return "hola";
+    	
+    }
+    
+    public static String getCenterHw(String idAlumno, String tipo) throws SQLException {
+    		Connection connc = BaseDatos.conectarBD();
+    		String getQueryStatement = "SELECT re.idRegistro, re.fecha, re.tipo, se.`set`, nv.nombre  FROM Registro as re JOIN `Set` as se JOIN Nivel as nv \r\n" + 
+    				"ON se.idSet=re.Set_idSet AND nv.idNivel=se.Nivel_idNivel\r\n" + 
+    				"WHERE re.Alumno_idAlumno=" +idAlumno +" AND re.fecha<=CURDATE() AND re.`1`=0 AND re.tipo='" + tipo +"';";
+	
+    		//System.out.println(getQueryStatement);
+    		
+        prepareStat = connc.prepareStatement(getQueryStatement);
+
+        ResultSet rs = prepareStat.executeQuery();
+        
+        JSONObject setstograde = new JSONObject();
+        
+        if(!rs.isBeforeFirst()) {
+        		setstograde.put("success", 0);
+	    }else {
+	    		setstograde.put("success", 1);
+	    		JSONArray sets = new JSONArray();
+	    		while(rs.next()) {
+	    			//System.out.println("fecha "+rs.getString(5));
+	    			JSONObject set = new JSONObject();
+	    			
+	    			set.put("idRegistro", rs.getInt(1));
+	    			set.put("fecha", rs.getString(2));
+	    			set.put("tipo", rs.getString(3));
+	    			set.put("set", rs.getString(4));
+	    			set.put("nombre", rs.getString(5));
+	    			
+	    			sets.put(set);
+	    		}
+	    		setstograde.put("sets", sets);
+	    		//System.out.println("sets "+ setstograde.toString());
+	    	}
+        
+        
+        if(!connc.isClosed()) {
+    			connc.close();
+        }
+        
+        return setstograde.toString();
     }
 }
 
